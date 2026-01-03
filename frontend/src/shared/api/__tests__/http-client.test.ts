@@ -14,10 +14,10 @@ describe('httpClient', () => {
     // window.location をモック
     locationHref = 'http://localhost:3000';
     delete (window as any).location;
-    window.location = {
+    (window as any).location = {
       ...originalLocation,
       href: locationHref,
-    } as Location;
+    };
 
     Object.defineProperty(window.location, 'href', {
       get: () => locationHref,
@@ -33,7 +33,7 @@ describe('httpClient', () => {
 
   afterEach(() => {
     // window.location を復元
-    window.location = originalLocation;
+    (window as any).location = originalLocation;
   });
 
   describe('基本設定', () => {

@@ -41,15 +41,6 @@ RESTful API原則に従い、ドメインごとに整理。
 
 ---
 
-## カテゴリ (Categories)
-
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| GET | `/api/categories` | カテゴリ一覧 |
-| GET | `/api/categories/{id}` | カテゴリ詳細 |
-
----
-
 ## 商品 (Products)
 
 | Method | Endpoint | 説明 |
@@ -183,17 +174,6 @@ RESTful API原則に従い、ドメインごとに整理。
 
 ---
 
-## カテゴリ管理 (Admin Categories)
-
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| GET | `/api/admin/categories` | カテゴリ一覧 |
-| POST | `/api/admin/categories` | カテゴリ追加 |
-| PUT | `/api/admin/categories/{id}` | カテゴリ更新 |
-| DELETE | `/api/admin/categories/{id}` | カテゴリ削除 |
-
----
-
 ## 見積もり管理 (Admin Estimates)
 
 | Method | Endpoint | 説明 |
@@ -262,7 +242,6 @@ backend/app/
 │   ├── entities/
 │   │   ├── user.py
 │   │   ├── address.py
-│   │   ├── category.py
 │   │   ├── product.py
 │   │   ├── cart.py
 │   │   ├── order.py
@@ -272,7 +251,6 @@ backend/app/
 │   └── repositories/
 │       ├── user_repository.py
 │       ├── address_repository.py
-│       ├── category_repository.py
 │       ├── product_repository.py
 │       ├── cart_repository.py
 │       ├── order_repository.py
@@ -284,7 +262,6 @@ backend/app/
 │       ├── auth_usecase.py
 │       ├── user_usecase.py
 │       ├── address_usecase.py
-│       ├── category_usecase.py
 │       ├── product_usecase.py
 │       ├── cart_usecase.py
 │       ├── order_usecase.py
@@ -306,7 +283,6 @@ backend/app/
         ├── auth_api.py
         ├── user_api.py
         ├── address_api.py
-        ├── category_api.py
         ├── product_api.py
         ├── cart_api.py
         ├── order_api.py
@@ -319,7 +295,6 @@ backend/app/
             ├── admin_dashboard_api.py
             ├── admin_order_api.py
             ├── admin_product_api.py
-            ├── admin_category_api.py
             ├── admin_estimate_api.py
             ├── admin_upload_api.py
             ├── admin_user_api.py

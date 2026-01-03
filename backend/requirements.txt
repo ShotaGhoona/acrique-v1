@@ -3,6 +3,7 @@ fastapi==0.115.4
 uvicorn[standard]==0.27.0
 pydantic==2.10.2
 pydantic-settings==2.6.1
+email-validator==2.1.0
 
 # Database
 sqlalchemy==2.0.25
@@ -15,6 +16,9 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 PyJWT==2.8.0
 cryptography==41.0.7
+
+# Email
+resend==2.19.0
 
 # Environment
 python-dotenv==1.0.1

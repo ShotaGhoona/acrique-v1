@@ -29,7 +29,13 @@ class Settings(BaseSettings):
     jwt_private_key: str = ''  # RSA private key for signing (RS256)
     jwt_public_key: str = ''  # RSA public key for verification (RS256)
 
-    # 一旦これだけ書いてる
+    # Resend settings
+    resend_api_key: str = ''
+    email_from: str = 'ACRIQUE <noreply@acrique.jp>'
+
+    # Frontend URL (for email links)
+    frontend_url: str = 'http://localhost:3000'
+
     class Config:
         env_file = '.env'
         extra = 'ignore'  # 未定義のフィールドを無視（後方互換性のため）

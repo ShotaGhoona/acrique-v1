@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
  */
 async function verifyToken(token: string): Promise<boolean> {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/status`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/status`, {
       method: 'GET',
       headers: {
         Cookie: `access_token=${token}`,

@@ -2,12 +2,11 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
-// TODO: 後で消す - API接続時にAPIレスポンス型に置換
-import type { Product } from '@/shared/dummy-data/products';
+import type { ProductListItem } from '@/entities/product';
 
 interface CategoryProductsSectionProps {
   category: CategoryWithFeatures;
-  products: Product[];
+  products: ProductListItem[];
 }
 
 // 価格のフォーマット
@@ -19,7 +18,7 @@ function ProductCard({
   product,
   categoryId,
 }: {
-  product: Product;
+  product: ProductListItem;
   categoryId: string;
 }) {
   return (
@@ -53,14 +52,6 @@ function ProductCard({
         <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {product.tagline}
         </p>
-
-        {/* Lead Time */}
-        <div className="mt-3 border-t border-border pt-3">
-          <p className="text-xs text-muted-foreground/70">
-            <span className="font-medium text-muted-foreground">納期:</span>{' '}
-            {product.lead_time_note}
-          </p>
-        </div>
       </div>
     </Link>
   );

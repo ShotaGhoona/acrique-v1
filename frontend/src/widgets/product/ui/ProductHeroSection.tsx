@@ -5,9 +5,7 @@ import Link from 'next/link';
 import { ChevronRight, Truck, Shield, RotateCcw } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-// TODO: 後で消す - API接続時にAPIレスポンス型に置換
-import type { ProductDetail } from '@/shared/dummy-data/products';
-// TODO: 後で消す - API接続時に置換
+import type { ProductDetail } from '@/entities/product';
 import { getCategoryById, isValidCategoryId } from '@/shared/domain/category';
 
 interface ProductHeroSectionProps {

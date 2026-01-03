@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-// TODO: 後で消す - API接続時にAPIレスポンス型に置換
-import type { ProductDetail } from '@/shared/dummy-data/products';
+import type { ProductDetail } from '@/entities/product';
 
 // 価格差分フォーマット
 function formatPriceDiff(priceDiff: number): string {

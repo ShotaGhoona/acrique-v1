@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, Filter, Plus, Eye, Edit, MoreHorizontal, Trash2 } from 'lucide-react';
+import { Search, Filter, Plus, Eye, Edit, MoreHorizontal, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
@@ -26,23 +26,20 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
-import {
-  dummyProducts,
-  categoryLabels,
-  statusLabels,
-  statusColors,
-  type ProductCategory,
-  type ProductStatus,
-} from '../../dummy-data/products';
+import { useProducts } from '@/features/product/get-products';
+import { categories, getCategoryIds } from '@/shared/domain/category/data/categories';
+import type { CategoryId } from '@/shared/domain/category/model/types';
 
 export function ProductsHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<ProductCategory | 'all'>('all');
-  const [statusFilter, setStatusFilter] = useState<ProductStatus | 'all'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryId | 'all'>('all');
+
+  const { data, isLoading, error } = useProducts();
+  const products = data?.products ?? [];
+  const categoryIds = getCategoryIds();
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -51,16 +48,35 @@ export function ProductsHomeContainer() {
     }).format(amount);
   };
 
-  // 今後消す==========================================
-  const filteredProducts = dummyProducts.filter((product) => {
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.nameJa.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
-    const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
-  // =================================================
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.name_ja.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = categoryFilter === 'all' || product.category_id === categoryFilter;
+      return matchesSearch && matchesCategory;
+    });
+  }, [products, searchQuery, categoryFilter]);
+
+  if (isLoading) {
+    return (
+      <AdminLayout title="商品管理">
+        <div className="flex min-h-[400px] items-center justify-center">
+          <p className="text-muted-foreground">読み込み中...</p>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout title="商品管理">
+        <div className="flex min-h-[400px] items-center justify-center">
+          <p className="text-destructive">エラーが発生しました</p>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout title="商品管理">
@@ -87,7 +103,7 @@ export function ProductsHomeContainer() {
             </div>
             <Select
               value={categoryFilter}
-              onValueChange={(value) => setCategoryFilter(value as ProductCategory | 'all')}
+              onValueChange={(value) => setCategoryFilter(value as CategoryId | 'all')}
             >
               <SelectTrigger className="w-full sm:w-40">
                 <Filter className="mr-2 h-4 w-4" />
@@ -95,25 +111,9 @@ export function ProductsHomeContainer() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">すべて</SelectItem>
-                {Object.entries(categoryLabels).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as ProductStatus | 'all')}
-            >
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="ステータス" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">すべて</SelectItem>
-                {Object.entries(statusLabels).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
-                    {label}
+                {categoryIds.map((id) => (
+                  <SelectItem key={id} value={id}>
+                    {categories[id].name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -127,38 +127,34 @@ export function ProductsHomeContainer() {
                 <TableHead>商品ID</TableHead>
                 <TableHead>商品名</TableHead>
                 <TableHead>カテゴリ</TableHead>
-                <TableHead className="text-right">価格</TableHead>
-                <TableHead className="text-right">在庫</TableHead>
-                <TableHead>ステータス</TableHead>
-                <TableHead>更新日</TableHead>
+                <TableHead className="text-right">基本価格</TableHead>
+                <TableHead>おすすめ</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredProducts.map((product) => (
                 <TableRow key={product.id}>
-                  <TableCell className="font-medium">{product.id}</TableCell>
+                  <TableCell className="font-mono text-sm">{product.id}</TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">{product.nameJa}</div>
+                      <div className="font-medium">{product.name_ja}</div>
                       <div className="text-xs text-muted-foreground">{product.name}</div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{categoryLabels[product.category]}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">{formatCurrency(product.price)}</TableCell>
-                  <TableCell className="text-right">
-                    <span className={product.stock === 0 ? 'text-destructive' : ''}>
-                      {product.stock}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={statusColors[product.status]}>
-                      {statusLabels[product.status]}
+                    <Badge variant="outline">
+                      {categories[product.category_id]?.name ?? product.category_id}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{product.updatedAt}</TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(product.base_price)}〜
+                  </TableCell>
+                  <TableCell>
+                    {product.is_featured && (
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    )}
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -168,7 +164,7 @@ export function ProductsHomeContainer() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={`/${product.category}/${product.id}`}>
+                          <Link href={`/${product.category_id}/${product.id}`}>
                             <Eye className="mr-2 h-4 w-4" />
                             プレビュー
                           </Link>
@@ -178,14 +174,6 @@ export function ProductsHomeContainer() {
                             <Edit className="mr-2 h-4 w-4" />
                             編集
                           </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => alert(`商品を削除: ${product.id}（未実装）`)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          削除
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

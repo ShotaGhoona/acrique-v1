@@ -1,11 +1,12 @@
+'use client';
+
 import { notFound } from 'next/navigation';
-// TODO: 後で消す - API接続時に置換
 import {
   getCategoryById,
   isValidCategoryId,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import { getProductsByCategory } from '@/shared/dummy-data/products';
+import { useProductsByCategory } from '@/features/product/get-products';
 import { CategoryHeroSection } from '@/widgets/category/ui/CategoryHeroSection';
 import { CategoryProductsSection } from '@/widgets/category/ui/CategoryProductsSection';
 import { CategoryUseCasesSection } from '@/widgets/category/ui/CategoryUseCasesSection';
@@ -17,13 +18,21 @@ interface CategoryPageProps {
 }
 
 export function CategoryPage({ categoryId }: CategoryPageProps) {
-  // TODO: 後で消す - API接続時に置換
   if (!isValidCategoryId(categoryId)) {
     notFound();
   }
 
   const category = getCategoryById(categoryId as CategoryId);
-  const products = getProductsByCategory(categoryId);
+  const { data, isLoading } = useProductsByCategory(categoryId as CategoryId);
+  const products = data?.products ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted-foreground">読み込み中...</p>
+      </div>
+    );
+  }
 
   return (
     <>

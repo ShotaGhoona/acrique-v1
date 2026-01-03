@@ -9,6 +9,7 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
+import { Switch } from '@/shared/ui/shadcn/ui/switch';
 import {
   Select,
   SelectContent,
@@ -17,24 +18,34 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
-import { categoryLabels, statusLabels } from '../../dummy-data/products';
+import { categories, getCategoryIds } from '@/shared/domain/category/data/categories';
+import type { CategoryId } from '@/shared/domain/category/model/types';
 
 export function ProductNewContainer() {
   const router = useRouter();
+  const categoryIds = getCategoryIds();
+
   const [formData, setFormData] = useState({
     name: '',
-    nameJa: '',
-    category: '',
-    price: '',
-    stock: '',
-    status: 'draft',
+    name_ja: '',
+    category_id: '' as CategoryId | '',
+    tagline: '',
     description: '',
+    long_description: '',
+    base_price: '',
+    price_note: '',
+    lead_time_days: '',
+    lead_time_note: '',
+    is_featured: false,
+    requires_upload: false,
+    upload_type: '',
+    upload_note: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('商品を作成（未実装）');
-    // TODO: API呼び出し
+    // TODO: API呼び出しを実装
+    alert('商品作成APIは未実装です');
     router.push('/admin/products');
   };
 
@@ -71,27 +82,46 @@ export function ProductNewContainer() {
                       id="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Acrylic Keychain"
+                      placeholder="QR Code Cube"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="nameJa">商品名（日本語）</Label>
+                    <Label htmlFor="name_ja">商品名（日本語）</Label>
                     <Input
-                      id="nameJa"
-                      value={formData.nameJa}
-                      onChange={(e) => setFormData({ ...formData, nameJa: e.target.value })}
-                      placeholder="アクリルキーホルダー"
+                      id="name_ja"
+                      value={formData.name_ja}
+                      onChange={(e) => setFormData({ ...formData, name_ja: e.target.value })}
+                      placeholder="QRコードキューブ"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">商品説明</Label>
+                  <Label htmlFor="tagline">キャッチコピー</Label>
+                  <Input
+                    id="tagline"
+                    value={formData.tagline}
+                    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                    placeholder="あなたのQRを、アートに。"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">商品説明（短）</Label>
                   <Textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="商品の説明を入力..."
-                    rows={5}
+                    placeholder="商品の簡単な説明..."
+                    rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="long_description">商品説明（詳細）</Label>
+                  <Textarea
+                    id="long_description"
+                    value={formData.long_description}
+                    onChange={(e) => setFormData({ ...formData, long_description: e.target.value })}
+                    placeholder="商品の詳細な説明..."
+                    rows={6}
                   />
                 </div>
               </CardContent>
@@ -107,7 +137,7 @@ export function ProductNewContainer() {
                   <button
                     type="button"
                     className="flex aspect-square flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-muted-foreground/50"
-                    onClick={() => alert('画像アップロード（未実装）')}
+                    onClick={() => alert('画像アップロードは未実装です')}
                   >
                     <ImagePlus className="h-8 w-8" />
                     <span className="mt-2 text-xs">画像を追加</span>
@@ -115,51 +145,101 @@ export function ProductNewContainer() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Upload Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>入稿設定</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>入稿データ必要</Label>
+                    <p className="text-xs text-muted-foreground">
+                      お客様からデータ入稿が必要な商品
+                    </p>
+                  </div>
+                  <Switch
+                    checked={formData.requires_upload}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, requires_upload: checked })
+                    }
+                  />
+                </div>
+                {formData.requires_upload && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="upload_type">入稿タイプ</Label>
+                      <Select
+                        value={formData.upload_type}
+                        onValueChange={(value) => setFormData({ ...formData, upload_type: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="選択してください" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="logo">ロゴ</SelectItem>
+                          <SelectItem value="qr">QRコード</SelectItem>
+                          <SelectItem value="photo">写真</SelectItem>
+                          <SelectItem value="text">テキスト</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="upload_note">入稿に関する注意事項</Label>
+                      <Textarea
+                        id="upload_note"
+                        value={formData.upload_note}
+                        onChange={(e) => setFormData({ ...formData, upload_note: e.target.value })}
+                        placeholder="入稿データの形式など..."
+                        rows={2}
+                      />
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Status */}
+            {/* Category & Featured */}
             <Card>
               <CardHeader>
-                <CardTitle>公開設定</CardTitle>
+                <CardTitle>分類</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>ステータス</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value) => setFormData({ ...formData, status: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(statusLabels).map(([key, label]) => (
-                        <SelectItem key={key} value={key}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
                   <Label>カテゴリ</Label>
                   <Select
-                    value={formData.category}
-                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    value={formData.category_id}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, category_id: value as CategoryId })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(categoryLabels).map(([key, label]) => (
-                        <SelectItem key={key} value={key}>
-                          {label}
+                      {categoryIds.map((id) => (
+                        <SelectItem key={id} value={id}>
+                          {categories[id].name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>おすすめ商品</Label>
+                    <p className="text-xs text-muted-foreground">トップページに表示</p>
+                  </div>
+                  <Switch
+                    checked={formData.is_featured}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, is_featured: checked })
+                    }
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -167,33 +247,60 @@ export function ProductNewContainer() {
             {/* Pricing */}
             <Card>
               <CardHeader>
-                <CardTitle>価格・在庫</CardTitle>
+                <CardTitle>価格設定</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="price">価格（税抜）</Label>
+                  <Label htmlFor="base_price">基本価格（税抜）</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                       ¥
                     </span>
                     <Input
-                      id="price"
+                      id="base_price"
                       type="number"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      value={formData.base_price}
+                      onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
                       className="pl-8"
                       placeholder="0"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="stock">在庫数</Label>
+                  <Label htmlFor="price_note">価格備考</Label>
                   <Input
-                    id="stock"
+                    id="price_note"
+                    value={formData.price_note}
+                    onChange={(e) => setFormData({ ...formData, price_note: e.target.value })}
+                    placeholder="サイズ・オプションにより変動"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Lead Time */}
+            <Card>
+              <CardHeader>
+                <CardTitle>納期</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="lead_time_days">納期日数</Label>
+                  <Input
+                    id="lead_time_days"
                     type="number"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    placeholder="0"
+                    value={formData.lead_time_days}
+                    onChange={(e) => setFormData({ ...formData, lead_time_days: e.target.value })}
+                    placeholder="5"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lead_time_note">納期備考</Label>
+                  <Input
+                    id="lead_time_note"
+                    value={formData.lead_time_note}
+                    onChange={(e) => setFormData({ ...formData, lead_time_note: e.target.value })}
+                    placeholder="5営業日〜"
                   />
                 </div>
               </CardContent>

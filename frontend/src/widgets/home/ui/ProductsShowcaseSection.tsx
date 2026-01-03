@@ -1,19 +1,21 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-// TODO: 後で消す - API接続時に置換
 import {
   getAllCategories,
   getCategoryIds,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import { getProductsByCategory, type Product } from '@/shared/dummy-data/products';
+import type { ProductListItem } from '@/entities/product';
+import { useProductsByCategory } from '@/features/product/get-products';
 
 function ProductCard({
   product,
   categoryId,
 }: {
-  product: Product;
+  product: ProductListItem;
   categoryId: string;
 }) {
   return (
@@ -43,10 +45,10 @@ function CategorySection({
   categoryId: CategoryId;
   reverse?: boolean;
 }) {
-  // TODO: 後で消す - API接続時に置換
   const categories = getAllCategories();
   const category = categories.find((c) => c.id === categoryId)!;
-  const products = getProductsByCategory(categoryId);
+  const { data, isLoading } = useProductsByCategory(categoryId);
+  const products = data?.products ?? [];
 
   return (
     <div className="border-t border-border py-20 first:border-t-0 first:pt-0">
@@ -81,15 +83,19 @@ function CategorySection({
         <div
           className={`lg:col-span-9 ${reverse ? 'lg:order-1' : 'lg:order-2'}`}
         >
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                categoryId={categoryId}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center text-muted-foreground">読み込み中...</div>
+          ) : (
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  categoryId={categoryId}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-// TODO: 後で消す - API接続時にAPIレスポンス型に置換
-import type { ProductDetail } from '@/shared/dummy-data/products';
+import type { ProductDetail, RelatedProduct } from '@/entities/product';
+import { useRelatedProducts } from '@/features/product/get-product';
 
 // 価格フォーマット
 function formatPrice(price: number): string {
@@ -18,8 +18,18 @@ interface RelatedProductsSectionProps {
 export function RelatedProductsSection({
   product,
 }: RelatedProductsSectionProps) {
-  // TODO: 後で消す - API接続時に置換
-  const relatedProducts = product.related_products;
+  const { data, isLoading } = useRelatedProducts(product.id);
+  const relatedProducts = data?.related_products ?? [];
+
+  if (isLoading) {
+    return (
+      <section className='bg-secondary/30 py-20 lg:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+          <div className='text-center text-muted-foreground'>読み込み中...</div>
+        </div>
+      </section>
+    );
+  }
 
   if (relatedProducts.length === 0) {
     return null;
@@ -48,10 +58,10 @@ export function RelatedProductsSection({
 
         {/* Products Grid */}
         <div className='mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
-          {relatedProducts.map((relatedProduct) => (
+          {relatedProducts.map((relatedProduct: RelatedProduct) => (
             <Link
               key={relatedProduct.id}
-              href={`/${relatedProduct.category_id}/${relatedProduct.id}`}
+              href={`/${product.category_id}/${relatedProduct.id}`}
               className='group'
             >
               <div className='overflow-hidden rounded-sm bg-background'>

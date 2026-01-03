@@ -70,7 +70,7 @@ def seed_products(session: Session) -> None:
         session.add(option)
         session.flush()  # IDを取得するためにflush
         # マッピングキーを作成
-        key = f"{option_data['product_id']}_{option_data['name']}"
+        key = f'{option_data["product_id"]}_{option_data["name"]}'
         option_id_map[key] = option.id
     session.commit()
     print(f'  商品オプションを {len(PRODUCT_OPTIONS)} 件登録しました')

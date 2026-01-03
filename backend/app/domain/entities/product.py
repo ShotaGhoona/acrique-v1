@@ -31,7 +31,9 @@ class Product(BaseModel):
 
     # 関連データ（リポジトリで取得時にセット）
     images: list['ProductImage'] = Field(default_factory=list, description='商品画像')
-    options: list['ProductOption'] = Field(default_factory=list, description='商品オプション')
+    options: list['ProductOption'] = Field(
+        default_factory=list, description='商品オプション'
+    )
     specs: list['ProductSpec'] = Field(default_factory=list, description='商品スペック')
     features: list['ProductFeature'] = Field(default_factory=list, description='商品特長')
     faqs: list['ProductFaq'] = Field(default_factory=list, description='よくある質問')

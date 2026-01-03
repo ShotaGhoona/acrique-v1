@@ -33,7 +33,9 @@ class IProductRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_id(self, product_id: str, include_relations: bool = True) -> Product | None:
+    def get_by_id(
+        self, product_id: str, include_relations: bool = True
+    ) -> Product | None:
         """IDで商品を取得"""
         pass
 
@@ -112,7 +114,9 @@ class IProductRepository(ABC):
         pass
 
     @abstractmethod
-    def update_options(self, product_id: str, options: list[ProductOption]) -> list[ProductOption]:
+    def update_options(
+        self, product_id: str, options: list[ProductOption]
+    ) -> list[ProductOption]:
         """商品オプションを一括更新（既存を削除して新規作成）"""
         pass
 
@@ -126,7 +130,9 @@ class IProductRepository(ABC):
         pass
 
     @abstractmethod
-    def update_specs(self, product_id: str, specs: list[ProductSpec]) -> list[ProductSpec]:
+    def update_specs(
+        self, product_id: str, specs: list[ProductSpec]
+    ) -> list[ProductSpec]:
         """商品スペックを一括更新"""
         pass
 

@@ -62,7 +62,9 @@ class ProductImageModel(Base):
     __tablename__ = 'product_images'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     url = Column(String(500), nullable=False)
     alt = Column(String(255), nullable=True)
     is_main = Column(Boolean, default=False)
@@ -78,7 +80,9 @@ class ProductOptionModel(Base):
     __tablename__ = 'product_options'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     name = Column(String(100), nullable=False)  # サイズ/厚み等
     is_required = Column(Boolean, default=True)
     sort_order = Column(Integer, default=0)
@@ -96,7 +100,9 @@ class ProductOptionValueModel(Base):
     __tablename__ = 'product_option_values'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    option_id = Column(Integer, ForeignKey('product_options.id'), nullable=False, index=True)
+    option_id = Column(
+        Integer, ForeignKey('product_options.id'), nullable=False, index=True
+    )
     label = Column(String(100), nullable=False)  # 50mm角
     price_diff = Column(Integer, default=0)  # 価格差分
     description = Column(String(255), nullable=True)  # コンパクト等
@@ -112,7 +118,9 @@ class ProductSpecModel(Base):
     __tablename__ = 'product_specs'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     label = Column(String(100), nullable=False)  # サイズ
     value = Column(String(255), nullable=False)  # 50mm〜80mm角
     sort_order = Column(Integer, default=0)
@@ -127,7 +135,9 @@ class ProductFeatureModel(Base):
     __tablename__ = 'product_features'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
     sort_order = Column(Integer, default=0)
@@ -142,7 +152,9 @@ class ProductFaqModel(Base):
     __tablename__ = 'product_faqs'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     question = Column(Text, nullable=False)
     answer = Column(Text, nullable=False)
     sort_order = Column(Integer, default=0)
@@ -157,8 +169,12 @@ class ProductRelationModel(Base):
     __tablename__ = 'product_relations'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
-    related_product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
+    related_product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     sort_order = Column(Integer, default=0)
 
     # リレーション

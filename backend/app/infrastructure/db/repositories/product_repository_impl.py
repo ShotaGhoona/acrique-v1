@@ -66,7 +66,9 @@ class ProductRepositoryImpl(IProductRepository):
         products = query.all()
         return [self._to_entity(p, include_relations=False) for p in products]
 
-    def get_by_id(self, product_id: str, include_relations: bool = True) -> Product | None:
+    def get_by_id(
+        self, product_id: str, include_relations: bool = True
+    ) -> Product | None:
         """IDで商品を取得"""
         query = self.session.query(ProductModel).filter(ProductModel.id == product_id)
 
@@ -323,7 +325,9 @@ class ProductRepositoryImpl(IProductRepository):
         )
         return [self._spec_to_entity(spec) for spec in specs]
 
-    def update_specs(self, product_id: str, specs: list[ProductSpec]) -> list[ProductSpec]:
+    def update_specs(
+        self, product_id: str, specs: list[ProductSpec]
+    ) -> list[ProductSpec]:
         """商品スペックを一括更新"""
         # 既存のスペックを削除
         self.session.query(ProductSpecModel).filter(
@@ -550,7 +554,9 @@ class ProductRepositoryImpl(IProductRepository):
             values=values,
         )
 
-    def _option_value_to_entity(self, model: ProductOptionValueModel) -> ProductOptionValue:
+    def _option_value_to_entity(
+        self, model: ProductOptionValueModel
+    ) -> ProductOptionValue:
         """オプション値モデルをエンティティに変換"""
         return ProductOptionValue(
             id=model.id,

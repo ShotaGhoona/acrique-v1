@@ -76,7 +76,9 @@ def get_products(
     )
 
 
-@router.get('/featured', response_model=ProductListResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    '/featured', response_model=ProductListResponse, status_code=status.HTTP_200_OK
+)
 def get_featured_products(
     limit: int = Query(10, ge=1, le=50, description='取得件数'),
     product_usecase: ProductUsecase = Depends(get_product_usecase),
@@ -116,7 +118,9 @@ def get_featured_products(
     )
 
 
-@router.get('/search', response_model=ProductSearchResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    '/search', response_model=ProductSearchResponse, status_code=status.HTTP_200_OK
+)
 def search_products(
     keyword: str = Query(..., min_length=1, description='検索キーワード'),
     category_id: str | None = Query(None, description='カテゴリID'),
@@ -167,7 +171,9 @@ def search_products(
     )
 
 
-@router.get('/{product_id}', response_model=ProductDetailResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    '/{product_id}', response_model=ProductDetailResponse, status_code=status.HTTP_200_OK
+)
 def get_product(
     product_id: str,
     product_usecase: ProductUsecase = Depends(get_product_usecase),
@@ -254,7 +260,9 @@ def get_product(
 
 
 @router.get(
-    '/{product_id}/options', response_model=ProductOptionsResponse, status_code=status.HTTP_200_OK
+    '/{product_id}/options',
+    response_model=ProductOptionsResponse,
+    status_code=status.HTTP_200_OK,
 )
 def get_product_options(
     product_id: str,
@@ -288,7 +296,9 @@ def get_product_options(
 
 
 @router.get(
-    '/{product_id}/related', response_model=ProductRelatedResponse, status_code=status.HTTP_200_OK
+    '/{product_id}/related',
+    response_model=ProductRelatedResponse,
+    status_code=status.HTTP_200_OK,
 )
 def get_related_products(
     product_id: str,

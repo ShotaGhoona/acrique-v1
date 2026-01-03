@@ -70,7 +70,7 @@ class ResendEmailService(IEmailService):
 
     def _verification_email_template(self, verification_url: str) -> str:
         """メール認証メールのHTMLテンプレート"""
-        return f'''
+        return f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -106,11 +106,11 @@ class ResendEmailService(IEmailService):
     </div>
 </body>
 </html>
-'''
+"""
 
     def _password_reset_email_template(self, reset_url: str) -> str:
         """パスワードリセットメールのHTMLテンプレート"""
-        return f'''
+        return f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -146,12 +146,12 @@ class ResendEmailService(IEmailService):
     </div>
 </body>
 </html>
-'''
+"""
 
     def _welcome_email_template(self, user_name: str) -> str:
         """ウェルカムメールのHTMLテンプレート"""
         display_name = user_name if user_name else 'お客様'
-        return f'''
+        return f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -185,4 +185,4 @@ class ResendEmailService(IEmailService):
     </div>
 </body>
 </html>
-'''
+"""

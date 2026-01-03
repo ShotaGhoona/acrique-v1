@@ -1,3 +1,12 @@
+import {
+  type CategoryId,
+  type CategoryWithFeatures,
+  getCategoryById,
+  getAllCategories as getCategories,
+  isValidCategoryId,
+} from '@/shared/domain/category';
+
+// 商品一覧用の簡易商品型
 export interface Product {
   id: string;
   name: string;
@@ -8,24 +17,13 @@ export interface Product {
   href: string;
 }
 
-export interface UseCase {
-  id: string;
-  title: string;
-  description: string;
-  industry: string;
-}
+// Re-export
+export type { UseCase } from '@/shared/domain/category';
 
-export interface CategoryData {
-  id: string;
-  title: string;
-  tagline: string;
-  taglineEn: string;
-  description: string;
-  longDescription: string;
-  href: string;
+// カテゴリページ用の複合型（カテゴリ + 商品一覧）
+export interface CategoryData extends Omit<CategoryWithFeatures, 'name' | 'nameJa'> {
+  title: string; // name の別名（UI互換性のため）
   products: Product[];
-  useCases: UseCase[];
-  features: string[];
 }
 
 export const categoryData: Record<string, CategoryData> = {

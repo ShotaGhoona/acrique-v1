@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useLogin, type LoginFormData } from '@/features/auth/login';
@@ -9,6 +9,34 @@ import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginSkeleton />}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginSkeleton() {
+  return (
+    <div className='flex min-h-screen items-center justify-center py-24'>
+      <div className='w-full max-w-md px-6'>
+        <div className='mb-12 text-center'>
+          <p className='text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground'>
+            Login
+          </p>
+          <h1 className='mt-4 text-3xl font-light'>ログイン</h1>
+        </div>
+        <div className='animate-pulse space-y-6'>
+          <div className='h-12 rounded-sm bg-muted' />
+          <div className='h-12 rounded-sm bg-muted' />
+          <div className='h-12 rounded-sm bg-muted' />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);

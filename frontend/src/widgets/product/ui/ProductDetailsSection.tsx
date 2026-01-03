@@ -1,7 +1,8 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import type { ProductDetail } from '@/entities/product/model/product-data';
+// TODO: 後で消す - API接続時にAPIレスポンス型に置換
+import type { ProductDetail } from '@/shared/dummy-data/products';
 
 interface ProductDetailsSectionProps {
   product: ProductDetail;
@@ -21,7 +22,7 @@ export function ProductDetailsSection({ product }: ProductDetailsSectionProps) {
               製品について
             </h3>
             <div className='mt-8 space-y-4 leading-relaxed text-muted-foreground'>
-              {product.longDescription
+              {product.long_description
                 .trim()
                 .split('\n\n')
                 .map((paragraph, index) => (

@@ -1,13 +1,10 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-import type {
-  CategoryData,
-  UseCase,
-} from '@/entities/category/model/category-data';
+import type { CategoryWithFeatures, UseCase } from '@/shared/domain/category/model/types';
 
 interface CategoryUseCasesSectionProps {
-  category: CategoryData;
+  category: CategoryWithFeatures;
 }
 
 function UseCaseCard({ useCase, index }: { useCase: UseCase; index: number }) {
@@ -22,18 +19,18 @@ function UseCaseCard({ useCase, index }: { useCase: UseCase; index: number }) {
       {/* Background Image */}
       <ImagePlaceholder
         aspect={isLarge ? '16/9' : '4/3'}
-        variant='gradient'
+        variant="gradient"
         label={useCase.title}
-        className='h-full w-full'
+        className="h-full w-full"
       />
 
       {/* Overlay */}
-      <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent' />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
       {/* Content */}
-      <div className='absolute bottom-0 left-0 right-0 p-6 text-white md:p-8'>
+      <div className="absolute bottom-0 left-0 right-0 p-6 text-white md:p-8">
         {/* Industry Tag */}
-        <span className='inline-block rounded-sm bg-white/20 px-2 py-1 text-xs font-medium uppercase tracking-wider backdrop-blur-sm'>
+        <span className="inline-block rounded-sm bg-white/20 px-2 py-1 text-xs font-medium uppercase tracking-wider backdrop-blur-sm">
           {useCase.industry}
         </span>
 
@@ -53,7 +50,7 @@ function UseCaseCard({ useCase, index }: { useCase: UseCase; index: number }) {
       </div>
 
       {/* Hover Effect */}
-      <div className='absolute inset-0 border-2 border-transparent transition-colors group-hover:border-accent' />
+      <div className="absolute inset-0 border-2 border-transparent transition-colors group-hover:border-accent" />
     </div>
   );
 }
@@ -62,33 +59,33 @@ export function CategoryUseCasesSection({
   category,
 }: CategoryUseCasesSectionProps) {
   return (
-    <section className='bg-secondary/30 py-32'>
-      <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+    <section className="bg-secondary/30 py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-12">
         {/* Section Header */}
-        <div className='mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end'>
+        <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className='text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground'>
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
               Use Cases
             </p>
-            <h2 className='mt-6 text-3xl font-light md:text-4xl'>
+            <h2 className="mt-6 text-3xl font-light md:text-4xl">
               こんなシーンで活躍
             </h2>
-            <p className='mt-4 max-w-lg text-muted-foreground'>
+            <p className="mt-4 max-w-lg text-muted-foreground">
               様々な業種・シーンでご利用いただいています。
               あなたのビジネスにも、ACRIQUEを。
             </p>
           </div>
           <Link
-            href='/gallery'
-            className='inline-flex items-center text-sm font-medium transition-colors hover:text-accent'
+            href="/contact"
+            className="inline-flex items-center text-sm font-medium transition-colors hover:text-accent"
           >
-            すべての事例を見る
-            <ArrowRight className='ml-2 h-4 w-4' />
+            導入のご相談
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
 
         {/* Use Cases Grid */}
-        <div className='grid gap-4 md:grid-cols-3 md:grid-rows-2'>
+        <div className="grid gap-4 md:grid-cols-3 md:grid-rows-2">
           {category.useCases.map((useCase, index) => (
             <UseCaseCard key={useCase.id} useCase={useCase} index={index} />
           ))}

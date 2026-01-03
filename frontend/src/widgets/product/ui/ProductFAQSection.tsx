@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { ProductDetail } from '@/entities/product/model/product-data';
+// TODO: 後で消す - API接続時にAPIレスポンス型に置換
+import type { ProductDetail } from '@/shared/dummy-data/products';
 
 interface ProductFAQSectionProps {
   product: ProductDetail;

@@ -5,7 +5,8 @@ import { ProductDetailsSection } from '@/widgets/product/ui/ProductDetailsSectio
 import { ProductOptionsSection } from '@/widgets/product/ui/ProductOptionsSection';
 import { ProductFAQSection } from '@/widgets/product/ui/ProductFAQSection';
 import { RelatedProductsSection } from '@/widgets/product/ui/RelatedProductsSection';
-import type { ProductDetail } from '@/entities/product/model/product-data';
+// TODO: 後で消す - API接続時にAPIレスポンス型に置換
+import type { ProductDetail } from '@/shared/dummy-data/products';
 
 interface ProductPageProps {
   product: ProductDetail;

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ProductPage } from '@/page-components/product/ProductPage';
+// TODO: 後で消す - API接続時に置換
 import {
   getProductDetail,
-  productDetails,
-} from '@/entities/product/model/product-data';
+  getProductsByCategory,
+} from '@/shared/dummy-data/products';
 
 interface ProductPageParams {
   params: Promise<{ productId: string }>;
@@ -14,6 +15,7 @@ export async function generateMetadata({
   params,
 }: ProductPageParams): Promise<Metadata> {
   const { productId } = await params;
+  // TODO: 後で消す - API接続時に置換
   const product = getProductDetail(productId);
 
   if (!product) {
@@ -23,19 +25,18 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${product.nameJa} | ACRIQUE`,
+    title: `${product.name_ja} | ACRIQUE`,
     description: product.description,
     openGraph: {
-      title: `${product.nameJa} - ${product.tagline} | ACRIQUE`,
+      title: `${product.name_ja} - ${product.tagline} | ACRIQUE`,
       description: product.description,
     },
   };
 }
 
 export async function generateStaticParams() {
-  const officeProducts = Object.values(productDetails).filter(
-    (product) => product.categoryId === 'office',
-  );
+  // TODO: 後で消す - API接続時に置換
+  const officeProducts = getProductsByCategory('office');
 
   return officeProducts.map((product) => ({
     productId: product.id,
@@ -44,9 +45,10 @@ export async function generateStaticParams() {
 
 export default async function OfficeProductPage({ params }: ProductPageParams) {
   const { productId } = await params;
+  // TODO: 後で消す - API接続時に置換
   const product = getProductDetail(productId);
 
-  if (!product || product.categoryId !== 'office') {
+  if (!product || product.category_id !== 'office') {
     notFound();
   }
 

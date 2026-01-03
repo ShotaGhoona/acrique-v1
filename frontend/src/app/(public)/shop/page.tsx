@@ -1,15 +1,16 @@
 import type { Metadata } from 'next';
 import { CategoryPage } from '@/page-components/category/CategoryPage';
-import { getCategoryData } from '@/entities/category/model/category-data';
+// TODO: 後で消す - API接続時に置換
+import { getCategoryById } from '@/shared/domain/category';
 
-const category = getCategoryData('shop');
+const category = getCategoryById('shop');
 
 export const metadata: Metadata = {
-  title: `${category?.title} | ACRIQUE`,
-  description: category?.longDescription,
+  title: `${category.name} | ACRIQUE`,
+  description: category.longDescription,
   openGraph: {
-    title: `${category?.title} - ${category?.tagline} | ACRIQUE`,
-    description: category?.longDescription,
+    title: `${category.name} - ${category.tagline} | ACRIQUE`,
+    description: category.longDescription,
   },
 };
 

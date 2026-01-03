@@ -3,8 +3,13 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-import type { ProductDetail } from '@/entities/product/model/product-data';
-import { getRelatedProducts } from '@/entities/product/model/product-data';
+// TODO: 後で消す - API接続時にAPIレスポンス型に置換
+import type { ProductDetail } from '@/shared/dummy-data/products';
+
+// 価格フォーマット
+function formatPrice(price: number): string {
+  return `¥${price.toLocaleString()}`;
+}
 
 interface RelatedProductsSectionProps {
   product: ProductDetail;
@@ -13,7 +18,8 @@ interface RelatedProductsSectionProps {
 export function RelatedProductsSection({
   product,
 }: RelatedProductsSectionProps) {
-  const relatedProducts = getRelatedProducts(product.id);
+  // TODO: 後で消す - API接続時に置換
+  const relatedProducts = product.related_products;
 
   if (relatedProducts.length === 0) {
     return null;
@@ -32,7 +38,7 @@ export function RelatedProductsSection({
             </h3>
           </div>
           <Link
-            href={`/${product.categoryId}`}
+            href={`/${product.category_id}`}
             className='hidden items-center gap-2 text-sm font-medium transition-colors hover:text-muted-foreground sm:flex'
           >
             カテゴリ一覧へ
@@ -45,14 +51,14 @@ export function RelatedProductsSection({
           {relatedProducts.map((relatedProduct) => (
             <Link
               key={relatedProduct.id}
-              href={`/${relatedProduct.categoryId}/${relatedProduct.id}`}
+              href={`/${relatedProduct.category_id}/${relatedProduct.id}`}
               className='group'
             >
               <div className='overflow-hidden rounded-sm bg-background'>
                 <ImagePlaceholder
                   aspect='4/3'
                   variant='light'
-                  label={relatedProduct.nameJa}
+                  label={relatedProduct.name_ja}
                   className='w-full transition-transform duration-500 group-hover:scale-105'
                 />
               </div>
@@ -61,10 +67,10 @@ export function RelatedProductsSection({
                   {relatedProduct.name}
                 </p>
                 <h4 className='mt-1 font-medium transition-colors group-hover:text-muted-foreground'>
-                  {relatedProduct.nameJa}
+                  {relatedProduct.name_ja}
                 </h4>
                 <p className='mt-2 text-sm text-muted-foreground'>
-                  {relatedProduct.basePrice}〜
+                  {formatPrice(relatedProduct.base_price)}〜
                 </p>
               </div>
             </Link>
@@ -74,7 +80,7 @@ export function RelatedProductsSection({
         {/* Mobile Link */}
         <div className='mt-8 text-center sm:hidden'>
           <Link
-            href={`/${product.categoryId}`}
+            href={`/${product.category_id}`}
             className='inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-muted-foreground'
           >
             カテゴリ一覧へ

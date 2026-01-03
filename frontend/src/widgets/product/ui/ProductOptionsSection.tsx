@@ -2,7 +2,15 @@
 
 import { useState } from 'react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import type { ProductDetail } from '@/entities/product/model/product-data';
+// TODO: 後で消す - API接続時にAPIレスポンス型に置換
+import type { ProductDetail } from '@/shared/dummy-data/products';
+
+// 価格差分フォーマット
+function formatPriceDiff(priceDiff: number): string {
+  if (priceDiff === 0) return '';
+  const sign = priceDiff > 0 ? '+' : '';
+  return `${sign}¥${priceDiff.toLocaleString()}`;
+}
 
 interface ProductOptionsSectionProps {
   product: ProductDetail;
@@ -11,9 +19,9 @@ interface ProductOptionsSectionProps {
 export function ProductOptionsSection({ product }: ProductOptionsSectionProps) {
   // 各オプションの選択状態を管理
   const [selectedOptions, setSelectedOptions] = useState<
-    Record<string, string>
+    Record<number, number>
   >(() => {
-    const initial: Record<string, string> = {};
+    const initial: Record<number, number> = {};
     product.options.forEach((option) => {
       if (option.values.length > 0) {
         initial[option.id] = option.values[0].id;
@@ -22,7 +30,7 @@ export function ProductOptionsSection({ product }: ProductOptionsSectionProps) {
     return initial;
   });
 
-  const handleOptionChange = (optionId: string, valueId: string) => {
+  const handleOptionChange = (optionId: number, valueId: number) => {
     setSelectedOptions((prev) => ({
       ...prev,
       [optionId]: valueId,
@@ -65,9 +73,9 @@ export function ProductOptionsSection({ product }: ProductOptionsSectionProps) {
                       >
                         <div className='flex items-start justify-between'>
                           <span className='font-medium'>{value.label}</span>
-                          {value.price && (
+                          {value.price_diff !== 0 && (
                             <span className='text-sm text-muted-foreground'>
-                              {value.price}
+                              {formatPriceDiff(value.price_diff)}
                             </span>
                           )}
                         </div>

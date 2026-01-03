@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { ChevronRight, Truck, Shield, RotateCcw } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-import type { ProductDetail } from '@/entities/product/model/product-data';
-import { getCategoryData } from '@/entities/category/model/category-data';
+// TODO: 後で消す - API接続時にAPIレスポンス型に置換
+import type { ProductDetail } from '@/shared/dummy-data/products';
+// TODO: 後で消す - API接続時に置換
+import { getCategoryById, isValidCategoryId } from '@/shared/domain/category';
 
 interface ProductHeroSectionProps {
   product: ProductDetail;
@@ -26,9 +28,17 @@ const trustBadges = [
   { icon: RotateCcw, label: '返品対応', note: '7日以内' },
 ];
 
+// 価格フォーマット
+function formatPrice(price: number): string {
+  return `¥${price.toLocaleString()}`;
+}
+
 export function ProductHeroSection({ product }: ProductHeroSectionProps) {
   const [selectedImage, setSelectedImage] = useState(0);
-  const category = getCategoryData(product.categoryId);
+  // TODO: 後で消す - API接続時に置換
+  const category = isValidCategoryId(product.category_id)
+    ? getCategoryById(product.category_id)
+    : null;
 
   return (
     <section className='py-12 lg:py-20'>
@@ -40,10 +50,10 @@ export function ProductHeroSection({ product }: ProductHeroSectionProps) {
           </Link>
           <ChevronRight className='h-3 w-3' />
           <Link
-            href={`/${product.categoryId}`}
+            href={`/${product.category_id}`}
             className='transition-colors hover:text-foreground'
           >
-            {category?.title}
+            {category?.name}
           </Link>
           <ChevronRight className='h-3 w-3' />
           <span className='text-foreground'>{product.name}</span>
@@ -89,7 +99,7 @@ export function ProductHeroSection({ product }: ProductHeroSectionProps) {
             {/* Category Tag */}
             <div className='mb-4'>
               <span className='inline-block rounded-sm bg-secondary px-3 py-1 text-xs font-medium uppercase tracking-wider'>
-                {category?.title}
+                {category?.name}
               </span>
             </div>
 
@@ -98,7 +108,7 @@ export function ProductHeroSection({ product }: ProductHeroSectionProps) {
               {product.name}
             </h1>
             <p className='mt-2 text-lg text-muted-foreground'>
-              {product.nameJa}
+              {product.name_ja}
             </p>
 
             {/* Tagline */}
@@ -112,11 +122,11 @@ export function ProductHeroSection({ product }: ProductHeroSectionProps) {
             {/* Price */}
             <div className='mt-8 border-t border-border pt-8'>
               <div className='flex items-baseline gap-2'>
-                <span className='text-3xl font-light'>{product.basePrice}</span>
+                <span className='text-3xl font-light'>{formatPrice(product.base_price)}</span>
                 <span className='text-sm text-muted-foreground'>〜</span>
               </div>
               <p className='mt-1 text-xs text-muted-foreground'>
-                {product.priceNote}
+                {product.price_note}
               </p>
             </div>
 
@@ -124,7 +134,7 @@ export function ProductHeroSection({ product }: ProductHeroSectionProps) {
             <div className='mt-6 flex items-center gap-4 rounded-sm bg-secondary/30 px-4 py-3'>
               <Truck className='h-5 w-5 text-muted-foreground' />
               <div>
-                <p className='text-sm font-medium'>納期：{product.leadTime}</p>
+                <p className='text-sm font-medium'>納期：{product.lead_time_note}</p>
                 <p className='text-xs text-muted-foreground'>
                   オプションにより変動する場合があります
                 </p>

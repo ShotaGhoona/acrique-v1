@@ -12,7 +12,7 @@ export function useLogout() {
     mutationFn: () => authApi.logout(),
     onSuccess: () => {
       dispatch(clearUser());
-      router.push('/login');
+      router.push('/');
     },
     onError: (error: any) => {
       console.error('Logout failed:', error);

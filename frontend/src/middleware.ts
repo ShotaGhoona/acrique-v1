@@ -9,11 +9,11 @@ const API_BASE_URL =
 // 認証機能の有効/無効
 const ENABLE_AUTH = process.env.NEXT_PUBLIC_ENABLE_AUTH !== 'false';
 
-// 認証が必要なパス
-const PROTECTED_PATHS = ['/dashboard'];
+// 認証が必要なパス（ECサイト: マイページ、チェックアウト）
+const PROTECTED_PATHS = ['/mypage', '/checkout'];
 
-// 認証済みユーザーがアクセスできないパス
-const AUTH_PATHS = ['/login'];
+// 認証済みユーザーがアクセスできないパス（ログイン・登録ページ）
+const AUTH_PATHS = ['/login', '/register'];
 
 /**
  * Middleware: サーバーサイドで認証状態をチェック
@@ -21,17 +21,8 @@ const AUTH_PATHS = ['/login'];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 認証が無効の場合
+  // 認証が無効の場合はすべてのパスを許可
   if (!ENABLE_AUTH) {
-    // ルートパスへのアクセスはダッシュボードへリダイレクト
-    if (pathname === '/') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-    // ログインページへのアクセスはダッシュボードへリダイレクト
-    if (pathname === '/login') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-    // その他のパスはそのまま続行
     return NextResponse.next();
   }
 
@@ -44,25 +35,13 @@ export async function middleware(request: NextRequest) {
   // Cookieからaccess_tokenを取得
   const accessToken = request.cookies.get('access_token')?.value;
 
-  // ルートパスへのアクセス
-  if (pathname === '/') {
-    if (accessToken) {
-      // トークンがある場合、バックエンドで検証してからリダイレクト
-      const isAuthenticated = await verifyToken(accessToken);
-      const url = request.nextUrl.clone();
-      url.pathname = isAuthenticated ? '/dashboard' : '/login';
-      return NextResponse.redirect(url);
-    } else {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  }
-
   // 保護されたパスにアクセスしようとしている場合
   if (isProtectedPath) {
     if (!accessToken) {
-      // トークンがない場合はログインページへリダイレクト
+      // トークンがない場合はログインページへリダイレクト（リダイレクト先を保存）
       const url = request.nextUrl.clone();
       url.pathname = '/login';
+      url.searchParams.set('redirect', pathname);
       return NextResponse.redirect(url);
     }
 
@@ -72,6 +51,7 @@ export async function middleware(request: NextRequest) {
       // 認証失敗: ログインページへリダイレクト
       const url = request.nextUrl.clone();
       url.pathname = '/login';
+      url.searchParams.set('redirect', pathname);
       return NextResponse.redirect(url);
     }
 
@@ -79,19 +59,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // ログインページにアクセスしようとしている場合
+  // ログイン/登録ページにアクセスしようとしている場合
   if (isAuthPath && accessToken) {
     // トークンがある場合、バックエンドで検証
     const isAuthenticated = await verifyToken(accessToken);
     if (isAuthenticated) {
-      // 認証済みの場合はダッシュボードへリダイレクト
+      // 認証済みの場合: リダイレクト先があればそこへ、なければマイページへ
+      const redirect = request.nextUrl.searchParams.get('redirect');
       const url = request.nextUrl.clone();
-      url.pathname = '/dashboard';
+      url.pathname = redirect || '/mypage';
+      url.searchParams.delete('redirect');
       return NextResponse.redirect(url);
     }
   }
 
-  // その他のパスはそのまま続行
+  // その他のパスはそのまま続行（トップページ、商品ページなど公開ページ）
   return NextResponse.next();
 }
 
@@ -122,7 +104,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - SVG, images (static assets)
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|SVG|images).*)',
   ],
 };

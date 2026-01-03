@@ -31,9 +31,9 @@
 | `/terms` | 利用規約 | [x] | - |
 | `/law` | 特商法表記 | [x] | - |
 | `/login` | ログイン | [x] | [ ] |
-| `/register` | 会員登録 | [ ] | [ ] |
-| `/password-reset` | パスワードリセット依頼 | [ ] | [ ] |
-| `/password-reset/confirm` | パスワード再設定 | [ ] | [ ] |
+| `/register` | 会員登録 | [x] | [ ] |
+| `/password-reset` | パスワードリセット依頼 | [x] | [ ] |
+| `/password-reset/confirm` | パスワード再設定 | [x] | [ ] |
 
 ---
 
@@ -62,22 +62,22 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/admin/login` | 管理者ログイン | [ ] | [ ] |
-| `/admin` | ダッシュボード | [ ] | [ ] |
-| `/admin/orders` | 注文一覧 | [ ] | [ ] |
-| `/admin/orders/[id]` | 注文詳細・編集 | [ ] | [ ] |
-| `/admin/products` | 商品一覧 | [ ] | [ ] |
-| `/admin/products/new` | 商品追加 | [ ] | [ ] |
-| `/admin/products/[id]` | 商品編集 | [ ] | [ ] |
-| `/admin/estimates` | 見積もり一覧 | [ ] | [ ] |
-| `/admin/estimates/[id]` | 見積もり詳細・回答 | [ ] | [ ] |
-| `/admin/uploads` | 入稿データ一覧 | [ ] | [ ] |
-| `/admin/uploads/[id]` | 入稿確認・承認 | [ ] | [ ] |
-| `/admin/users` | 顧客一覧 | [ ] | [ ] |
-| `/admin/users/[id]` | 顧客詳細 | [ ] | [ ] |
-| `/admin/admins` | 管理者一覧 | [ ] | [ ] |
-| `/admin/logs` | 操作ログ | [ ] | [ ] |
-| `/admin/settings` | サイト設定 | [ ] | [ ] |
+| `/admin/login` | 管理者ログイン | [x] | [ ] |
+| `/admin` | ダッシュボード | [x] | [ ] |
+| `/admin/orders` | 注文一覧 | [x] | [ ] |
+| `/admin/orders/[id]` | 注文詳細・編集 | [x] | [ ] |
+| `/admin/products` | 商品一覧 | [x] | [ ] |
+| `/admin/products/new` | 商品追加 | [x] | [ ] |
+| `/admin/products/[id]` | 商品編集 | [x] | [ ] |
+| `/admin/estimates` | 見積もり一覧 | [x] | [ ] |
+| `/admin/estimates/[id]` | 見積もり詳細・回答 | [x] | [ ] |
+| `/admin/uploads` | 入稿データ一覧 | [x] | [ ] |
+| `/admin/uploads/[id]` | 入稿確認・承認 | [x] | [ ] |
+| `/admin/users` | 顧客一覧 | [x] | [ ] |
+| `/admin/users/[id]` | 顧客詳細 | [x] | [ ] |
+| `/admin/admins` | 管理者一覧 | [x] | [ ] |
+| `/admin/logs` | 操作ログ | [x] | [ ] |
+| `/admin/settings` | サイト設定 | [x] | [ ] |
 
 ---
 

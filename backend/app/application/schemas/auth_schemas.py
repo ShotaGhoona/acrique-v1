@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class LoginInputDTO(BaseModel):
     """ログイン入力DTO"""
 
-    login_id: str = Field(..., description='ログインID')
+    email: str = Field(..., description='メールアドレス')
     password: str = Field(..., description='パスワード')
 
 

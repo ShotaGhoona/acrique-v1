@@ -13,7 +13,7 @@ export function useLogin() {
     mutationFn: (credentials: LoginFormData) => {
       // バックエンドのリクエスト形式に変換
       return authApi.login({
-        login_id: credentials.loginId,
+        email: credentials.email,
         password: credentials.password,
       });
     },

@@ -123,7 +123,7 @@ export const prodConfig: EnvironmentConfig = {
 
   tags: {
     Environment: 'prod',
-    Project: 'cdk-template',
+    Project: 'acrique',
     ManagedBy: 'CDK',
     CostCenter: 'production',
   },

@@ -208,7 +208,7 @@ if (batchStack) {
 // ========================================
 // アプリケーション全体のタグ
 // ========================================
-cdk.Tags.of(app).add('Project', 'cdk-template');
+cdk.Tags.of(app).add('Project', 'acrique');
 cdk.Tags.of(app).add('Environment', config.envName);
 cdk.Tags.of(app).add('Architecture', 'four-layer');
 cdk.Tags.of(app).add('ManagedBy', 'AWS CDK');

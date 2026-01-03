@@ -29,7 +29,7 @@ class AuthUsecase:
         # ============================================================
         # 【暫定実装】ハードコーディングでの認証
         # ============================================================
-        if input_dto.login_id == 'admin' and input_dto.password == 'pass':
+        if input_dto.email == 'admin@acrique.jp' and input_dto.password == 'pass':
             user_id = 1
             access_token = self.security_service.create_access_token(user_id=user_id)
             logger.info('ログイン成功')
@@ -39,7 +39,7 @@ class AuthUsecase:
             # 認証失敗
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='ログインIDまたはパスワードが正しくありません',
+                detail='メールアドレスまたはパスワードが正しくありません',
             )
 
         # ============================================================

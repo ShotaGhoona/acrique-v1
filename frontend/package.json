@@ -1,6 +1,7 @@
 {
-  "name": "ai-solution-template-frontend",
+  "name": "acrique-frontend",
   "version": "0.1.0",
+  "description": "ACRIQUE - Premium Acrylic Products EC Site",
   "private": true,
   "scripts": {
     "dev": "next dev",

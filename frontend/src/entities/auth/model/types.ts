@@ -1,6 +1,6 @@
 // ログインリクエスト
 export interface LoginRequest {
-  login_id: string;
+  email: string;
   password: string;
 }
 

@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class LoginRequest(BaseModel):
     """ログインリクエスト"""
 
-    login_id: str = Field(..., description='ログインID')
+    email: str = Field(..., description='メールアドレス')
     password: str = Field(..., description='パスワード')
 
 

@@ -47,10 +47,10 @@ describe('middleware', () => {
       process.env.NEXT_PUBLIC_ENABLE_AUTH = 'true';
     });
 
-    describe('保護されたパス（/dashboard）', () => {
+    describe('保護されたパス（/mypage）', () => {
       it('トークンなしでアクセス → /login へリダイレクト', async () => {
         const { middleware } = await import('../middleware');
-        const request = createRequest('/dashboard');
+        const request = createRequest('/mypage');
 
         const response = await middleware(request);
 
@@ -61,7 +61,7 @@ describe('middleware', () => {
         mockFetch.mockResolvedValueOnce({ ok: true });
 
         const { middleware } = await import('../middleware');
-        const request = createRequest('/dashboard', {
+        const request = createRequest('/mypage', {
           access_token: 'valid_token',
         });
 
@@ -75,7 +75,7 @@ describe('middleware', () => {
         mockFetch.mockResolvedValueOnce({ ok: false });
 
         const { middleware } = await import('../middleware');
-        const request = createRequest('/dashboard', {
+        const request = createRequest('/mypage', {
           access_token: 'invalid_token',
         });
 
@@ -86,7 +86,7 @@ describe('middleware', () => {
     });
 
     describe('認証ページ（/login）', () => {
-      it('認証済みでアクセス → /dashboard へリダイレクト', async () => {
+      it('認証済みでアクセス → /mypage へリダイレクト', async () => {
         mockFetch.mockResolvedValueOnce({ ok: true });
 
         const { middleware } = await import('../middleware');
@@ -96,7 +96,7 @@ describe('middleware', () => {
 
         const response = await middleware(request);
 
-        expect(response.headers.get('location')).toContain('/dashboard');
+        expect(response.headers.get('location')).toContain('/mypage');
       });
 
       it('未認証でアクセス → そのまま表示', async () => {
@@ -110,9 +110,7 @@ describe('middleware', () => {
     });
 
     describe('ルートパス（/）', () => {
-      it('認証済みでアクセス → /dashboard へリダイレクト', async () => {
-        mockFetch.mockResolvedValueOnce({ ok: true });
-
+      it('認証済みでアクセス → そのまま表示（ECサイトのトップページは公開）', async () => {
         const { middleware } = await import('../middleware');
         const request = createRequest('/', {
           access_token: 'valid_token',
@@ -120,16 +118,29 @@ describe('middleware', () => {
 
         const response = await middleware(request);
 
-        expect(response.headers.get('location')).toContain('/dashboard');
+        // ECサイトなのでルートパスは公開ページ、リダイレクトなし
+        expect(response.headers.get('location')).toBeNull();
       });
 
-      it('未認証でアクセス → /login へリダイレクト', async () => {
+      it('未認証でアクセス → そのまま表示（ECサイトのトップページは公開）', async () => {
         const { middleware } = await import('../middleware');
         const request = createRequest('/');
 
         const response = await middleware(request);
 
-        expect(response.headers.get('location')).toContain('/login');
+        // ECサイトなのでルートパスは公開ページ、リダイレクトなし
+        expect(response.headers.get('location')).toBeNull();
+      });
+    });
+
+    describe('公開ページ（/shop）', () => {
+      it('未認証でアクセス → そのまま表示', async () => {
+        const { middleware } = await import('../middleware');
+        const request = createRequest('/shop');
+
+        const response = await middleware(request);
+
+        expect(response.headers.get('location')).toBeNull();
       });
     });
   });
@@ -139,27 +150,27 @@ describe('middleware', () => {
       process.env.NEXT_PUBLIC_ENABLE_AUTH = 'false';
     });
 
-    it('/ へアクセス → /dashboard へリダイレクト', async () => {
+    it('/ へアクセス → そのまま表示', async () => {
       const { middleware } = await import('../middleware');
       const request = createRequest('/');
 
       const response = await middleware(request);
 
-      expect(response.headers.get('location')).toContain('/dashboard');
+      expect(response.headers.get('location')).toBeNull();
     });
 
-    it('/login へアクセス → /dashboard へリダイレクト', async () => {
+    it('/login へアクセス → そのまま表示', async () => {
       const { middleware } = await import('../middleware');
       const request = createRequest('/login');
 
       const response = await middleware(request);
 
-      expect(response.headers.get('location')).toContain('/dashboard');
+      expect(response.headers.get('location')).toBeNull();
     });
 
-    it('/dashboard へアクセス → そのまま表示', async () => {
+    it('/mypage へアクセス → そのまま表示（認証無効なのでアクセス可能）', async () => {
       const { middleware } = await import('../middleware');
-      const request = createRequest('/dashboard');
+      const request = createRequest('/mypage');
 
       const response = await middleware(request);
 
@@ -188,7 +199,7 @@ describe('verifyToken', () => {
 
     process.env.NEXT_PUBLIC_ENABLE_AUTH = 'true';
     const { middleware } = await import('../middleware');
-    const request = new NextRequest('http://localhost:3000/dashboard');
+    const request = new NextRequest('http://localhost:3000/mypage');
     request.cookies.set('access_token', 'valid_token');
 
     await middleware(request);
@@ -207,7 +218,7 @@ describe('verifyToken', () => {
 
     process.env.NEXT_PUBLIC_ENABLE_AUTH = 'true';
     const { middleware } = await import('../middleware');
-    const request = new NextRequest('http://localhost:3000/dashboard');
+    const request = new NextRequest('http://localhost:3000/mypage');
     request.cookies.set('access_token', 'invalid_token');
 
     const response = await middleware(request);
@@ -220,7 +231,7 @@ describe('verifyToken', () => {
 
     process.env.NEXT_PUBLIC_ENABLE_AUTH = 'true';
     const { middleware } = await import('../middleware');
-    const request = new NextRequest('http://localhost:3000/dashboard');
+    const request = new NextRequest('http://localhost:3000/mypage');
     request.cookies.set('access_token', 'any_token');
 
     const response = await middleware(request);

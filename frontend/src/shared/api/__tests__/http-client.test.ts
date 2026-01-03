@@ -79,9 +79,9 @@ describe('httpClient', () => {
       await expect(httpClient.get('/protected')).rejects.toThrow();
     });
 
-    it('/auth/statusの401はリダイレクトしない', async () => {
+    it('/api/auth/statusの401はリダイレクトしない', async () => {
       server.use(
-        http.get(`${API_BASE_URL}/auth/status`, () => {
+        http.get(`${API_BASE_URL}/api/auth/status`, () => {
           return HttpResponse.json({ detail: 'Unauthorized' }, { status: 401 });
         }),
       );
@@ -92,7 +92,7 @@ describe('httpClient', () => {
 
       const initialHref = locationHref;
 
-      await expect(httpClient.get('/auth/status')).rejects.toThrow();
+      await expect(httpClient.get('/api/auth/status')).rejects.toThrow();
 
       // リダイレクトは発生しない
       expect(locationHref).toBe(initialHref);

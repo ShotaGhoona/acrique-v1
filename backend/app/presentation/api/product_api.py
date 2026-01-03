@@ -2,7 +2,10 @@
 
 from fastapi import APIRouter, Depends, Query, status
 
-from app.application.schemas.product_schemas import ProductListInputDTO, ProductSearchInputDTO
+from app.application.schemas.product_schemas import (
+    ProductListInputDTO,
+    ProductSearchInputDTO,
+)
 from app.application.use_cases.product_usecase import ProductUsecase
 from app.di.product import get_product_usecase
 from app.presentation.schemas.product_schemas import (
@@ -16,7 +19,6 @@ from app.presentation.schemas.product_schemas import (
     ProductOptionsResponse,
     ProductOptionValueResponse,
     ProductRelatedResponse,
-    ProductSearchRequest,
     ProductSearchResponse,
     ProductSpecResponse,
     RelatedProductResponse,

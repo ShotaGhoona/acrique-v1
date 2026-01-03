@@ -53,7 +53,7 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 
-from app.infrastructure.db.models import (  # noqa: F401
+from app.infrastructure.db.models import (  # noqa: E402, F401
     Base,
     ProductFaqModel,
     ProductFeatureModel,

@@ -6,7 +6,9 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.application.use_cases.product_usecase import ProductUsecase
-from app.infrastructure.db.repositories.product_repository_impl import ProductRepositoryImpl
+from app.infrastructure.db.repositories.product_repository_impl import (
+    ProductRepositoryImpl,
+)
 from app.infrastructure.db.session import SessionLocal
 
 

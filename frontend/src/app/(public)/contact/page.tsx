@@ -1,0 +1,17 @@
+import type { Metadata } from 'next';
+import { ContactPage } from '@/page-components/contact/ContactPage';
+
+export const metadata: Metadata = {
+  title: 'お問い合わせ | ACRIQUE',
+  description:
+    '商品に関するご質問、お見積もりのご依頼など、お気軽にお問い合わせください。通常2営業日以内にご返信いたします。',
+  openGraph: {
+    title: 'お問い合わせ | ACRIQUE',
+    description:
+      '商品に関するご質問、お見積もりのご依頼など、お気軽にお問い合わせください。',
+  },
+};
+
+export default function ContactPageRoute() {
+  return <ContactPage />;
+}

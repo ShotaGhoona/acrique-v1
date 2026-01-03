@@ -25,6 +25,8 @@ app = FastAPI(
 allowed_origins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://localhost:3005',
+    'http://127.0.0.1:3005',
     # ここに本番環境のドメインをデプロイ後追加する。
 ]
 

@@ -1,8 +1,9 @@
 {
-  "name": "cdk-template",
+  "name": "acrique-infra",
   "version": "0.1.0",
+  "description": "ACRIQUE Infrastructure (AWS CDK)",
   "bin": {
-    "cdk-template": "bin/app.js"
+    "acrique-infra": "bin/app.js"
   },
   "scripts": {
     "build": "tsc",

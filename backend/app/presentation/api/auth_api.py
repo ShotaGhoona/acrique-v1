@@ -23,7 +23,7 @@ def login(
     response: Response,
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> LoginResponse:
-    input_dto = LoginInputDTO(login_id=request.login_id, password=request.password)
+    input_dto = LoginInputDTO(email=request.email, password=request.password)
 
     output_dto = auth_usecase.login(input_dto)
 

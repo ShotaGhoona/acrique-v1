@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { generatePublicMetadata } from '@/shared/lib';
+import { Header } from '@/widgets/layout/ui/Header';
+import { Footer } from '@/widgets/layout/ui/Footer';
 
 export const metadata: Metadata = generatePublicMetadata();
 
@@ -9,8 +11,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gray-50'>
-      {children}
+    <div className='flex min-h-screen flex-col'>
+      <Header />
+      <main className='flex-1'>{children}</main>
+      <Footer />
     </div>
   );
 }

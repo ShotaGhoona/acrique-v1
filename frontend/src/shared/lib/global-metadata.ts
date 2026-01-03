@@ -8,24 +8,41 @@ export function generateMetadata(): Metadata {
 
   if (environment === 'development') {
     return {
-      title: 'DEV - AI Solution Template',
-      description: 'This is development mode',
+      title: 'DEV - ACRIQUE',
+      description: '極上のアクリルを、1個から。',
       robots: 'noindex, nofollow',
     };
   }
 
   if (environment === 'test') {
     return {
-      title: 'TEST - AI Solution Template',
+      title: 'TEST - ACRIQUE',
       description: 'test environment',
       robots: 'noindex',
     };
   }
 
   return {
-    title: 'AI Solution Template',
-    description: 'Startup template with Next.js and FastAPI',
+    title: 'ACRIQUE - 極上のアクリルを、1個から。',
+    description:
+      '1cmの厚み、A2サイズ対応、精密なレーザーカット技術を駆使したハイエンドなアクリルプロダクト。店舗什器からオフィス看板、個人ギフトまで、1個からオーダー可能。',
     robots: 'index, follow',
+    keywords: [
+      'アクリル',
+      'オーダーメイド',
+      'レーザーカット',
+      '店舗什器',
+      '看板',
+      'ギフト',
+      '1個から',
+    ],
+    openGraph: {
+      title: 'ACRIQUE - 極上のアクリルを、1個から。',
+      description:
+        '1cmの厚み、A2サイズ対応、精密なレーザーカット技術を駆使したハイエンドなアクリルプロダクト。',
+      locale: 'ja_JP',
+      type: 'website',
+    },
   };
 }
 

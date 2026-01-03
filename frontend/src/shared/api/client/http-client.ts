@@ -45,7 +45,7 @@ httpClient.interceptors.response.use(
         console.warn('Unauthorized. Redirecting to login...');
 
         // /auth/status以外のエンドポイントで401エラーが発生した場合のみリダイレクト
-        const isAuthStatusRequest = error.config?.url?.includes('/auth/status');
+        const isAuthStatusRequest = error.config?.url?.includes('/api/auth/status');
         if (!isAuthStatusRequest && typeof window !== 'undefined') {
           window.location.href = '/login';
         }

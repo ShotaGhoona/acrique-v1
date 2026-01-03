@@ -48,6 +48,10 @@ class SecurityServiceImpl(ISecurityService):
         """パスワードを検証"""
         return pwd_context.verify(plain_password, hashed_password)
 
+    def hash_password(self, password: str) -> str:
+        """パスワードをハッシュ化"""
+        return pwd_context.hash(password)
+
 
 def _load_rsa_keys() -> tuple:
     """RSA鍵ペアを環境変数から読み込み"""

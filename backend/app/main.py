@@ -50,7 +50,7 @@ app.add_middleware(
 )
 
 # API ルーターをアプリケーションに含める
-app.include_router(auth_router)
+app.include_router(auth_router, prefix='/api')
 
 
 # ヘルスチェックエンドポイント（ALB/ECS用）

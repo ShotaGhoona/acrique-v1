@@ -19,7 +19,7 @@ describe('useLogout', () => {
     jest.clearAllMocks();
   });
 
-  it('ログアウト成功時にReduxストアをクリアしログインページへ遷移', async () => {
+  it('ログアウト成功時にReduxストアをクリアしホームへ遷移', async () => {
     const { result } = renderHook(() => useLogout(), {
       wrapper: ({ children }) => <TestProviders>{children}</TestProviders>,
     });
@@ -30,8 +30,8 @@ describe('useLogout', () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    // ログインページへ遷移
-    expect(mockPush).toHaveBeenCalledWith('/login');
+    // ホームページへ遷移（ECサイトなのでログアウト後はトップへ）
+    expect(mockPush).toHaveBeenCalledWith('/');
   });
 
   it('ログアウト失敗時にisErrorがtrueになる', async () => {

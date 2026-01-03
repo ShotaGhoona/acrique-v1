@@ -206,7 +206,9 @@ class AuthUsecase:
             self.token_repository.create(reset_token)
 
             # リセットメール送信
-            reset_url = f'{self.settings.frontend_url}/password-reset/confirm?token={token}'
+            reset_url = (
+                f'{self.settings.frontend_url}/password-reset/confirm?token={token}'
+            )
             self.email_service.send_password_reset_email(
                 to_email=user.email,
                 reset_url=reset_url,

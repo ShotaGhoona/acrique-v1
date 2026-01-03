@@ -18,13 +18,13 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/` | トップ | [x] | [ ] |
+| `/` | トップ | [x] | [x] |
 | `/about` | About | [x] | - |
 | `/contact` | お問い合わせ | [x] | [ ] |
-| `/shop` | 店舗向け | [x] | [ ] |
-| `/office` | オフィス向け | [x] | [ ] |
-| `/you` | 個人向け | [x] | [ ] |
-| `/[category]/[id]` | 商品詳細 | [x] | [ ] |
+| `/shop` | 店舗向け | [x] | [x] |
+| `/office` | オフィス向け | [x] | [x] |
+| `/you` | 個人向け | [x] | [x] |
+| `/[category]/[id]` | 商品詳細 | [x] | [x] |
 | `/guide` | ご利用ガイド | [x] | - |
 | `/faq` | FAQ | [x] | - |
 | `/privacy` | プライバシーポリシー | [x] | - |
@@ -68,9 +68,9 @@
 | `/admin` | ダッシュボード | [x] | [ ] |
 | `/admin/orders` | 注文一覧 | [x] | [ ] |
 | `/admin/orders/[id]` | 注文詳細・編集 | [x] | [ ] |
-| `/admin/products` | 商品一覧 | [x] | [ ] |
+| `/admin/products` | 商品一覧 | [x] | [x] |
 | `/admin/products/new` | 商品追加 | [x] | [ ] |
-| `/admin/products/[id]` | 商品編集 | [x] | [ ] |
+| `/admin/products/[id]` | 商品編集 | [x] | [x] |
 | `/admin/estimates` | 見積もり一覧 | [x] | [ ] |
 | `/admin/estimates/[id]` | 見積もり詳細・回答 | [x] | [ ] |
 | `/admin/uploads` | 入稿データ一覧 | [x] | [ ] |

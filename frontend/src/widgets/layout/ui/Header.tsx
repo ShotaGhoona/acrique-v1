@@ -16,7 +16,7 @@ import {
   getCategoryIds,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import { getProductsByCategory } from '@/shared/dummy-data/products';
+import { useProducts } from '@/features/product/get-products';
 
 const subNavItems = [
   { label: 'About', href: '/about' },
@@ -29,10 +29,14 @@ export function Header() {
   const [activeMenu, setActiveMenu] = useState<CategoryId | null>(null);
 
   const categoryIds = getCategoryIds();
+  const { data: productsData } = useProducts();
 
   // メガメニュー用の商品を取得（各カテゴリ上位3件）
   const getMenuProducts = (categoryId: CategoryId) => {
-    return getProductsByCategory(categoryId).slice(0, 3);
+    const allProducts = productsData?.products ?? [];
+    return allProducts
+      .filter((p) => p.category_id === categoryId)
+      .slice(0, 3);
   };
 
   return (

@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { server } from '@/__mocks__/server';
 import { createLoginErrorHandler } from '@/__mocks__/handlers';
-import { TestProviders, createTestStore } from '@/__tests__/testing-utils';
+import { TestProviders } from '@/__tests__/testing-utils';
 import { useLogin } from '../lib/use-login';
 
 // next/navigation をモック
@@ -12,6 +12,9 @@ jest.mock('next/navigation', () => ({
     replace: jest.fn(),
     prefetch: jest.fn(),
   }),
+  useSearchParams: () => ({
+    get: () => null,
+  }),
 }));
 
 describe('useLogin', () => {
@@ -19,21 +22,19 @@ describe('useLogin', () => {
     jest.clearAllMocks();
   });
 
-  it('ログイン成功時にReduxストアを更新しダッシュボードへ遷移', async () => {
-    const store = createTestStore();
-
+  it('ログイン成功時にReduxストアを更新しマイページへ遷移', async () => {
     const { result } = renderHook(() => useLogin(), {
       wrapper: ({ children }) => <TestProviders>{children}</TestProviders>,
     });
 
-    result.current.mutate({ loginId: 'admin', password: 'password' });
+    result.current.mutate({ email: 'admin@example.com', password: 'password' });
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    // ダッシュボードへ遷移
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+    // マイページへ遷移
+    expect(mockPush).toHaveBeenCalledWith('/mypage');
   });
 
   it('ログイン失敗時にisErrorがtrueになる', async () => {
@@ -43,7 +44,7 @@ describe('useLogin', () => {
       wrapper: ({ children }) => <TestProviders>{children}</TestProviders>,
     });
 
-    result.current.mutate({ loginId: 'wrong', password: 'wrong' });
+    result.current.mutate({ email: 'wrong@example.com', password: 'wrong' });
 
     await waitFor(() => {
       expect(result.current.isError).toBe(true);
@@ -61,7 +62,7 @@ describe('useLogin', () => {
     // 初期状態
     expect(result.current.isPending).toBe(false);
 
-    result.current.mutate({ loginId: 'admin', password: 'password' });
+    result.current.mutate({ email: 'admin@example.com', password: 'password' });
 
     // mutate 呼び出し直後は isPending が true になる可能性
     await waitFor(() => {
@@ -69,19 +70,18 @@ describe('useLogin', () => {
     });
   });
 
-  it('loginId/passwordからlogin_id/passwordへの変換を行う', async () => {
+  it('ログイン成功時にAPIレスポンスが正しく返される', async () => {
     const { result } = renderHook(() => useLogin(), {
       wrapper: ({ children }) => <TestProviders>{children}</TestProviders>,
     });
 
-    // キャメルケースで入力
-    result.current.mutate({ loginId: 'admin', password: 'password' });
+    result.current.mutate({ email: 'admin@example.com', password: 'password' });
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    // APIが正常に呼び出されることで変換が正しく行われたことを確認
+    // APIが正常に呼び出されることを確認
     expect(result.current.data).toEqual({
       message: 'ログイン成功',
       access_token: 'test_token',

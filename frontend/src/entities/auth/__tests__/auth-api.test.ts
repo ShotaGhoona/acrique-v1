@@ -10,7 +10,7 @@ describe('authApi', () => {
   describe('login', () => {
     it('正しい認証情報でログイン成功', async () => {
       const result = await authApi.login({
-        login_id: 'admin',
+        email: 'admin@example.com',
         password: 'password',
       });
 
@@ -26,7 +26,7 @@ describe('authApi', () => {
 
       await expect(
         authApi.login({
-          login_id: 'wrong',
+          email: 'wrong@example.com',
           password: 'wrong',
         }),
       ).rejects.toThrow();

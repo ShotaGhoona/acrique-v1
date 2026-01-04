@@ -249,10 +249,7 @@ class OrderItemRepositoryImpl(IOrderItemRepository):
 
     def create_many(self, order_items: list[OrderItem]) -> list[OrderItem]:
         """複数の注文明細を一括作成"""
-        created_items = []
-        for order_item in order_items:
-            created_items.append(self.create(order_item))
-        return created_items
+        return [self.create(order_item) for order_item in order_items]
 
     def _to_entity(self, item_model: OrderItemModel) -> OrderItem:
         """DBモデルをエンティティに変換"""

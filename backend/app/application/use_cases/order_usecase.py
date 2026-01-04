@@ -1,6 +1,7 @@
 """注文ユースケース"""
 
 from datetime import datetime
+from typing import Any
 
 from fastapi import HTTPException, status
 
@@ -15,6 +16,7 @@ from app.application.schemas.order_schemas import (
     OrderDetailDTO,
     OrderDTO,
     OrderItemDTO,
+    OrderItemInputDTO,
 )
 from app.domain.entities.order import Order, OrderItem, OrderStatus
 from app.domain.repositories.address_repository import IAddressRepository
@@ -88,110 +90,13 @@ class OrderUsecase:
     ) -> CreateOrderOutputDTO:
         """注文を作成"""
         # 配送先の確認
-        address = self.address_repository.get_by_id(input_dto.shipping_address_id)
-        if address is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='配送先が見つかりません',
-            )
-
-        # 他人の配送先へのアクセスを防止
-        if address.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この配送先を使用する権限がありません',
-            )
+        self._validate_shipping_address(user_id, input_dto.shipping_address_id)
 
         # 注文明細の作成
-        order_items: list[OrderItem] = []
-
         if input_dto.items:
-            # 明細が指定されている場合
-            for item_input in input_dto.items:
-                product = self.product_repository.get_by_id(item_input.product_id)
-                if product is None:
-                    raise HTTPException(
-                        status_code=status.HTTP_404_NOT_FOUND,
-                        detail=f'商品が見つかりません: {item_input.product_id}',
-                    )
-
-                if not product.is_active:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f'この商品は現在購入できません: {product.name_ja}',
-                    )
-
-                # 単価計算（オプション価格差分を含む）
-                unit_price = product.base_price
-                if item_input.options:
-                    for option_value in item_input.options.values():
-                        if (
-                            isinstance(option_value, dict)
-                            and 'price_diff' in option_value
-                        ):
-                            unit_price += option_value.get('price_diff', 0)
-
-                order_items.append(
-                    OrderItem(
-                        product_id=item_input.product_id,
-                        product_name=product.name,
-                        product_name_ja=product.name_ja,
-                        quantity=item_input.quantity,
-                        unit_price=unit_price,
-                        options=item_input.options,
-                        subtotal=unit_price * item_input.quantity,
-                    )
-                )
+            order_items = self._build_order_items_from_input(input_dto.items)
         else:
-            # カートから注文を作成
-            cart_items = self.cart_item_repository.get_by_user_id(user_id)
-
-            if not cart_items:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail='カートが空です',
-                )
-
-            for cart_item in cart_items:
-                product = self.product_repository.get_by_id(cart_item.product_id)
-                if product is None:
-                    # 商品が削除されている場合はスキップ
-                    self.cart_item_repository.delete(cart_item.id)
-                    continue
-
-                if not product.is_active:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail=f'この商品は現在購入できません: {product.name_ja}',
-                    )
-
-                # 単価計算
-                unit_price = product.base_price
-                if cart_item.options:
-                    for option_value in cart_item.options.values():
-                        if (
-                            isinstance(option_value, dict)
-                            and 'price_diff' in option_value
-                        ):
-                            unit_price += option_value.get('price_diff', 0)
-
-                order_items.append(
-                    OrderItem(
-                        product_id=cart_item.product_id,
-                        product_name=product.name,
-                        product_name_ja=product.name_ja,
-                        quantity=cart_item.quantity,
-                        unit_price=unit_price,
-                        options=cart_item.options,
-                        subtotal=unit_price * cart_item.quantity,
-                    )
-                )
-
-            if not order_items:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail='購入可能な商品がありません',
-                )
+            order_items = self._build_order_items_from_cart(user_id)
 
         # 合計金額の計算
         subtotal = sum(item.subtotal for item in order_items)
@@ -199,13 +104,10 @@ class OrderUsecase:
         tax = int(subtotal * TAX_RATE)
         total = subtotal + tax + shipping_fee
 
-        # 注文番号の生成
-        order_number = self.order_repository.generate_order_number()
-
         # 注文の作成
         order = Order(
             user_id=user_id,
-            order_number=order_number,
+            order_number=self.order_repository.generate_order_number(),
             status=OrderStatus.PENDING,
             shipping_address_id=input_dto.shipping_address_id,
             subtotal=subtotal,
@@ -227,6 +129,104 @@ class OrderUsecase:
             order=self._to_order_detail_dto(created_order),
             message='注文を作成しました',
         )
+
+    def _validate_shipping_address(self, user_id: int, address_id: int) -> None:
+        """配送先を検証"""
+        address = self.address_repository.get_by_id(address_id)
+        if address is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='配送先が見つかりません',
+            )
+        if address.user_id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='この配送先を使用する権限がありません',
+            )
+
+    def _build_order_items_from_input(
+        self, items: list[OrderItemInputDTO]
+    ) -> list[OrderItem]:
+        """入力から注文明細を作成"""
+        order_items: list[OrderItem] = []
+        for item_input in items:
+            product = self.product_repository.get_by_id(item_input.product_id)
+            if product is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f'商品が見つかりません: {item_input.product_id}',
+                )
+            if not product.is_active:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'この商品は現在購入できません: {product.name_ja}',
+                )
+            unit_price = self._calculate_unit_price(
+                product.base_price, item_input.options
+            )
+            order_items.append(
+                OrderItem(
+                    product_id=item_input.product_id,
+                    product_name=product.name,
+                    product_name_ja=product.name_ja,
+                    quantity=item_input.quantity,
+                    unit_price=unit_price,
+                    options=item_input.options,
+                    subtotal=unit_price * item_input.quantity,
+                )
+            )
+        return order_items
+
+    def _build_order_items_from_cart(self, user_id: int) -> list[OrderItem]:
+        """カートから注文明細を作成"""
+        cart_items = self.cart_item_repository.get_by_user_id(user_id)
+        if not cart_items:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='カートが空です',
+            )
+
+        order_items: list[OrderItem] = []
+        for cart_item in cart_items:
+            product = self.product_repository.get_by_id(cart_item.product_id)
+            if product is None:
+                self.cart_item_repository.delete(cart_item.id)
+                continue
+            if not product.is_active:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'この商品は現在購入できません: {product.name_ja}',
+                )
+            unit_price = self._calculate_unit_price(product.base_price, cart_item.options)
+            order_items.append(
+                OrderItem(
+                    product_id=cart_item.product_id,
+                    product_name=product.name,
+                    product_name_ja=product.name_ja,
+                    quantity=cart_item.quantity,
+                    unit_price=unit_price,
+                    options=cart_item.options,
+                    subtotal=unit_price * cart_item.quantity,
+                )
+            )
+
+        if not order_items:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='購入可能な商品がありません',
+            )
+        return order_items
+
+    def _calculate_unit_price(
+        self, base_price: int, options: dict[str, Any] | None
+    ) -> int:
+        """オプションを含む単価を計算"""
+        unit_price = base_price
+        if options:
+            for option_value in options.values():
+                if isinstance(option_value, dict) and 'price_diff' in option_value:
+                    unit_price += option_value.get('price_diff', 0)
+        return unit_price
 
     def cancel_order(
         self, user_id: int, order_id: int, input_dto: CancelOrderInputDTO

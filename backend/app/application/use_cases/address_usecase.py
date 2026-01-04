@@ -99,22 +99,7 @@ class AddressUsecase:
             )
 
         # 更新する値を設定（Noneでない場合のみ更新）
-        if input_dto.label is not None:
-            address.label = input_dto.label
-        if input_dto.name is not None:
-            address.name = input_dto.name
-        if input_dto.postal_code is not None:
-            address.postal_code = input_dto.postal_code
-        if input_dto.prefecture is not None:
-            address.prefecture = input_dto.prefecture
-        if input_dto.city is not None:
-            address.city = input_dto.city
-        if input_dto.address1 is not None:
-            address.address1 = input_dto.address1
-        if input_dto.address2 is not None:
-            address.address2 = input_dto.address2
-        if input_dto.phone is not None:
-            address.phone = input_dto.phone
+        self._apply_address_updates(address, input_dto)
 
         updated_address = self.address_repository.update(address)
 
@@ -122,6 +107,25 @@ class AddressUsecase:
             address=self._to_dto(updated_address),
             message='配送先を更新しました',
         )
+
+    def _apply_address_updates(
+        self, address: Address, input_dto: UpdateAddressInputDTO
+    ) -> None:
+        """入力DTOからアドレスエンティティを更新"""
+        fields = [
+            'label',
+            'name',
+            'postal_code',
+            'prefecture',
+            'city',
+            'address1',
+            'address2',
+            'phone',
+        ]
+        for field in fields:
+            value = getattr(input_dto, field)
+            if value is not None:
+                setattr(address, field, value)
 
     def delete_address(self, user_id: int, address_id: int) -> DeleteAddressOutputDTO:
         """配送先を削除"""

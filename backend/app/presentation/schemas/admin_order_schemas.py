@@ -9,13 +9,11 @@ from app.application.schemas.admin_order_schemas import (
     AdminOrderDetailDTO,
     AdminOrderDTO,
     AdminOrderItemDTO,
-    GetAdminOrdersInputDTO,
     ShipOrderInputDTO,
     UpdateAdminOrderInputDTO,
     UpdateOrderStatusInputDTO,
 )
-from app.domain.entities.order import OrderStatus, PaymentMethod
-
+from app.domain.entities.order import OrderStatus
 
 # ========== Response Models ==========
 

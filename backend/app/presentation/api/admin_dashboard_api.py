@@ -7,7 +7,10 @@ from fastapi import APIRouter, Depends, Query
 from app.application.schemas.admin_dashboard_schemas import GetStatsInputDTO
 from app.application.use_cases.admin_dashboard_usecase import AdminDashboardUsecase
 from app.di.admin_dashboard import get_admin_dashboard_usecase
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_dashboard_schemas import (
     DashboardSummaryResponse,
     GetDashboardResponse,
@@ -27,9 +30,7 @@ async def get_dashboard(
     """ダッシュボード情報を取得"""
     output = usecase.get_dashboard()
 
-    return GetDashboardResponse(
-        summary=DashboardSummaryResponse.from_dto(output.summary)
-    )
+    return GetDashboardResponse(summary=DashboardSummaryResponse.from_dto(output.summary))
 
 
 @router.get('/stats', response_model=GetStatsResponse)

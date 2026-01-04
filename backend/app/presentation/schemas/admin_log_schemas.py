@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field
 
 from app.application.schemas.admin_log_schemas import AdminLogDTO, GetAdminLogsInputDTO
 
-
 # ========== Response Models ==========
 
 

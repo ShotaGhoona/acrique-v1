@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 
 from app.application.use_cases.admin_product_usecase import AdminProductUsecase
 from app.di import get_db
-from app.infrastructure.db.repositories.product_repository_impl import ProductRepositoryImpl
+from app.infrastructure.db.repositories.product_repository_impl import (
+    ProductRepositoryImpl,
+)
 
 
 def get_admin_product_usecase(

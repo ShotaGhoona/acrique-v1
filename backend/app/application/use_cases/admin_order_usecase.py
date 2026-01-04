@@ -1,7 +1,6 @@
 """Admin注文管理ユースケース"""
 
 from datetime import datetime
-from typing import Any
 
 from app.application.schemas.admin_order_schemas import (
     AdminOrderDetailDTO,
@@ -141,9 +140,7 @@ class AdminOrderUsecase:
             message='発送処理が完了しました',
         )
 
-    def _validate_status_transition(
-        self, current: OrderStatus, new: OrderStatus
-    ) -> None:
+    def _validate_status_transition(self, current: OrderStatus, new: OrderStatus) -> None:
         """ステータス遷移をバリデーション"""
         allowed_transitions: dict[OrderStatus, list[OrderStatus]] = {
             OrderStatus.PENDING: [OrderStatus.AWAITING_PAYMENT, OrderStatus.CANCELLED],

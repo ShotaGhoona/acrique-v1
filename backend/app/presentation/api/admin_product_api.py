@@ -5,17 +5,20 @@ from fastapi import APIRouter, Depends, Query, status
 from app.application.schemas.admin_product_schemas import GetAdminProductsInputDTO
 from app.application.use_cases.admin_product_usecase import AdminProductUsecase
 from app.di.admin_product import get_admin_product_usecase
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_product_schemas import (
     AddProductImageRequest,
     AddProductImageResponse,
     AdminProductDetailResponse,
+    AdminProductFaqResponse,
+    AdminProductFeatureResponse,
     AdminProductImageResponse,
     AdminProductOptionResponse,
     AdminProductResponse,
     AdminProductSpecResponse,
-    AdminProductFeatureResponse,
-    AdminProductFaqResponse,
     CreateProductRequest,
     CreateProductResponse,
     DeleteProductImageResponse,
@@ -65,7 +68,9 @@ async def get_products(
     )
 
 
-@router.post('', response_model=CreateProductResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    '', response_model=CreateProductResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_product(
     request: CreateProductRequest,
     admin: AdminAuth = Depends(get_current_admin_from_cookie),

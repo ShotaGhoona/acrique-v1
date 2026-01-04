@@ -8,7 +8,10 @@ from app.application.schemas.admin_user_schemas import (
 )
 from app.application.use_cases.admin_user_usecase import AdminUserUsecase
 from app.di.admin_user import get_admin_user_usecase
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_user_schemas import (
     GetCustomerOrdersResponse,
     GetCustomerResponse,
@@ -35,7 +38,9 @@ def get_customers(
     return GetCustomersResponse.from_dto(output_dto)
 
 
-@router.get('/{user_id}', response_model=GetCustomerResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    '/{user_id}', response_model=GetCustomerResponse, status_code=status.HTTP_200_OK
+)
 def get_customer(
     user_id: int,
     current_admin: AdminAuth = Depends(get_current_admin_from_cookie),

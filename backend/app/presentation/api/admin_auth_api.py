@@ -4,7 +4,10 @@ from fastapi import APIRouter, Depends, Request, Response, status
 
 from app.application.use_cases.admin_auth_usecase import AdminAuthUsecase
 from app.di.admin_auth import get_admin_auth_usecase
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_auth_schemas import (
     AdminLoginRequest,
     AdminLoginResponse,
@@ -43,7 +46,9 @@ def admin_login(
     return AdminLoginResponse.from_dto(output_dto)
 
 
-@router.post('/logout', response_model=AdminLogoutResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    '/logout', response_model=AdminLogoutResponse, status_code=status.HTTP_200_OK
+)
 def admin_logout(
     request: Request,
     response: Response,

@@ -92,9 +92,7 @@ class AdminProductUsecase:
 
         return GetAdminProductOutputDTO(product=self._to_product_detail_dto(product))
 
-    def create_product(
-        self, input_dto: CreateProductInputDTO
-    ) -> CreateProductOutputDTO:
+    def create_product(self, input_dto: CreateProductInputDTO) -> CreateProductOutputDTO:
         """商品を作成"""
         product = Product(
             id=input_dto.id,
@@ -216,9 +214,7 @@ class AdminProductUsecase:
             message='画像を追加しました',
         )
 
-    def delete_image(
-        self, product_id: str, image_id: int
-    ) -> DeleteProductImageOutputDTO:
+    def delete_image(self, product_id: str, image_id: int) -> DeleteProductImageOutputDTO:
         """商品画像を削除"""
         product = self.product_repository.get_by_id(product_id, include_relations=False)
         if product is None:

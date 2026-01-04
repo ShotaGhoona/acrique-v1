@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field
 
 from app.domain.entities.order import OrderStatus, PaymentMethod
 
-
 # ========== 共通DTO ==========
 
 

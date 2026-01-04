@@ -22,7 +22,6 @@ from app.application.schemas.admin_product_schemas import (
     UpdateProductSpecsInputDTO,
 )
 
-
 # ========== Response Models ==========
 
 

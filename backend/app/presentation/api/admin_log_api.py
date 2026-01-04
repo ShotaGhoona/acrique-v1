@@ -7,7 +7,10 @@ from fastapi import APIRouter, Depends, Query
 from app.application.schemas.admin_log_schemas import GetAdminLogsInputDTO
 from app.application.use_cases.admin_log_usecase import AdminLogUsecase
 from app.di.admin_log import get_admin_log_usecase
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_log_schemas import (
     AdminLogResponse,
     GetAdminLogsResponse,

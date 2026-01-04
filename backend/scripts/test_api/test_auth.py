@@ -2,7 +2,7 @@
 
 import psycopg2
 
-from .client import APIClient, TestResult, TestRunner
+from .client import TestResult, TestRunner
 from .config import DB_CONFIG, TEST_USER
 
 
@@ -76,11 +76,16 @@ def cleanup_test_user(email: str):
         if row:
             user_id = row[0]
             # 関連データを削除（外部キー制約順）
-            cursor.execute('DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = %s)', (user_id,))
+            cursor.execute(
+                'DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = %s)',
+                (user_id,),
+            )
             cursor.execute('DELETE FROM orders WHERE user_id = %s', (user_id,))
             cursor.execute('DELETE FROM cart_items WHERE user_id = %s', (user_id,))
             cursor.execute('DELETE FROM addresses WHERE user_id = %s', (user_id,))
-            cursor.execute('DELETE FROM verification_tokens WHERE user_id = %s', (user_id,))
+            cursor.execute(
+                'DELETE FROM verification_tokens WHERE user_id = %s', (user_id,)
+            )
             cursor.execute('DELETE FROM users WHERE id = %s', (user_id,))
         conn.commit()
         cursor.close()

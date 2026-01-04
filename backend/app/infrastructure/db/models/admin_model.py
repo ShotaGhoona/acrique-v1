@@ -1,6 +1,6 @@
 """管理者DBモデル"""
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -22,7 +22,9 @@ class AdminModel(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     # リレーション
-    logs = relationship('AdminLogModel', back_populates='admin', cascade='all, delete-orphan')
+    logs = relationship(
+        'AdminLogModel', back_populates='admin', cascade='all, delete-orphan'
+    )
 
 
 class AdminLogModel(Base):

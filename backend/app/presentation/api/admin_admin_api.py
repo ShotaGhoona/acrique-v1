@@ -6,7 +6,10 @@ from app.application.schemas.admin_admin_schemas import GetAdminsInputDTO
 from app.application.use_cases.admin_admin_usecase import AdminAdminUsecase
 from app.di.admin_admin import get_admin_admin_usecase
 from app.domain.entities.admin import AdminRole
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_admin_schemas import (
     CreateAdminRequest,
     CreateAdminResponse,
@@ -32,7 +35,9 @@ def get_admins(
 
     管理者の一覧を取得する。権限・有効フラグで絞り込み可能。
     """
-    input_dto = GetAdminsInputDTO(role=role, is_active=is_active, limit=limit, offset=offset)
+    input_dto = GetAdminsInputDTO(
+        role=role, is_active=is_active, limit=limit, offset=offset
+    )
     output_dto = usecase.get_admins(input_dto)
     return GetAdminsResponse.from_dto(output_dto)
 
@@ -55,7 +60,9 @@ def create_admin(
     return CreateAdminResponse.from_dto(output_dto)
 
 
-@router.put('/{admin_id}', response_model=UpdateAdminResponse, status_code=status.HTTP_200_OK)
+@router.put(
+    '/{admin_id}', response_model=UpdateAdminResponse, status_code=status.HTTP_200_OK
+)
 def update_admin(
     admin_id: int,
     request_body: UpdateAdminRequest,
@@ -70,11 +77,15 @@ def update_admin(
     他の管理者の編集はsuper_admin/adminのみ可能。
     """
     ip_address = request.client.host if request.client else None
-    output_dto = usecase.update_admin(current_admin.id, admin_id, request_body.to_dto(), ip_address)
+    output_dto = usecase.update_admin(
+        current_admin.id, admin_id, request_body.to_dto(), ip_address
+    )
     return UpdateAdminResponse.from_dto(output_dto)
 
 
-@router.delete('/{admin_id}', response_model=DeleteAdminResponse, status_code=status.HTTP_200_OK)
+@router.delete(
+    '/{admin_id}', response_model=DeleteAdminResponse, status_code=status.HTTP_200_OK
+)
 def delete_admin(
     admin_id: int,
     request: Request,

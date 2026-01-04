@@ -160,7 +160,10 @@ class AdminAdminUsecase:
             if not current_admin.can_manage_admins():
                 raise AdminPermissionDeniedError('管理者を編集する')
             # super_adminの編集はsuper_adminのみ
-            if admin.role == AdminRole.SUPER_ADMIN and current_admin.role != AdminRole.SUPER_ADMIN:
+            if (
+                admin.role == AdminRole.SUPER_ADMIN
+                and current_admin.role != AdminRole.SUPER_ADMIN
+            ):
                 raise AdminPermissionDeniedError('super_adminを編集する')
 
         # メールアドレス重複チェック

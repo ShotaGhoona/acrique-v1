@@ -8,7 +8,10 @@ from app.application.schemas.admin_order_schemas import GetAdminOrdersInputDTO
 from app.application.use_cases.admin_order_usecase import AdminOrderUsecase
 from app.di.admin_order import get_admin_order_usecase
 from app.domain.entities.order import OrderStatus
-from app.infrastructure.security.admin_security import AdminAuth, get_current_admin_from_cookie
+from app.infrastructure.security.admin_security import (
+    AdminAuth,
+    get_current_admin_from_cookie,
+)
 from app.presentation.schemas.admin_order_schemas import (
     AdminOrderDetailResponse,
     AdminOrderResponse,
@@ -66,9 +69,7 @@ async def get_order(
     """注文詳細を取得"""
     output = usecase.get_order(order_id)
 
-    return GetAdminOrderResponse(
-        order=AdminOrderDetailResponse.from_dto(output.order)
-    )
+    return GetAdminOrderResponse(order=AdminOrderDetailResponse.from_dto(output.order))
 
 
 @router.put('/{order_id}', response_model=UpdateAdminOrderResponse)

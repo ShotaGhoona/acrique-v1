@@ -57,7 +57,9 @@ class AdminAuthUsecase:
         if admin is None:
             raise AdminInvalidCredentialsError()
 
-        if not self.security_service.verify_password(input_dto.password, admin.password_hash):
+        if not self.security_service.verify_password(
+            input_dto.password, admin.password_hash
+        ):
             raise AdminInvalidCredentialsError()
 
         if not admin.is_active:

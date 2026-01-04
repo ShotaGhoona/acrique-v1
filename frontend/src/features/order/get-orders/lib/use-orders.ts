@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { orderApi, GetOrdersRequest } from '@/entities/order';
+import { orderApi } from '@/entities/order/api/order-api';
+import type { GetOrdersRequest } from '@/entities/order/model/types';
 
 export const ORDERS_QUERY_KEY = ['orders'];
 

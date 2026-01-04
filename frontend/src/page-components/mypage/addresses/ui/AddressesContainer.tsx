@@ -26,12 +26,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/shared/ui/shadcn/ui/dialog';
-import { useAddresses } from '@/features/address/get-addresses';
-import { useCreateAddress } from '@/features/address/create-address';
-import { useUpdateAddress } from '@/features/address/update-address';
-import { useDeleteAddress } from '@/features/address/delete-address';
-import { useSetDefaultAddress } from '@/features/address/set-default-address';
-import type { Address } from '@/entities/address';
+import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
+import { useCreateAddress } from '@/features/address/create-address/lib/use-create-address';
+import { useUpdateAddress } from '@/features/address/update-address/lib/use-update-address';
+import { useDeleteAddress } from '@/features/address/delete-address/lib/use-delete-address';
+import { useSetDefaultAddress } from '@/features/address/set-default-address/lib/use-set-default-address';
+import type { Address } from '@/entities/address/model/types';
 
 const addressSchema = z.object({
   label: z.string().optional(),

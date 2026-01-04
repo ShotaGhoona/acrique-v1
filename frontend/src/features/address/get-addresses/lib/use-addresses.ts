@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { addressApi } from '@/entities/address';
+import { addressApi } from '@/entities/address/api/address-api';
 
 export const ADDRESSES_QUERY_KEY = ['addresses'] as const;
 

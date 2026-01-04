@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { orderApi } from '@/entities/order';
+import { orderApi } from '@/entities/order/api/order-api';
 
 export const ORDER_QUERY_KEY = ['order'];
 

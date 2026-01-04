@@ -8,8 +8,8 @@ import {
   getCategoryIds,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import type { ProductListItem } from '@/entities/product';
-import { useProductsByCategory } from '@/features/product/get-products';
+import type { ProductListItem } from '@/entities/product/model/types';
+import { useProductsByCategory } from '@/features/product/get-products/lib/use-products';
 
 function ProductCard({
   product,

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Package, MapPin, User, ChevronRight, LogOut } from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { useLogout } from '@/features/auth/logout';
+import { useLogout } from '@/features/auth/logout/lib/use-logout';
 
 interface MypageLayoutProps {
   children: React.ReactNode;

@@ -5,7 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import { QuantitySelector } from './QuantitySelector';
-import type { CartItem } from '@/entities/cart';
+import type { CartItem } from '@/entities/cart/model/types';
 
 interface CartItemCardProps {
   item: CartItem;

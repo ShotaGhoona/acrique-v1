@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-import type { ProductDetail, RelatedProduct } from '@/entities/product';
-import { useRelatedProducts } from '@/features/product/get-product';
+import type { ProductDetail, RelatedProduct } from '@/entities/product/model/types';
+import { useRelatedProducts } from '@/features/product/get-product/lib/use-product';
 
 // 価格フォーマット
 function formatPrice(price: number): string {

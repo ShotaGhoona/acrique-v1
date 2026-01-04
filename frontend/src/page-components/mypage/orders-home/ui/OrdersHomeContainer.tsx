@@ -14,8 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { useOrders } from '@/features/order/get-orders';
-import type { Order, OrderStatus } from '@/entities/order';
+import { useOrders } from '@/features/order/get-orders/lib/use-orders';
+import type { Order, OrderStatus } from '@/entities/order/model/types';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: '確認中',

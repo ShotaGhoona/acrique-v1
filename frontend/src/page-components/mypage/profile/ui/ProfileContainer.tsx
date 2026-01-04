@@ -17,9 +17,9 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
-import { useGetMe } from '@/features/user/get-me';
-import { useUpdateMe } from '@/features/user/update-me';
-import { useChangePassword } from '@/features/user/change-password';
+import { useGetMe } from '@/features/user/get-me/lib/use-get-me';
+import { useUpdateMe } from '@/features/user/update-me/lib/use-update-me';
+import { useChangePassword } from '@/features/user/change-password/lib/use-change-password';
 
 const profileSchema = z.object({
   name: z.string().min(1, 'お名前を入力してください'),

@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { useCart } from '@/features/cart/get-cart';
-import { useAppSelector } from '@/store/hooks';
+import { useCart } from '@/features/cart/get-cart/lib/use-cart';
+import { useAppSelector } from '@/store/hooks/typed-hooks';
 
 interface CartBadgeProps {
   showBadge?: boolean;

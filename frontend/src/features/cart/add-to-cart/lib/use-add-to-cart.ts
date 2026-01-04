@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { cartApi, AddToCartRequest } from '@/entities/cart';
-import { CART_QUERY_KEY } from '../../get-cart';
+import { cartApi } from '@/entities/cart/api/cart-api';
+import type { AddToCartRequest } from '@/entities/cart/model/types';
+import { CART_QUERY_KEY } from '../../get-cart/lib/use-cart';
 
 export function useAddToCart() {
   const queryClient = useQueryClient();

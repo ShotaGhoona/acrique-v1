@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
-import { store, AppDispatch } from '@/store/index';
+import { store, AppDispatch } from '@/store/store';
 import { QueryProvider } from '@/app/provider/QueryProvider';
 import { setUser, clearUser } from '@/store/slices/authSlice';
 import { authApi } from '@/entities/auth/api/auth-api';

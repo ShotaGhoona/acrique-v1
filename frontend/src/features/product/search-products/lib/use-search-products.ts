@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { productApi } from '@/entities/product';
-import type { ProductSearchParams } from '@/entities/product';
+import { productApi } from '@/entities/product/api/product-api';
+import type { ProductSearchParams } from '@/entities/product/model/types';
 
 /**
  * 商品検索Hook

@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useProduct } from '@/features/product/get-product';
+import { useProduct } from '@/features/product/get-product/lib/use-product';
 import {
   categories,
   getCategoryIds,

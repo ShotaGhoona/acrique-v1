@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { generatePublicMetadata } from '@/shared/lib';
+import { generatePublicMetadata } from '@/shared/lib/global-metadata';
 import { Header } from '@/widgets/layout/app-layout/ui/Header';
 import { Footer } from '@/widgets/layout/app-layout/ui/Footer';
 

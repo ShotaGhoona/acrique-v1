@@ -16,10 +16,13 @@ import {
 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-import { useAddToCart } from '@/features/cart/add-to-cart';
-import { useAppSelector } from '@/store/hooks';
-import type { ProductDetail } from '@/entities/product';
-import { getCategoryById, isValidCategoryId } from '@/shared/domain/category';
+import { useAddToCart } from '@/features/cart/add-to-cart/lib/use-add-to-cart';
+import { useAppSelector } from '@/store/hooks/typed-hooks';
+import type { ProductDetail } from '@/entities/product/model/types';
+import {
+  getCategoryById,
+  isValidCategoryId,
+} from '@/shared/domain/category/data/categories';
 
 interface ProductHeroSectionProps {
   product: ProductDetail;

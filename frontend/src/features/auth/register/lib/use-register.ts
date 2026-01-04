@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { authApi } from '@/entities/auth';
+import { authApi } from '@/entities/auth/api/auth-api';
 import type { RegisterFormData } from '../model/types';
 
 export function useRegister() {

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { cartApi, UpdateCartItemRequest } from '@/entities/cart';
-import { CART_QUERY_KEY } from '../../get-cart';
+import { cartApi } from '@/entities/cart/api/cart-api';
+import type { UpdateCartItemRequest } from '@/entities/cart/model/types';
+import { CART_QUERY_KEY } from '../../get-cart/lib/use-cart';
 
 interface UpdateCartItemParams {
   itemId: number;

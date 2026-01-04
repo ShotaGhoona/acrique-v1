@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { userApi } from '@/entities/user';
-import { USER_QUERY_KEY } from '../../get-me';
+import { userApi } from '@/entities/user/api/user-api';
+import { USER_QUERY_KEY } from '../../get-me/lib/use-get-me';
 import type { UpdateProfileFormData } from '../model/types';
 
 export function useUpdateMe() {

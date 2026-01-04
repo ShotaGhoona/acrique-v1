@@ -16,7 +16,7 @@ import {
   getCategoryIds,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import { useProducts } from '@/features/product/get-products';
+import { useProducts } from '@/features/product/get-products/lib/use-products';
 import { CartBadge } from './components/CartBadge';
 
 const subNavItems = [

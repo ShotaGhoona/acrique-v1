@@ -18,10 +18,10 @@ import {
   CardTitle,
 } from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
-import { useGetMe } from '@/features/user/get-me';
-import { useOrders } from '@/features/order/get-orders';
-import { useAddresses } from '@/features/address/get-addresses';
-import type { Order, OrderStatus } from '@/entities/order';
+import { useGetMe } from '@/features/user/get-me/lib/use-get-me';
+import { useOrders } from '@/features/order/get-orders/lib/use-orders';
+import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
+import type { Order, OrderStatus } from '@/entities/order/model/types';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: '確認中',

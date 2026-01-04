@@ -109,67 +109,59 @@
 - ❌ 下位レイヤーが上位レイヤーを import しない
 - ❌ 同レイヤー内での循環依存を避ける
 
-### index.ts 戦略
+### index.ts 戦略（使用しない）
 
-コンパイル性能と Tree-shaking を考慮し、以下の方針で `index.ts` を配置する。
+**コンパイル性能を優先し、index.ts（バレルファイル）は使用しない。**
 
-#### 基本方針
+#### 理由
 
-| 方針 | 説明 |
+| 問題点 | 説明 |
 | --- | --- |
-| **スライス単位で配置** | 各機能スライス（user-master, auth 等）のルートに配置 |
-| **レイヤー単位は置かない** | `entities/index.ts` のような大量 re-export は避ける |
-| **公開 API のみ export** | 内部実装は隠蔽し、外部に必要なものだけ公開 |
+| **コンパイル速度低下** | バレルファイルは依存関係の解析を複雑にし、ビルド時間が増加する |
+| **Tree-shaking 阻害** | 不要なモジュールもバンドルに含まれる可能性がある |
+| **循環参照リスク** | re-export が増えると循環依存が発生しやすくなる |
 
-#### レイヤー別ルール
-
-```
-# ✅ 良い例：スライス単位
-import { UserMasterContainer } from '@/page-components/user-master';
-import { useLogin } from '@/features/auth/login';
-import { authApi } from '@/entities/auth';
-import { FilterBar } from '@/widgets/filter-bar';
-
-# ❌ 悪い例：レイヤー単位の大量 re-export
-import { UserMasterContainer, ItemMasterContainer, ... } from '@/page-components';
-import { authApi, userApi, itemApi, ... } from '@/entities';
-```
-
-#### 各レイヤーの index.ts 配置
-
-| レイヤー | index.ts 配置場所 | 例 |
-| --- | --- | --- |
-| page-components | 各スライス直下 | `page-components/user-master/index.ts` |
-| widgets | 各ウィジェット直下 | `widgets/filter-bar/index.ts` |
-| features | 各フィーチャー直下 | `features/auth/login/index.ts` |
-| entities | 各エンティティ直下 | `entities/auth/index.ts` |
-| shared | 各サブモジュール直下 | `shared/lib/index.ts`, `shared/ui/form-fields/index.ts` |
-
-#### 例：page-components のスライス構造
-
-```
-page-components/user-master/
-├── index.ts              ← 公開API（Containerのみ）
-├── ui/
-│   └── UserMasterContainer.tsx
-├── ui-block/
-│   ├── table-view/
-│   │   ├── index.ts      ← 内部用
-│   │   └── ui/
-│   ├── form-modal/
-│   │   ├── index.ts
-│   │   └── ui/
-│   └── ...
-└── config/
-```
+#### インポートルール
 
 ```typescript
-// page-components/user-master/index.ts
-export { UserMasterContainer } from './ui/UserMasterContainer';
+# ✅ 良い例：直接パスでインポート
+import { useLogin } from '@/features/auth/login/lib/use-login';
+import { authApi } from '@/entities/auth/api/auth-api';
+import type { LoginFormData } from '@/features/auth/login/model/types';
+import { Button } from '@/shared/ui/shadcn/ui/button';
+import { useAppSelector } from '@/store/hooks/typed-hooks';
 
-// page-components/user-master/ui-block/form-modal/index.ts（内部用）
-export { UserCreateModal } from './ui/UserCreateModal';
-export { UserEditModal, type UserEditModalHandle } from './ui/UserEditModal';
+# ❌ 悪い例：バレルファイル経由のインポート
+import { useLogin, type LoginFormData } from '@/features/auth/login';
+import { authApi } from '@/entities/auth';
+```
+
+#### 各レイヤーのインポートパス例
+
+| レイヤー | インポートパス例 |
+| --- | --- |
+| features | `@/features/auth/login/lib/use-login` |
+| entities | `@/entities/auth/api/auth-api` |
+| shared/ui | `@/shared/ui/shadcn/ui/button` |
+| shared/domain | `@/shared/domain/category/data/categories` |
+| store | `@/store/store`, `@/store/hooks/typed-hooks` |
+
+#### ディレクトリ構造例
+
+```
+features/auth/login/
+├── lib/
+│   └── use-login.ts      ← 直接インポート対象
+├── model/
+│   └── types.ts          ← 直接インポート対象
+└── （index.ts は配置しない）
+
+entities/auth/
+├── api/
+│   └── auth-api.ts       ← 直接インポート対象
+├── model/
+│   └── types.ts          ← 直接インポート対象
+└── （index.ts は配置しない）
 ```
 
 ---
@@ -279,12 +271,16 @@ frontend/src/features/
 │   ├── login/
 │   │   ├── model/               # 型定義
 │   │   │   └── types.ts
-│   │   ├── lib/                 # ロジック・Hooks
-│   │   │   ├── use-login.ts
-│   │   │   └── login-executor.ts
-│   │   └── index.ts
+│   │   └── lib/                 # ロジック・Hooks
+│   │       └── use-login.ts
 │   ├── logout/
-│   └── get-current-user/
+│   │   └── lib/
+│   │       └── use-logout.ts
+│   └── register/
+│       ├── model/
+│       │   └── types.ts
+│       └── lib/
+│           └── use-register.ts
 └── shared/                      # フィーチャー間共有ロジック
 ```
 
@@ -360,17 +356,37 @@ frontend/src/widgets/
 
 ```
 frontend/src/page-components/
-├── login/
-│   ├── ui/
-│   │   ├── LoginContainer.tsx
-│   │   └── LoginPage.tsx
-│   ├── lib/
-│   │   └── useLoginPage.ts
-│   └── index.ts
-└── dashboard/
-    ├── ui/
-    │   └── DashboardPage.tsx
-    └── index.ts
+├── public/                      # 公開ページ
+│   ├── home/
+│   │   └── ui/
+│   │       ├── HomeContainer.tsx
+│   │       └── sections/        # ページ固有のセクション
+│   │           └── HeroSection.tsx
+│   └── product/
+│       └── ui/
+│           ├── ProductDetailContainer.tsx
+│           └── sections/
+│               ├── ProductHeroSection.tsx
+│               └── RelatedProductsSection.tsx
+├── auth/                        # 認証ページ
+│   └── login/
+│       └── ui/
+│           └── LoginContainer.tsx
+├── mypage/                      # マイページ
+│   ├── home/
+│   │   └── ui/
+│   │       └── MypageHomeContainer.tsx
+│   └── orders/
+│       └── ui/
+│           └── OrdersContainer.tsx
+└── admin/                       # 管理画面（4階層）
+    └── orders/
+        ├── home/
+        │   └── ui/
+        │       └── OrdersHomeContainer.tsx
+        └── detail/
+            └── ui/
+                └── OrderDetailContainer.tsx
 ```
 
 ### 含めるべきもの
@@ -558,7 +574,9 @@ frontend/
 │   │       ├── core/
 │   │       └── storage/
 │   └── store/                   # Redux store
-│       ├── index.ts
+│       ├── store.ts             # ストア設定・型定義
+│       ├── hooks/
+│       │   └── typed-hooks.ts   # 型付きhooks
 │       └── slices/
 │           └── authSlice.ts
 ├── public/
@@ -601,14 +619,15 @@ frontend/
    import React from "react";
    import { useQuery } from "@tanstack/react-query";
 
-   // 2. 内部モジュール（FSD順）
-   import { LoginPage } from "@/page-components/login";
-   import { useLogin } from "@/features/auth/login";
-   import { authApi } from "@/entities/auth/api";
-   import { Button } from "@/shared/ui/shadcn/button";
+   // 2. 内部モジュール（FSD順、直接パス）
+   import { LoginContainer } from "@/page-components/auth/login/ui/LoginContainer";
+   import { useLogin } from "@/features/auth/login/lib/use-login";
+   import { authApi } from "@/entities/auth/api/auth-api";
+   import { Button } from "@/shared/ui/shadcn/ui/button";
+   import { useAppSelector } from "@/store/hooks/typed-hooks";
 
    // 3. 型定義
-   import type { User } from "@/entities/auth/model";
+   import type { User } from "@/entities/auth/model/types";
    ```
 
 4. **FSD 依存関係チェック**
@@ -638,5 +657,5 @@ frontend/
 
 ---
 
-**最終更新日**: 2025-12-11
-**バージョン**: 1.1.0
+**最終更新日**: 2026-01-04
+**バージョン**: 1.2.0

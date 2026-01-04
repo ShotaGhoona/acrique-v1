@@ -22,9 +22,9 @@ import {
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
-import { useOrder } from '@/features/order/get-order';
-import { useCancelOrder } from '@/features/order/cancel-order';
-import type { OrderStatus, OrderDetail, OrderItem } from '@/entities/order';
+import { useOrder } from '@/features/order/get-order/lib/use-order';
+import { useCancelOrder } from '@/features/order/cancel-order/lib/use-cancel-order';
+import type { OrderStatus, OrderDetail, OrderItem } from '@/entities/order/model/types';
 
 interface OrderDetailPageProps {
   orderId: number;

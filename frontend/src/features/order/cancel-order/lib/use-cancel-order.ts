@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { orderApi, CancelOrderRequest } from '@/entities/order';
-import { ORDERS_QUERY_KEY } from '../../get-orders';
-import { ORDER_QUERY_KEY } from '../../get-order';
+import { orderApi } from '@/entities/order/api/order-api';
+import type { CancelOrderRequest } from '@/entities/order/model/types';
+import { ORDERS_QUERY_KEY } from '../../get-orders/lib/use-orders';
+import { ORDER_QUERY_KEY } from '../../get-order/lib/use-order';
 
 interface CancelOrderParams {
   orderId: number;

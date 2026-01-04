@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addressApi } from '@/entities/address';
-import { ADDRESSES_QUERY_KEY } from '../../get-addresses';
+import { addressApi } from '@/entities/address/api/address-api';
+import { ADDRESSES_QUERY_KEY } from '../../get-addresses/lib/use-addresses';
 import type { UpdateAddressFormData } from '../model/types';
 
 export function useUpdateAddress() {

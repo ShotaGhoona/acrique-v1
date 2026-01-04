@@ -17,9 +17,12 @@ export const productApi = {
    * 商品一覧を取得
    */
   async getProducts(params?: ProductListParams): Promise<ProductListResponse> {
-    const response = await httpClient.get<ProductListResponse>('/api/products', {
-      params,
-    });
+    const response = await httpClient.get<ProductListResponse>(
+      '/api/products',
+      {
+        params,
+      },
+    );
     return response.data;
   },
 
@@ -49,7 +52,9 @@ export const productApi = {
   /**
    * 商品を検索
    */
-  async searchProducts(params: ProductSearchParams): Promise<ProductSearchResponse> {
+  async searchProducts(
+    params: ProductSearchParams,
+  ): Promise<ProductSearchResponse> {
     const response = await httpClient.get<ProductSearchResponse>(
       '/api/products/search',
       {

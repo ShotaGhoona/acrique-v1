@@ -3,7 +3,10 @@
 const lawItems = [
   { label: '販売業者', value: '株式会社ACRIQUE' },
   { label: '運営統括責任者', value: '代表取締役 山田 太郎' },
-  { label: '所在地', value: '〒150-0001 東京都渋谷区神宮前1-2-3 ACRIQUEビル 5F' },
+  {
+    label: '所在地',
+    value: '〒150-0001 東京都渋谷区神宮前1-2-3 ACRIQUEビル 5F',
+  },
   { label: '電話番号', value: '03-1234-5678（平日10:00〜18:00）' },
   { label: 'メールアドレス', value: 'info@acrique.jp' },
   { label: 'URL', value: 'https://acrique.jp' },
@@ -13,7 +16,8 @@ const lawItems = [
   },
   {
     label: '商品代金以外の必要料金',
-    value: '送料：全国一律1,000円（税込）\n※30,000円以上のご注文で送料無料\n銀行振込の場合、振込手数料はお客様負担となります。',
+    value:
+      '送料：全国一律1,000円（税込）\n※30,000円以上のご注文で送料無料\n銀行振込の場合、振込手数料はお客様負担となります。',
   },
   {
     label: 'お支払い方法',
@@ -51,30 +55,35 @@ export function LawPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="bg-secondary/30 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+      <section className='bg-secondary/30 py-24 md:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+          <p className='text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground'>
             Legal Notice
           </p>
-          <h1 className="mt-6 text-4xl font-light md:text-5xl">特定商取引法に基づく表記</h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          <h1 className='mt-6 text-4xl font-light md:text-5xl'>
+            特定商取引法に基づく表記
+          </h1>
+          <p className='mt-6 max-w-2xl text-lg text-muted-foreground'>
             特定商取引法第11条に基づく表示
           </p>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-24 md:py-32">
-        <div className="mx-auto max-w-3xl px-6 lg:px-12">
-          <div className="overflow-hidden rounded-sm border border-border">
-            <table className="w-full">
+      <section className='py-24 md:py-32'>
+        <div className='mx-auto max-w-3xl px-6 lg:px-12'>
+          <div className='overflow-hidden rounded-sm border border-border'>
+            <table className='w-full'>
               <tbody>
                 {lawItems.map((item, index) => (
-                  <tr key={index} className={index !== 0 ? 'border-t border-border' : ''}>
-                    <th className="w-1/3 bg-secondary/30 p-4 text-left text-sm font-medium align-top">
+                  <tr
+                    key={index}
+                    className={index !== 0 ? 'border-t border-border' : ''}
+                  >
+                    <th className='w-1/3 bg-secondary/30 p-4 text-left align-top text-sm font-medium'>
                       {item.label}
                     </th>
-                    <td className="p-4 text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+                    <td className='whitespace-pre-wrap p-4 text-sm leading-relaxed text-muted-foreground'>
                       {item.value}
                     </td>
                   </tr>
@@ -83,8 +92,10 @@ export function LawPage() {
             </table>
           </div>
 
-          <div className="mt-16 border-t border-border pt-8">
-            <p className="text-sm text-muted-foreground">最終更新日: 2024年6月1日</p>
+          <div className='mt-16 border-t border-border pt-8'>
+            <p className='text-sm text-muted-foreground'>
+              最終更新日: 2024年6月1日
+            </p>
           </div>
         </div>
       </section>

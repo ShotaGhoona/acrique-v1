@@ -25,9 +25,9 @@ const faqCategories = [
           'はい、法人様のご注文も承っております。請求書払いをご希望の場合は、お問い合わせフォームよりご連絡ください。',
       },
       {
-        question: '見積もりを依頼したいのですが？',
+        question: '大量注文は可能ですか？',
         answer:
-          '大量注文やカスタムオーダーについては、「見積もり依頼」ページからご依頼いただけます。通常2〜3営業日以内にご回答いたします。',
+          '大量注文やカスタムオーダーについては、お問い合わせフォームからご相談ください。通常2〜3営業日以内にご回答いたします。',
       },
     ],
   },
@@ -84,7 +84,8 @@ const faqCategories = [
     faqs: [
       {
         question: '送料はいくらですか？',
-        answer: '全国一律1,000円（税込）です。30,000円以上のご注文で送料無料となります。',
+        answer:
+          '全国一律1,000円（税込）です。30,000円以上のご注文で送料無料となります。',
       },
       {
         question: '納期はどのくらいですか？',
@@ -115,7 +116,7 @@ const faqCategories = [
       {
         question: 'サイズのカスタマイズはできますか？',
         answer:
-          '規格サイズ以外をご希望の場合は、見積もり依頼からご相談ください。製作可能かどうか確認の上、お見積りいたします。',
+          '規格サイズ以外をご希望の場合は、お問い合わせフォームからご相談ください。製作可能かどうか確認の上、ご案内いたします。',
       },
       {
         question: '屋外で使用できますか？',
@@ -156,16 +157,19 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-border">
+    <div className='border-b border-border'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between py-5 text-left"
+        className='flex w-full items-center justify-between py-5 text-left'
       >
-        <span className="pr-8 font-medium">{question}</span>
+        <span className='pr-8 font-medium'>{question}</span>
         <ChevronDown
-          className={cn('h-5 w-5 shrink-0 text-muted-foreground transition-transform', {
-            'rotate-180': isOpen,
-          })}
+          className={cn(
+            'h-5 w-5 shrink-0 text-muted-foreground transition-transform',
+            {
+              'rotate-180': isOpen,
+            },
+          )}
         />
       </button>
       <div
@@ -174,8 +178,10 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
           'grid-rows-[0fr]': !isOpen,
         })}
       >
-        <div className="overflow-hidden">
-          <p className="pb-5 text-sm leading-relaxed text-muted-foreground">{answer}</p>
+        <div className='overflow-hidden'>
+          <p className='pb-5 text-sm leading-relaxed text-muted-foreground'>
+            {answer}
+          </p>
         </div>
       </div>
     </div>
@@ -188,25 +194,27 @@ export function FAQPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="bg-secondary/30 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+      <section className='bg-secondary/30 py-24 md:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+          <p className='text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground'>
             FAQ
           </p>
-          <h1 className="mt-6 text-4xl font-light md:text-5xl">よくあるご質問</h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          <h1 className='mt-6 text-4xl font-light md:text-5xl'>
+            よくあるご質問
+          </h1>
+          <p className='mt-6 max-w-2xl text-lg text-muted-foreground'>
             お客様からよくいただくご質問をまとめました。
           </p>
         </div>
       </section>
 
       {/* FAQ Content */}
-      <section className="py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-4 lg:gap-16">
+      <section className='py-24 md:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+          <div className='grid gap-12 lg:grid-cols-4 lg:gap-16'>
             {/* Category Navigation */}
-            <nav className="lg:col-span-1">
-              <div className="sticky top-32 space-y-1">
+            <nav className='lg:col-span-1'>
+              <div className='sticky top-32 space-y-1'>
                 {faqCategories.map((category) => (
                   <button
                     key={category.id}
@@ -214,9 +222,10 @@ export function FAQPage() {
                     className={cn(
                       'block w-full rounded-sm px-4 py-3 text-left text-sm transition-colors',
                       {
-                        'bg-foreground text-background': activeCategory === category.id,
+                        'bg-foreground text-background':
+                          activeCategory === category.id,
                         'hover:bg-secondary/50': activeCategory !== category.id,
-                      }
+                      },
                     )}
                   >
                     {category.name}
@@ -226,16 +235,20 @@ export function FAQPage() {
             </nav>
 
             {/* FAQ List */}
-            <div className="lg:col-span-3">
+            <div className='lg:col-span-3'>
               {faqCategories.map((category) => (
                 <div
                   key={category.id}
                   className={cn({ hidden: activeCategory !== category.id })}
                 >
-                  <h2 className="mb-8 text-2xl font-light">{category.name}</h2>
+                  <h2 className='mb-8 text-2xl font-light'>{category.name}</h2>
                   <div>
                     {category.faqs.map((faq, index) => (
-                      <FAQItem key={index} question={faq.question} answer={faq.answer} />
+                      <FAQItem
+                        key={index}
+                        question={faq.question}
+                        answer={faq.answer}
+                      />
                     ))}
                   </div>
                 </div>
@@ -246,15 +259,17 @@ export function FAQPage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="bg-secondary/30 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6 text-center lg:px-12">
-          <h2 className="text-2xl font-light md:text-3xl">お探しの回答が見つからない場合</h2>
-          <p className="mx-auto mt-6 max-w-xl text-muted-foreground">
+      <section className='bg-secondary/30 py-24 md:py-32'>
+        <div className='mx-auto max-w-7xl px-6 text-center lg:px-12'>
+          <h2 className='text-2xl font-light md:text-3xl'>
+            お探しの回答が見つからない場合
+          </h2>
+          <p className='mx-auto mt-6 max-w-xl text-muted-foreground'>
             お気軽にお問い合わせください。営業日2日以内にご返答いたします。
           </p>
           <a
-            href="/contact"
-            className="mt-8 inline-flex items-center justify-center rounded-sm bg-foreground px-8 py-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+            href='/contact'
+            className='mt-8 inline-flex items-center justify-center rounded-sm bg-foreground px-8 py-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90'
           >
             お問い合わせ
           </a>

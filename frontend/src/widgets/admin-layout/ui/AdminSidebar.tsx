@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   ShoppingCart,
   Package,
-  FileText,
   Upload,
   Users,
   Shield,
@@ -33,11 +32,6 @@ const menuItems = [
     label: '商品管理',
     href: '/admin/products',
     icon: Package,
-  },
-  {
-    label: '見積もり管理',
-    href: '/admin/estimates',
-    icon: FileText,
   },
   {
     label: '入稿データ管理',
@@ -77,33 +71,33 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r bg-card">
+    <aside className='flex h-screen w-64 flex-col border-r bg-card'>
       {/* Logo */}
-      <div className="flex h-16 items-center border-b px-6">
-        <Link href="/admin" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Shield className="h-5 w-5" />
+      <div className='flex h-16 items-center border-b px-6'>
+        <Link href='/admin' className='flex items-center gap-2'>
+          <div className='flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground'>
+            <Shield className='h-5 w-5' />
           </div>
-          <span className="text-lg font-semibold tracking-tight">ACRIQUE</span>
-          <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+          <span className='text-lg font-semibold tracking-tight'>ACRIQUE</span>
+          <span className='rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground'>
             Admin
           </span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <ScrollArea className="flex-1 px-3 py-4">
-        <nav className="flex flex-col gap-1">
+      <ScrollArea className='flex-1 px-3 py-4'>
+        <nav className='flex flex-col gap-1'>
           {menuItems.map((item) => (
             <Link key={item.href} href={item.href}>
               <Button
                 variant={isActive(item.href) ? 'secondary' : 'ghost'}
                 className={cn(
                   'w-full justify-start gap-3',
-                  isActive(item.href) && 'bg-secondary'
+                  isActive(item.href) && 'bg-secondary',
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon className='h-4 w-4' />
                 {item.label}
               </Button>
             </Link>
@@ -112,13 +106,13 @@ export function AdminSidebar() {
       </ScrollArea>
 
       {/* Footer */}
-      <div className="border-t p-3">
+      <div className='border-t p-3'>
         <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+          variant='ghost'
+          className='w-full justify-start gap-3 text-muted-foreground hover:text-foreground'
           onClick={() => alert('ログアウト（未実装）')}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className='h-4 w-4' />
           ログアウト
         </Button>
       </div>

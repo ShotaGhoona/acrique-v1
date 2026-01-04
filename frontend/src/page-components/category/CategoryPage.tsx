@@ -28,8 +28,8 @@ export function CategoryPage({ categoryId }: CategoryPageProps) {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-muted-foreground">読み込み中...</p>
+      <div className='flex min-h-screen items-center justify-center'>
+        <p className='text-muted-foreground'>読み込み中...</p>
       </div>
     );
   }

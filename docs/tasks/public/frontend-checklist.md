@@ -43,20 +43,17 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/mypage` | マイページ | [x] | [ ] |
-| `/mypage/orders` | 注文履歴 | [ ] | [ ] |
-| `/mypage/orders/[id]` | 注文詳細 | [ ] | [ ] |
+| `/mypage` | マイページ | [x] | [x] |
+| `/mypage/orders` | 注文履歴 | [x] | [x] |
+| `/mypage/orders/[id]` | 注文詳細 | [x] | [x] |
 | `/mypage/orders/[id]/upload` | データ入稿 | [ ] | [ ] |
-| `/mypage/profile` | プロフィール | [ ] | [ ] |
-| `/mypage/addresses` | 配送先管理 | [ ] | [ ] |
-| `/cart` | カート | [ ] | [ ] |
+| `/mypage/profile` | プロフィール | [x] | [x] |
+| `/mypage/addresses` | 配送先管理 | [x] | [x] |
+| `/cart` | カート | [x] | [x] |
 | `/checkout` | 購入手続き | [ ] | [ ] |
 | `/checkout/upload` | データ入稿 | [ ] | [ ] |
 | `/checkout/confirm` | 注文確認 | [ ] | [ ] |
 | `/checkout/complete` | 注文完了 | [ ] | [ ] |
-| `/estimate` | 見積もり一覧 | [ ] | [ ] |
-| `/estimate/[id]` | 見積もり詳細 | [ ] | [ ] |
-| `/estimate/request` | 見積もり依頼 | [ ] | [ ] |
 
 ---
 
@@ -71,8 +68,6 @@
 | `/admin/products` | 商品一覧 | [x] | [x] |
 | `/admin/products/new` | 商品追加 | [x] | [ ] |
 | `/admin/products/[id]` | 商品編集 | [x] | [x] |
-| `/admin/estimates` | 見積もり一覧 | [x] | [ ] |
-| `/admin/estimates/[id]` | 見積もり詳細・回答 | [x] | [ ] |
 | `/admin/uploads` | 入稿データ一覧 | [x] | [ ] |
 | `/admin/uploads/[id]` | 入稿確認・承認 | [x] | [ ] |
 | `/admin/users` | 顧客一覧 | [x] | [ ] |
@@ -90,7 +85,7 @@
 | Header | [x] |
 | Footer | [x] |
 | 認証プロバイダー | [x] |
-| カート状態管理 | [ ] |
+| カート状態管理 | [x] |
 | API クライアント設定 | [x] |
 | エラーハンドリング | [ ] |
 | ローディング状態 | [ ] |
@@ -127,11 +122,10 @@
 | features/cart/update-cart-item | [x] |
 | features/cart/delete-cart-item | [x] |
 | features/cart/clear-cart | [x] |
-| カート一覧UI | [ ] |
-| カート追加ボタン | [ ] |
-| 数量変更UI | [ ] |
-| 小計計算表示 | [ ] |
-| ローカルストレージ同期 | [ ] |
+| カート一覧UI | [x] |
+| カート追加ボタン | [x] |
+| 数量変更UI | [x] |
+| 小計計算表示 | [x] |
 
 ## 決済機能
 
@@ -159,8 +153,8 @@
 | features/user/get-me | [x] |
 | features/user/update-me | [x] |
 | features/user/change-password | [x] |
-| プロフィール編集UI | [ ] |
-| パスワード変更UI | [ ] |
+| プロフィール編集UI | [x] |
+| パスワード変更UI | [x] |
 
 ## 配送先機能
 
@@ -172,8 +166,8 @@
 | features/address/update-address | [x] |
 | features/address/delete-address | [x] |
 | features/address/set-default-address | [x] |
-| 配送先一覧UI | [ ] |
-| 配送先追加・編集フォーム | [ ] |
+| 配送先一覧UI | [x] |
+| 配送先追加・編集フォーム | [x] |
 
 ## 注文機能
 
@@ -184,6 +178,15 @@
 | features/order/get-order | [x] |
 | features/order/create-order | [x] |
 | features/order/cancel-order | [x] |
-| 注文一覧UI | [ ] |
-| 注文詳細UI | [ ] |
+| 注文一覧UI | [x] |
+| 注文詳細UI | [x] |
 | チェックアウトUI | [ ] |
+
+---
+
+# リファクタリング
+
+| タスク | 状況 | 備考 |
+|--------|------|------|
+| レイアウト関係をlayout.tsxに集約 | [ ] | 各page.tsx内のレイアウト定義をApp Router の layout.tsx に移動し、page.tsx はコンテンツのみに専念させる |
+| page-componentsとwidgetsの構造整理 | [ ] | FSD設計に準拠した適切な責務分離・ディレクトリ構造の見直し |

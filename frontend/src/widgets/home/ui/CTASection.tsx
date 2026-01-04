@@ -15,7 +15,7 @@ const ctaItems = [
     title: '法人のお客様',
     description: '大口注文、特注デザインのご相談を承っております。',
     href: '/contact',
-    linkText: 'お見積もり依頼',
+    linkText: 'お問い合わせ',
   },
 ];
 

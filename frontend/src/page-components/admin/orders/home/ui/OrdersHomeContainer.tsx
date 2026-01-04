@@ -3,7 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Eye, MoreHorizontal } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/shadcn/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
@@ -52,37 +57,40 @@ export function OrdersHomeContainer() {
     const matchesSearch =
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    const matchesStatus =
+      statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
   // =================================================
 
   return (
-    <AdminLayout title="注文管理">
+    <AdminLayout title='注文管理'>
       <Card>
         <CardHeader>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
             <CardTitle>注文一覧</CardTitle>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <div className='flex flex-col gap-2 sm:flex-row'>
+              <div className='relative'>
+                <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                 <Input
-                  placeholder="注文ID、顧客名で検索..."
+                  placeholder='注文ID、顧客名で検索...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 sm:w-64"
+                  className='w-full pl-9 sm:w-64'
                 />
               </div>
               <Select
                 value={statusFilter}
-                onValueChange={(value) => setStatusFilter(value as OrderStatus | 'all')}
+                onValueChange={(value) =>
+                  setStatusFilter(value as OrderStatus | 'all')
+                }
               >
-                <SelectTrigger className="w-full sm:w-40">
-                  <Filter className="mr-2 h-4 w-4" />
-                  <SelectValue placeholder="ステータス" />
+                <SelectTrigger className='w-full sm:w-40'>
+                  <Filter className='mr-2 h-4 w-4' />
+                  <SelectValue placeholder='ステータス' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">すべて</SelectItem>
+                  <SelectItem value='all'>すべて</SelectItem>
                   {Object.entries(orderStatusLabels).map(([key, label]) => (
                     <SelectItem key={key} value={key}>
                       {label}
@@ -104,17 +112,19 @@ export function OrdersHomeContainer() {
                 <TableHead>ステータス</TableHead>
                 <TableHead>決済状況</TableHead>
                 <TableHead>注文日時</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className='w-12'></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredOrders.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-medium">{order.id}</TableCell>
+                  <TableCell className='font-medium'>{order.id}</TableCell>
                   <TableCell>
                     <div>
                       <div>{order.customerName}</div>
-                      <div className="text-xs text-muted-foreground">{order.customerEmail}</div>
+                      <div className='text-xs text-muted-foreground'>
+                        {order.customerEmail}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>{order.items.length}点</TableCell>
@@ -141,22 +151,28 @@ export function OrdersHomeContainer() {
                           : '未払い'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{order.createdAt}</TableCell>
+                  <TableCell className='text-muted-foreground'>
+                    {order.createdAt}
+                  </TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
+                        <Button variant='ghost' size='icon'>
+                          <MoreHorizontal className='h-4 w-4' />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align='end'>
                         <DropdownMenuItem asChild>
                           <Link href={`/admin/orders/${order.id}`}>
-                            <Eye className="mr-2 h-4 w-4" />
+                            <Eye className='mr-2 h-4 w-4' />
                             詳細を見る
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => alert(`ステータス変更: ${order.id}（未実装）`)}>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            alert(`ステータス変更: ${order.id}（未実装）`)
+                          }
+                        >
                           ステータス変更
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -168,7 +184,7 @@ export function OrdersHomeContainer() {
           </Table>
 
           {filteredOrders.length === 0 && (
-            <div className="py-12 text-center text-muted-foreground">
+            <div className='py-12 text-center text-muted-foreground'>
               該当する注文がありません
             </div>
           )}

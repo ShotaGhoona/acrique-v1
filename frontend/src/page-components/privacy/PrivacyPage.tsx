@@ -12,7 +12,6 @@ const sections = [
 • 会員登録時（氏名、メールアドレス、電話番号、住所等）
 • 商品のご注文時（配送先情報、お支払い情報等）
 • お問い合わせ時（氏名、メールアドレス、お問い合わせ内容等）
-• 見積もり依頼時（会社名、ご担当者名、連絡先等）
 
 収集した個人情報は、適法かつ公正な手段により取得いたします。`,
   },
@@ -81,38 +80,40 @@ export function PrivacyPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="bg-secondary/30 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+      <section className='bg-secondary/30 py-24 md:py-32'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+          <p className='text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground'>
             Privacy Policy
           </p>
-          <h1 className="mt-6 text-4xl font-light md:text-5xl">プライバシーポリシー</h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          <h1 className='mt-6 text-4xl font-light md:text-5xl'>
+            プライバシーポリシー
+          </h1>
+          <p className='mt-6 max-w-2xl text-lg text-muted-foreground'>
             お客様の個人情報の取り扱いについて
           </p>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-24 md:py-32">
-        <div className="mx-auto max-w-3xl px-6 lg:px-12">
-          <p className="mb-12 text-sm text-muted-foreground">
+      <section className='py-24 md:py-32'>
+        <div className='mx-auto max-w-3xl px-6 lg:px-12'>
+          <p className='mb-12 text-sm text-muted-foreground'>
             株式会社ACRIQUE（以下「当社」）は、お客様の個人情報を適切に取り扱うことが社会的責務であると考え、以下のとおりプライバシーポリシーを定めます。
           </p>
 
-          <div className="space-y-12">
+          <div className='space-y-12'>
             {sections.map((section, index) => (
               <div key={index}>
-                <h2 className="text-lg font-medium">{section.title}</h2>
-                <div className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                <h2 className='text-lg font-medium'>{section.title}</h2>
+                <div className='mt-4 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground'>
                   {section.content}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-16 border-t border-border pt-8">
-            <p className="text-sm text-muted-foreground">
+          <div className='mt-16 border-t border-border pt-8'>
+            <p className='text-sm text-muted-foreground'>
               制定日: 2024年1月1日
               <br />
               最終改定日: 2024年6月1日

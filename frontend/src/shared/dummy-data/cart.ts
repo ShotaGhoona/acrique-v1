@@ -74,7 +74,10 @@ export const cartItems: CartItem[] = [
 // =============================================================================
 
 // オプション込みの単価を計算
-const calculateUnitPrice = (productId: string, options: Record<string, string>): number => {
+const calculateUnitPrice = (
+  productId: string,
+  options: Record<string, string>,
+): number => {
   const product = getProductById(productId);
   if (!product) return 0;
 
@@ -123,7 +126,10 @@ export const getCartWithProducts = (userId: number): Cart => {
     })
     .filter((item): item is CartItemWithProduct => item !== null);
 
-  const subtotal = cartItemsWithProduct.reduce((sum, item) => sum + item.subtotal, 0);
+  const subtotal = cartItemsWithProduct.reduce(
+    (sum, item) => sum + item.subtotal,
+    0,
+  );
   const shipping_fee = subtotal >= 30000 ? 0 : 1000; // 3万円以上で送料無料
   const tax = Math.floor(subtotal * 0.1);
   const total = subtotal + shipping_fee + tax;
@@ -138,7 +144,10 @@ export const getCartWithProducts = (userId: number): Cart => {
 };
 
 export const getCartItemCount = (userId: number): number => {
-  return getCartItemsByUserId(userId).reduce((sum, item) => sum + item.quantity, 0);
+  return getCartItemsByUserId(userId).reduce(
+    (sum, item) => sum + item.quantity,
+    0,
+  );
 };
 
 // 現在のカート（デモ用 - user_id: 1）

@@ -21,7 +21,10 @@ export const userStatusLabels: Record<UserStatus, string> = {
   suspended: '停止中',
 };
 
-export const userStatusColors: Record<UserStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+export const userStatusColors: Record<
+  UserStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
   active: 'default',
   inactive: 'secondary',
   suspended: 'destructive',

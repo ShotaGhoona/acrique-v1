@@ -1,6 +1,12 @@
 // 注文管理用ダミーデータ
 
-export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled';
 
 export interface OrderItem {
   id: number;
@@ -32,7 +38,10 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
   cancelled: 'キャンセル',
 };
 
-export const orderStatusColors: Record<OrderStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+export const orderStatusColors: Record<
+  OrderStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
   pending: 'default',
   confirmed: 'secondary',
   processing: 'secondary',
@@ -47,7 +56,13 @@ export const dummyOrders: Order[] = [
     customerName: '田中太郎',
     customerEmail: 'tanaka@example.com',
     items: [
-      { id: 1, productName: 'アクリルキーホルダー 50mm', quantity: 100, unitPrice: 128, subtotal: 12800 },
+      {
+        id: 1,
+        productName: 'アクリルキーホルダー 50mm',
+        quantity: 100,
+        unitPrice: 128,
+        subtotal: 12800,
+      },
     ],
     totalAmount: 12800,
     status: 'pending',
@@ -61,8 +76,20 @@ export const dummyOrders: Order[] = [
     customerName: '佐藤花子',
     customerEmail: 'sato@example.com',
     items: [
-      { id: 1, productName: 'アクリルスタンド A5', quantity: 50, unitPrice: 380, subtotal: 19000 },
-      { id: 2, productName: 'アクリルスタンド A6', quantity: 30, unitPrice: 220, subtotal: 6600 },
+      {
+        id: 1,
+        productName: 'アクリルスタンド A5',
+        quantity: 50,
+        unitPrice: 380,
+        subtotal: 19000,
+      },
+      {
+        id: 2,
+        productName: 'アクリルスタンド A6',
+        quantity: 30,
+        unitPrice: 220,
+        subtotal: 6600,
+      },
     ],
     totalAmount: 25600,
     status: 'processing',
@@ -76,7 +103,13 @@ export const dummyOrders: Order[] = [
     customerName: '鈴木一郎',
     customerEmail: 'suzuki@example.com',
     items: [
-      { id: 1, productName: 'アクリルプレート 300x200mm', quantity: 10, unitPrice: 4500, subtotal: 45000 },
+      {
+        id: 1,
+        productName: 'アクリルプレート 300x200mm',
+        quantity: 10,
+        unitPrice: 4500,
+        subtotal: 45000,
+      },
     ],
     totalAmount: 45000,
     status: 'shipped',
@@ -90,7 +123,13 @@ export const dummyOrders: Order[] = [
     customerName: '高橋美咲',
     customerEmail: 'takahashi@example.com',
     items: [
-      { id: 1, productName: 'アクリルブロック 50mm', quantity: 20, unitPrice: 445, subtotal: 8900 },
+      {
+        id: 1,
+        productName: 'アクリルブロック 50mm',
+        quantity: 20,
+        unitPrice: 445,
+        subtotal: 8900,
+      },
     ],
     totalAmount: 8900,
     status: 'confirmed',
@@ -104,7 +143,13 @@ export const dummyOrders: Order[] = [
     customerName: '渡辺健二',
     customerEmail: 'watanabe@example.com',
     items: [
-      { id: 1, productName: 'アクリルパネル 600x400mm', quantity: 5, unitPrice: 13560, subtotal: 67800 },
+      {
+        id: 1,
+        productName: 'アクリルパネル 600x400mm',
+        quantity: 5,
+        unitPrice: 13560,
+        subtotal: 67800,
+      },
     ],
     totalAmount: 67800,
     status: 'cancelled',
@@ -118,7 +163,13 @@ export const dummyOrders: Order[] = [
     customerName: '伊藤美穂',
     customerEmail: 'ito@example.com',
     items: [
-      { id: 1, productName: 'アクリルキーホルダー 70mm', quantity: 200, unitPrice: 168, subtotal: 33600 },
+      {
+        id: 1,
+        productName: 'アクリルキーホルダー 70mm',
+        quantity: 200,
+        unitPrice: 168,
+        subtotal: 33600,
+      },
     ],
     totalAmount: 33600,
     status: 'delivered',

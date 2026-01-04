@@ -36,7 +36,9 @@ export const addressApi = {
   /**
    * 配送先追加
    */
-  async createAddress(data: CreateAddressRequest): Promise<CreateAddressResponse> {
+  async createAddress(
+    data: CreateAddressRequest,
+  ): Promise<CreateAddressResponse> {
     const response = await httpClient.post<CreateAddressResponse>(
       '/api/addresses',
       data,

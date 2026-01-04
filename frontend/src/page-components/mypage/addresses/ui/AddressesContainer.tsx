@@ -13,7 +13,7 @@ import {
   Loader2,
   Star,
 } from 'lucide-react';
-import { MypageLayout } from '@/widgets/mypage/ui/MypageLayout';
+import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
 import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';

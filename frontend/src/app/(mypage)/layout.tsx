@@ -4,8 +4,8 @@
  */
 import { generateAuthenticatedMetadata } from '@/shared/lib';
 import type { Metadata } from 'next';
-import { Header } from '@/widgets/layout/ui/Header';
-import { Footer } from '@/widgets/layout/ui/Footer';
+import { Header } from '@/widgets/layout/app-layout/ui/Header';
+import { Footer } from '@/widgets/layout/app-layout/ui/Footer';
 
 export const metadata: Metadata = generateAuthenticatedMetadata();
 

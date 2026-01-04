@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   categories,
   getCategoryIds,

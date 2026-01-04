@@ -22,7 +22,7 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   getUploadById,
   uploadStatusLabels,

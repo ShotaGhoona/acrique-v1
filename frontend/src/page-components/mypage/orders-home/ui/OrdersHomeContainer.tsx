@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Package, ArrowRight, Filter } from 'lucide-react';
-import { MypageLayout } from '@/widgets/mypage/ui/MypageLayout';
+import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
 import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';

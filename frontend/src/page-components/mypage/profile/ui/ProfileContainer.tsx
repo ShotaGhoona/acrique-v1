@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Check, Loader2, Eye, EyeOff } from 'lucide-react';
-import { MypageLayout } from '@/widgets/mypage/ui/MypageLayout';
+import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
 import {
   Card,
   CardContent,

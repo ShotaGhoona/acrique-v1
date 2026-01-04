@@ -12,7 +12,7 @@ import {
   Copy,
   ExternalLink,
 } from 'lucide-react';
-import { MypageLayout } from '@/widgets/mypage/ui/MypageLayout';
+import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
 import {
   Card,
   CardContent,

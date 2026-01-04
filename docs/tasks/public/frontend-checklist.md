@@ -49,14 +49,11 @@
 | `/mypage/orders/[id]/upload` | データ入稿 | [ ] | [ ] |
 | `/mypage/profile` | プロフィール | [ ] | [ ] |
 | `/mypage/addresses` | 配送先管理 | [ ] | [ ] |
-| `/cart` | カート | [ ] | [ ] |
+| `/cart` | カート | [x] | [x] |
 | `/checkout` | 購入手続き | [ ] | [ ] |
 | `/checkout/upload` | データ入稿 | [ ] | [ ] |
 | `/checkout/confirm` | 注文確認 | [ ] | [ ] |
 | `/checkout/complete` | 注文完了 | [ ] | [ ] |
-| `/estimate` | 見積もり一覧 | [ ] | [ ] |
-| `/estimate/[id]` | 見積もり詳細 | [ ] | [ ] |
-| `/estimate/request` | 見積もり依頼 | [ ] | [ ] |
 
 ---
 
@@ -71,8 +68,6 @@
 | `/admin/products` | 商品一覧 | [x] | [x] |
 | `/admin/products/new` | 商品追加 | [x] | [ ] |
 | `/admin/products/[id]` | 商品編集 | [x] | [x] |
-| `/admin/estimates` | 見積もり一覧 | [x] | [ ] |
-| `/admin/estimates/[id]` | 見積もり詳細・回答 | [x] | [ ] |
 | `/admin/uploads` | 入稿データ一覧 | [x] | [ ] |
 | `/admin/uploads/[id]` | 入稿確認・承認 | [x] | [ ] |
 | `/admin/users` | 顧客一覧 | [x] | [ ] |
@@ -90,7 +85,7 @@
 | Header | [x] |
 | Footer | [x] |
 | 認証プロバイダー | [x] |
-| カート状態管理 | [ ] |
+| カート状態管理 | [x] |
 | API クライアント設定 | [x] |
 | エラーハンドリング | [ ] |
 | ローディング状態 | [ ] |
@@ -127,11 +122,10 @@
 | features/cart/update-cart-item | [x] |
 | features/cart/delete-cart-item | [x] |
 | features/cart/clear-cart | [x] |
-| カート一覧UI | [ ] |
-| カート追加ボタン | [ ] |
-| 数量変更UI | [ ] |
-| 小計計算表示 | [ ] |
-| ローカルストレージ同期 | [ ] |
+| カート一覧UI | [x] |
+| カート追加ボタン | [x] |
+| 数量変更UI | [x] |
+| 小計計算表示 | [x] |
 
 ## 決済機能
 

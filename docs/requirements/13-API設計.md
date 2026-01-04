@@ -77,18 +77,6 @@ RESTful API原則に従い、ドメインごとに整理。
 
 ---
 
-## 見積もり (Estimates)
-
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| GET | `/api/estimates` | 見積もり一覧 |
-| POST | `/api/estimates` | 見積もり依頼 |
-| GET | `/api/estimates/{id}` | 見積もり詳細 |
-| POST | `/api/estimates/{id}/approve` | 見積もり承認 |
-| POST | `/api/estimates/{id}/revision` | 再見積もり依頼 |
-
----
-
 ## 入稿 (Uploads)
 
 | Method | Endpoint | 説明 |
@@ -98,7 +86,6 @@ RESTful API原則に従い、ドメインごとに整理。
 | GET | `/api/uploads/{id}` | 入稿データ詳細 |
 | DELETE | `/api/uploads/{id}` | 入稿データ削除 |
 | POST | `/api/orders/{order_id}/uploads` | 注文への入稿 |
-| POST | `/api/estimates/{estimate_id}/uploads` | 見積もりへの入稿 |
 
 ---
 
@@ -174,17 +161,6 @@ RESTful API原則に従い、ドメインごとに整理。
 
 ---
 
-## 見積もり管理 (Admin Estimates)
-
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| GET | `/api/admin/estimates` | 見積もり一覧 |
-| GET | `/api/admin/estimates/{id}` | 見積もり詳細 |
-| PUT | `/api/admin/estimates/{id}` | 見積もり更新 |
-| POST | `/api/admin/estimates/{id}/quote` | 見積もり回答 |
-
----
-
 ## 入稿管理 (Admin Uploads)
 
 | Method | Endpoint | 説明 |
@@ -231,5 +207,3 @@ RESTful API原則に従い、ドメインごとに整理。
 |--------|----------|------|
 | GET | `/api/admin/settings` | 設定取得 |
 | PUT | `/api/admin/settings` | 設定更新 |
-
----

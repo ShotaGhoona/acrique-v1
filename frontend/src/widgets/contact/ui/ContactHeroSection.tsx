@@ -8,7 +8,7 @@ export function ContactHeroSection() {
           </p>
           <h1 className='mt-6 text-4xl font-light md:text-5xl'>お問い合わせ</h1>
           <p className='mt-6 text-lg text-background/70'>
-            商品に関するご質問、お見積もりのご依頼、
+            商品に関するご質問、大量注文のご相談、
             <br className='hidden sm:block' />
             その他お気軽にお問い合わせください。
           </p>

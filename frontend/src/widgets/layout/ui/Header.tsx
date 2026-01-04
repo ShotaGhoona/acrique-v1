@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, ShoppingBag, Search, User, ChevronDown } from 'lucide-react';
+import { Menu, Search, User, ChevronDown } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import {
   Sheet,
@@ -17,6 +17,7 @@ import {
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import { useProducts } from '@/features/product/get-products';
+import { CartBadge } from '@/widgets/cart/ui/CartBadge';
 
 const subNavItems = [
   { label: 'About', href: '/about' },
@@ -102,24 +103,13 @@ export function Header() {
                   <User className="h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/cart">
-                <Button variant="ghost" size="icon" className="relative h-9 w-9">
-                  <ShoppingBag className="h-4 w-4" />
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] text-background">
-                    0
-                  </span>
-                </Button>
-              </Link>
+              <CartBadge />
             </div>
           </div>
 
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 lg:hidden">
-            <Link href="/cart">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <ShoppingBag className="h-4 w-4" />
-              </Button>
-            </Link>
+            <CartBadge />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9">

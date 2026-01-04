@@ -8,7 +8,6 @@ import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 
 const inquiryTypes = [
-  { value: 'estimate', label: 'お見積もりのご依頼' },
   { value: 'product', label: '商品に関するご質問' },
   { value: 'order', label: 'ご注文について' },
   { value: 'corporate', label: '法人・大量注文のご相談' },
@@ -135,7 +134,7 @@ export function ContactFormSection() {
                   name='message'
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder='お問い合わせ内容をご記入ください。お見積もりの場合は、ご希望の商品、サイズ、数量などをお知らせください。'
+                  placeholder='お問い合わせ内容をご記入ください。大量注文の場合は、ご希望の商品、サイズ、数量などをお知らせください。'
                   rows={6}
                   required
                 />

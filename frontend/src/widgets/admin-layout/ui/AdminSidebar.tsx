@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   ShoppingCart,
   Package,
-  FileText,
   Upload,
   Users,
   Shield,
@@ -33,11 +32,6 @@ const menuItems = [
     label: '商品管理',
     href: '/admin/products',
     icon: Package,
-  },
-  {
-    label: '見積もり管理',
-    href: '/admin/estimates',
-    icon: FileText,
   },
   {
     label: '入稿データ管理',

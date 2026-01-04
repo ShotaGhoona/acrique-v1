@@ -19,7 +19,6 @@ export interface Upload {
   id: number;
   user_id: number;
   order_id: number | null;
-  estimate_id: number | null;
   order_item_id: number | null;
   file_name: string;
   file_url: string;
@@ -68,7 +67,6 @@ export const uploads: Upload[] = [
     id: 1,
     user_id: 1,
     order_id: 1,
-    estimate_id: null,
     order_item_id: 1,
     file_name: 'qr-code.png',
     file_url: '/uploads/1/qr-code.png',
@@ -86,7 +84,6 @@ export const uploads: Upload[] = [
     id: 2,
     user_id: 1,
     order_id: 3,
-    estimate_id: null,
     order_item_id: 4,
     file_name: 'company-logo.ai',
     file_url: '/uploads/2/company-logo.ai',
@@ -104,7 +101,6 @@ export const uploads: Upload[] = [
     id: 3,
     user_id: 1,
     order_id: 3,
-    estimate_id: null,
     order_item_id: 4,
     file_name: '',
     file_url: '',
@@ -122,7 +118,6 @@ export const uploads: Upload[] = [
     id: 4,
     user_id: 2,
     order_id: 4,
-    estimate_id: null,
     order_item_id: 5,
     file_name: 'startup-logo.svg',
     file_url: '/uploads/4/startup-logo.svg',
@@ -140,7 +135,6 @@ export const uploads: Upload[] = [
     id: 5,
     user_id: 3,
     order_id: null,
-    estimate_id: null,
     order_item_id: null,
     file_name: 'my-photo.jpg',
     file_url: '/uploads/5/my-photo.jpg',
@@ -166,10 +160,6 @@ export const getUploadById = (id: number): Upload | undefined => {
 
 export const getUploadsByOrderId = (orderId: number): Upload[] => {
   return uploads.filter((u) => u.order_id === orderId);
-};
-
-export const getUploadsByEstimateId = (estimateId: number): Upload[] => {
-  return uploads.filter((u) => u.estimate_id === estimateId);
 };
 
 export const getUploadsByUserId = (userId: number): Upload[] => {

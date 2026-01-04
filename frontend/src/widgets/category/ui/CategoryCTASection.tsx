@@ -62,16 +62,6 @@ export function CategoryCTASection({ category }: CategoryCTASectionProps) {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-background/30 text-background hover:bg-background/10"
-            >
-              <Link href={`/contact?category=${category.id}`}>
-                お見積もりを依頼
-              </Link>
-            </Button>
           </div>
         </div>
 

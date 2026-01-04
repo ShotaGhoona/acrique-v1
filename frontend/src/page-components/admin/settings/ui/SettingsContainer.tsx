@@ -22,7 +22,6 @@ export function SettingsContainer() {
 
   const [notificationSettings, setNotificationSettings] = useState({
     orderNotification: true,
-    estimateNotification: true,
     uploadNotification: true,
     lowStockAlert: true,
   });
@@ -155,23 +154,6 @@ export function SettingsContainer() {
                   checked={notificationSettings.orderNotification}
                   onCheckedChange={(checked) =>
                     setNotificationSettings({ ...notificationSettings, orderNotification: checked })
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>見積もり依頼通知</Label>
-                  <p className="text-sm text-muted-foreground">
-                    新しい見積もり依頼があった際にメール通知を受け取ります。
-                  </p>
-                </div>
-                <Switch
-                  checked={notificationSettings.estimateNotification}
-                  onCheckedChange={(checked) =>
-                    setNotificationSettings({
-                      ...notificationSettings,
-                      estimateNotification: checked,
-                    })
                   }
                 />
               </div>

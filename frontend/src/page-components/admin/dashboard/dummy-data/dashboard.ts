@@ -5,7 +5,6 @@ export interface DashboardStats {
   totalRevenue: number;
   pendingOrders: number;
   pendingUploads: number;
-  pendingEstimates: number;
   newUsers: number;
 }
 
@@ -28,7 +27,6 @@ export const dummyStats: DashboardStats = {
   totalRevenue: 12345678,
   pendingOrders: 23,
   pendingUploads: 8,
-  pendingEstimates: 5,
   newUsers: 42,
 };
 

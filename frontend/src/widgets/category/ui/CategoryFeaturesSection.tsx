@@ -79,7 +79,7 @@ export function CategoryFeaturesSection({
               <div className="text-center">
                 <div className="text-2xl font-light">24h</div>
                 <div className="mt-1 text-xs text-muted-foreground">
-                  お見積もり
+                  返信対応
                 </div>
               </div>
             </div>

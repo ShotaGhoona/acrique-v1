@@ -58,7 +58,7 @@ htmlcov/
 
 # Logs
 *.log
-logs/
+/logs/
 
 # Alembic
 # alembic/versions/*.py は含める（バージョン管理する）

@@ -1,6 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
 
 interface CategoryHeroSectionProps {
@@ -8,27 +8,36 @@ interface CategoryHeroSectionProps {
   productCount: number;
 }
 
+const categoryHeroImages: Record<string, string> = {
+  shop: '/IMG/category-page/category-hero-shop-v1.png',
+  office: '/IMG/category-page/category-hero-office-v1.png',
+  you: '/IMG/category-page/category-hero-you-v1.png',
+};
+
 export function CategoryHeroSection({
   category,
   productCount,
 }: CategoryHeroSectionProps) {
+  const heroImage =
+    categoryHeroImages[category.id] || categoryHeroImages['shop'];
+
   return (
-    <section className='relative min-h-[70vh] bg-foreground text-background'>
-      {/* Background Pattern */}
-      <div className='absolute inset-0 opacity-[0.03]'>
-        <div
-          className='h-full w-full'
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
-          }}
+    <section className='relative min-h-[70vh]'>
+      {/* Background Image */}
+      <div className='absolute inset-0'>
+        <Image
+          src={heroImage}
+          alt={`${category.name} イメージ`}
+          fill
+          className='object-cover'
+          priority
         />
+        <div className='absolute inset-0 bg-foreground/60' />
       </div>
 
-      <div className='relative mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center px-6 py-24 lg:flex-row lg:items-center lg:gap-20 lg:px-12'>
-        {/* Text Content */}
-        <div className='flex-1 lg:max-w-xl'>
+      {/* Content */}
+      <div className='relative mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center px-6 py-24 lg:px-12'>
+        <div className='max-w-2xl'>
           {/* Breadcrumb */}
           <nav className='mb-8 flex items-center gap-2 text-xs text-background/50'>
             <Link href='/' className='transition-colors hover:text-background'>
@@ -44,7 +53,7 @@ export function CategoryHeroSection({
           </p>
 
           {/* Title */}
-          <h1 className='mt-6 text-4xl font-light leading-tight md:text-5xl lg:text-6xl'>
+          <h1 className='mt-6 text-4xl font-light leading-tight text-background md:text-5xl lg:text-6xl'>
             {category.name}
           </h1>
 
@@ -59,41 +68,29 @@ export function CategoryHeroSection({
           </p>
 
           {/* Stats */}
-          <div className='mt-12 flex items-center gap-8 border-t border-background/10 pt-8'>
+          <div className='mt-12 flex items-center gap-8 border-t border-background/20 pt-8'>
             <div>
-              <div className='text-3xl font-light'>{productCount}</div>
+              <div className='text-3xl font-light text-background'>
+                {productCount}
+              </div>
               <div className='text-xs text-background/50'>Products</div>
             </div>
-            <div className='h-8 w-px bg-background/10' />
+            <div className='h-8 w-px bg-background/20' />
             <div>
-              <div className='text-3xl font-light'>1個〜</div>
+              <div className='text-3xl font-light text-background'>1個〜</div>
               <div className='text-xs text-background/50'>Min Order</div>
             </div>
-            <div className='h-8 w-px bg-background/10' />
+            <div className='h-8 w-px bg-background/20' />
             <div>
-              <div className='text-3xl font-light'>3日〜</div>
+              <div className='text-3xl font-light text-background'>3日〜</div>
               <div className='text-xs text-background/50'>Delivery</div>
             </div>
-          </div>
-        </div>
-
-        {/* Hero Image */}
-        <div className='mt-12 flex-1 lg:mt-0'>
-          <div className='relative'>
-            <ImagePlaceholder
-              aspect='4/3'
-              variant='dark'
-              label={`${category.name} イメージ`}
-              className='rounded-sm shadow-2xl'
-            />
-            {/* Decorative Border */}
-            <div className='absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-sm border border-background/20' />
           </div>
         </div>
       </div>
 
       {/* Bottom Gradient */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent' />
+      <div className='absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-background via-background/30 to-transparent' />
     </section>
   );
 }

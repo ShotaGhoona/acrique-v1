@@ -1,7 +1,7 @@
 'use client';
 
+import Image from 'next/image';
 import { Gem, Hexagon, Box } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 
 const philosophyItems = [
   {
@@ -80,18 +80,18 @@ export function AboutPhilosophySection() {
 
         {/* Visual */}
         <div className='mt-20'>
-          <div className='relative'>
-            <ImagePlaceholder
-              aspect='21/9'
-              variant='light'
-              label='アクリルのエッジが光を反射している様子'
-              className='w-full'
+          <div className='relative aspect-[21/9] w-full'>
+            <Image
+              src='/IMG/about-page/light-edge-philosophy-v1.png'
+              alt='アクリルのエッジが光を反射している様子'
+              fill
+              className='object-cover'
             />
-            {/* Caption */}
-            <p className='mt-4 text-center text-xs text-muted-foreground'>
-              光を捉え、鋭く反射するエッジの輝き
-            </p>
           </div>
+          {/* Caption */}
+          <p className='mt-4 text-center text-xs text-muted-foreground'>
+            光を捉え、鋭く反射するエッジの輝き
+          </p>
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
+import Image from 'next/image';
 
 export function AboutStorySection() {
   return (
@@ -7,12 +7,14 @@ export function AboutStorySection() {
         <div className='grid gap-16 lg:grid-cols-2 lg:gap-24'>
           {/* Image */}
           <div className='relative order-2 lg:order-1'>
-            <ImagePlaceholder
-              aspect='4/5'
-              variant='dark'
-              label='工場でレーザー加工している様子'
-              className='w-full'
-            />
+            <div className='relative aspect-[4/5] w-full'>
+              <Image
+                src='/IMG/about-page/story-factory-v1.png'
+                alt='工場でレーザー加工している様子'
+                fill
+                className='object-cover'
+              />
+            </div>
             {/* Overlay Badge */}
             <div className='absolute bottom-6 left-6 right-6 bg-black/60 p-4 backdrop-blur-sm'>
               <p className='text-xs uppercase tracking-widest text-white/70'>

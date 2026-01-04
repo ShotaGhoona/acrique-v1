@@ -1,4 +1,4 @@
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
+import Image from 'next/image';
 
 export function BrandStorySection() {
   return (
@@ -7,12 +7,14 @@ export function BrandStorySection() {
         <div className='grid gap-16 lg:grid-cols-2 lg:gap-24'>
           {/* Image */}
           <div className='relative'>
-            <ImagePlaceholder
-              aspect='3/4'
-              variant='dark'
-              label='工場・製作風景'
-              className='rounded-sm'
-            />
+            <div className='relative aspect-[3/4] overflow-hidden rounded-sm'>
+              <Image
+                src='/IMG/home-page/home-brandstory-factory-v1.png'
+                alt='工場・製作風景'
+                fill
+                className='object-cover'
+              />
+            </div>
             {/* Caption */}
             <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6'>
               <p className='text-xs uppercase tracking-widest text-white/70'>

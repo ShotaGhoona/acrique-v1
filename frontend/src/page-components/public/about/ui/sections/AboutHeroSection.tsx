@@ -1,7 +1,7 @@
 'use client';
 
+import Image from 'next/image';
 import { ChevronDown } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 
 export function AboutHeroSection() {
   const scrollToContent = () => {
@@ -15,11 +15,12 @@ export function AboutHeroSection() {
     <section className='relative min-h-screen'>
       {/* Background Image */}
       <div className='absolute inset-0'>
-        <ImagePlaceholder
-          aspect='16/9'
-          variant='dark'
-          label='1cm厚アクリルの断面クローズアップ'
-          className='h-full w-full object-cover'
+        <Image
+          src='/IMG/about-page/hero-background-v1.png'
+          alt='1cm厚アクリルの断面クローズアップ'
+          fill
+          className='object-cover'
+          priority
         />
         <div className='absolute inset-0 bg-foreground/70' />
       </div>

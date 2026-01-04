@@ -1,5 +1,5 @@
+import Image from 'next/image';
 import { Cpu, Sparkles, Scale } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 
 const craftItems = [
   {
@@ -74,28 +74,28 @@ export function AboutCraftSection() {
 
         {/* Images */}
         <div className='mt-20 grid gap-4 md:grid-cols-3'>
-          <div>
-            <ImagePlaceholder
-              aspect='4/3'
-              variant='light'
-              label='レーザーカッター'
-              className='w-full'
+          <div className='relative aspect-[4/3]'>
+            <Image
+              src='/IMG/about-page/laser-cutter-v1.png'
+              alt='レーザーカッター'
+              fill
+              className='object-cover'
             />
           </div>
-          <div>
-            <ImagePlaceholder
-              aspect='4/3'
-              variant='light'
-              label='手作業での仕上げ'
-              className='w-full'
+          <div className='relative aspect-[4/3]'>
+            <Image
+              src='/IMG/about-page/hand-finishing-v1.png'
+              alt='手作業での仕上げ'
+              fill
+              className='object-cover'
             />
           </div>
-          <div>
-            <ImagePlaceholder
-              aspect='4/3'
-              variant='light'
-              label='品質検査'
-              className='w-full'
+          <div className='relative aspect-[4/3]'>
+            <Image
+              src='/IMG/about-page/craft-quality-v1.png'
+              alt='品質検査'
+              fill
+              className='object-cover'
             />
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
+import Image from 'next/image';
 
 const features = [
   {
@@ -9,6 +9,7 @@ const features = [
       '一般的な3mm/5mmではなく、1cmの厚みを標準に。自立する重厚感と、光の屈折が生み出す美しさ。レーザーカッターによる複雑かつ平滑な断面加工を実現します。',
     stat: '10mm',
     statLabel: '標準厚み',
+    image: '/IMG/home-page/home-features-mass-detail-v2.png',
   },
   {
     number: '02',
@@ -18,6 +19,7 @@ const features = [
       '家庭用レーザーカッターでは不可能な、A2サイズまでの大型加工が可能。エントランスサインや大型ディスプレイも、一枚のアクリルから切り出します。',
     stat: 'A2',
     statLabel: '最大サイズ',
+    image: '/IMG/home-page/home-features-large-scale-v1.png',
   },
   {
     number: '03',
@@ -27,6 +29,7 @@ const features = [
       '個人向けの「世界に一つのオーダー」から、企業・店舗向けの「100個単位の什器」まで。自社工場による柔軟な生産体制で、あらゆるニーズにお応えします。',
     stat: '1個〜',
     statLabel: '最小ロット',
+    image: '/IMG/home-page/home-features-one-to-mass-v1.png',
   },
 ];
 
@@ -56,12 +59,14 @@ export function FeaturesSection() {
               {/* Image */}
               <div className={index % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}>
                 <div className='relative'>
-                  <ImagePlaceholder
-                    aspect='16/9'
-                    variant='gradient'
-                    label={feature.titleJa}
-                    className='rounded-sm shadow-lg'
-                  />
+                  <div className='relative aspect-[16/9] overflow-hidden rounded-sm shadow-lg'>
+                    <Image
+                      src={feature.image}
+                      alt={feature.titleJa}
+                      fill
+                      className='object-cover'
+                    />
+                  </div>
                   {/* Stat Badge */}
                   <div className='absolute -bottom-6 -right-6 flex h-24 w-24 flex-col items-center justify-center rounded-full bg-foreground text-background shadow-xl'>
                     <span className='text-2xl font-light'>{feature.stat}</span>

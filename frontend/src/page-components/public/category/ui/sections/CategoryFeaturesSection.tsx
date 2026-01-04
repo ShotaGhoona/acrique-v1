@@ -1,5 +1,5 @@
+import Image from 'next/image';
 import { Check } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
 
 interface CategoryFeaturesSectionProps {
@@ -15,12 +15,14 @@ export function CategoryFeaturesSection({
         <div className='grid items-center gap-16 lg:grid-cols-2 lg:gap-24'>
           {/* Image */}
           <div className='relative'>
-            <ImagePlaceholder
-              aspect='4/3'
-              variant='gradient'
-              label='製作工程'
-              className='rounded-sm shadow-lg'
-            />
+            <div className='relative aspect-[4/3] overflow-hidden rounded-sm shadow-lg'>
+              <Image
+                src='/IMG/category-page/category-features-production-v1.png'
+                alt='製作工程'
+                fill
+                className='object-cover'
+              />
+            </div>
             {/* Decorative Elements */}
             <div className='absolute -bottom-6 -left-6 -z-10 h-2/3 w-2/3 rounded-sm border border-border' />
 

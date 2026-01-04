@@ -39,7 +39,7 @@ import {
   uploadStatusLabels,
   uploadStatusColors,
   type UploadStatus,
-} from '../../dummy-data/uploads';
+} from '../dummy-data/uploads';
 
 export function UploadsHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

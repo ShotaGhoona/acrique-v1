@@ -39,7 +39,7 @@ import {
   userStatusLabels,
   userStatusColors,
   type UserStatus,
-} from '../../dummy-data/users';
+} from '../dummy-data/users';
 
 export function UsersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

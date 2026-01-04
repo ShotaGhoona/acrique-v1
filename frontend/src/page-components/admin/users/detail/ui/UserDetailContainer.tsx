@@ -31,7 +31,7 @@ import {
   userStatusLabels,
   userStatusColors,
   type UserStatus,
-} from '../../dummy-data/users';
+} from '../../home/dummy-data/users';
 
 interface UserDetailContainerProps {
   userId: string;

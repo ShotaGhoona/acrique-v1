@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AboutPage } from '@/page-components/about/AboutPage';
+import { AboutPage } from '@/page-components/public/about/ui/AboutContainer';
 
 export const metadata: Metadata = {
   title: 'About | ACRIQUE',

@@ -31,7 +31,7 @@ import {
   orderStatusLabels,
   orderStatusColors,
   type OrderStatus,
-} from '../../dummy-data/orders';
+} from '../../home/dummy-data/orders';
 
 interface OrderDetailContainerProps {
   orderId: string;

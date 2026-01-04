@@ -2,7 +2,7 @@
 
 import { notFound } from 'next/navigation';
 import { use } from 'react';
-import { ProductPage } from '@/page-components/product/ProductPage';
+import { ProductPage } from '@/page-components/public/product/ui/ProductDetailContainer';
 import { useProduct } from '@/features/product/get-product';
 
 interface ProductPageParams {

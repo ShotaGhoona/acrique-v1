@@ -27,7 +27,7 @@ import {
   getUploadById,
   uploadStatusLabels,
   uploadStatusColors,
-} from '../../dummy-data/uploads';
+} from '../../home/dummy-data/uploads';
 
 interface UploadDetailContainerProps {
   uploadId: string;

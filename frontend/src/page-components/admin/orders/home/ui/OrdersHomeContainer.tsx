@@ -39,7 +39,7 @@ import {
   orderStatusLabels,
   orderStatusColors,
   type OrderStatus,
-} from '../../dummy-data/orders';
+} from '../dummy-data/orders';
 
 export function OrdersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

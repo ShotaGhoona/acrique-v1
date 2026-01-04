@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ContactPage } from '@/page-components/contact/ContactPage';
+import { ContactPage } from '@/page-components/public/contact/ui/ContactContainer';
 
 export const metadata: Metadata = {
   title: 'お問い合わせ | ACRIQUE',

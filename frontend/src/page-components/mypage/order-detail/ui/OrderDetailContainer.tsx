@@ -24,6 +24,7 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
 import { useOrder } from '@/features/order/get-order/lib/use-order';
 import { useCancelOrder } from '@/features/order/cancel-order/lib/use-cancel-order';
+import { OrderDetailSkeleton } from './skeleton/OrderDetailSkeleton';
 import type { OrderStatus, OrderDetail, OrderItem } from '@/entities/order/model/types';
 
 interface OrderDetailPageProps {
@@ -178,15 +179,6 @@ function OrderItemRow({ item }: { item: OrderItem }) {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className='space-y-6'>
-      <div className='h-8 w-48 animate-pulse rounded bg-secondary/50' />
-      <div className='h-32 animate-pulse rounded-sm bg-secondary/50' />
-      <div className='h-64 animate-pulse rounded-sm bg-secondary/50' />
-    </div>
-  );
-}
 
 export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
   const router = useRouter();
@@ -223,7 +215,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
   if (isLoading) {
     return (
       <MypageLayout title='注文詳細' description='読み込み中...'>
-        <LoadingSkeleton />
+        <OrderDetailSkeleton />
       </MypageLayout>
     );
   }

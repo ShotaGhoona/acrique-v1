@@ -7,6 +7,7 @@ import {
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import { useProductsByCategory } from '@/features/product/get-products/lib/use-products';
+import { CategoryPageSkeleton } from './skeleton/CategoryPageSkeleton';
 import { CategoryHeroSection } from './sections/CategoryHeroSection';
 import { CategoryProductsSection } from './sections/CategoryProductsSection';
 import { CategoryUseCasesSection } from './sections/CategoryUseCasesSection';
@@ -27,11 +28,7 @@ export function CategoryPage({ categoryId }: CategoryPageProps) {
   const products = data?.products ?? [];
 
   if (isLoading) {
-    return (
-      <div className='flex min-h-screen items-center justify-center'>
-        <p className='text-muted-foreground'>読み込み中...</p>
-      </div>
-    );
+    return <CategoryPageSkeleton />;
   }
 
   return (

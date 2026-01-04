@@ -20,6 +20,7 @@ import { Separator } from '@/shared/ui/shadcn/ui/separator';
 import { useGetMe } from '@/features/user/get-me/lib/use-get-me';
 import { useUpdateMe } from '@/features/user/update-me/lib/use-update-me';
 import { useChangePassword } from '@/features/user/change-password/lib/use-change-password';
+import { ProfileFormSkeleton } from './skeleton/ProfileFormSkeleton';
 
 const profileSchema = z.object({
   name: z.string().min(1, 'お名前を入力してください'),
@@ -77,20 +78,7 @@ function ProfileForm() {
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardContent className='p-6'>
-          <div className='space-y-4'>
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className='space-y-2'>
-                <div className='h-4 w-20 animate-pulse rounded bg-secondary/50' />
-                <div className='h-10 animate-pulse rounded bg-secondary/50' />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <ProfileFormSkeleton />;
   }
 
   return (

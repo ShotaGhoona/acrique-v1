@@ -31,6 +31,7 @@ import { useCreateAddress } from '@/features/address/create-address/lib/use-crea
 import { useUpdateAddress } from '@/features/address/update-address/lib/use-update-address';
 import { useDeleteAddress } from '@/features/address/delete-address/lib/use-delete-address';
 import { useSetDefaultAddress } from '@/features/address/set-default-address/lib/use-set-default-address';
+import { AddressesListSkeleton } from './skeleton/AddressesListSkeleton';
 import type { Address } from '@/entities/address/model/types';
 
 const addressSchema = z.object({
@@ -284,18 +285,6 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className='space-y-4'>
-      {[...Array(2)].map((_, i) => (
-        <div
-          key={i}
-          className='h-36 animate-pulse rounded-sm bg-secondary/50'
-        />
-      ))}
-    </div>
-  );
-}
 
 export function AddressesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -371,7 +360,7 @@ export function AddressesPage() {
 
         {/* Content */}
         {isLoading ? (
-          <LoadingSkeleton />
+          <AddressesListSkeleton />
         ) : error ? (
           <div className='rounded-sm border border-destructive/50 bg-destructive/10 p-6 text-center'>
             <p className='text-destructive'>配送先の読み込みに失敗しました</p>

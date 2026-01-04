@@ -11,6 +11,7 @@ import { useClearCart } from '@/features/cart/clear-cart/lib/use-clear-cart';
 import { CartItemCard } from './sections/CartItemCard';
 import { CartSummary } from './sections/CartSummary';
 import { EmptyCart } from './sections/EmptyCart';
+import { CartPageSkeleton } from './skeleton/CartPageSkeleton';
 
 export function CartPage() {
   const { data: cart, isLoading, error } = useCart();
@@ -47,29 +48,7 @@ export function CartPage() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
-        <div className='animate-pulse'>
-          <div className='h-8 w-48 rounded bg-secondary' />
-          <div className='mt-8 grid gap-8 lg:grid-cols-3'>
-            <div className='space-y-6 lg:col-span-2'>
-              {[1, 2, 3].map((i) => (
-                <div key={i} className='flex gap-4 border-b border-border py-6'>
-                  <div className='h-24 w-24 rounded bg-secondary' />
-                  <div className='flex-1 space-y-3'>
-                    <div className='h-4 w-3/4 rounded bg-secondary' />
-                    <div className='h-3 w-1/2 rounded bg-secondary' />
-                    <div className='h-3 w-1/4 rounded bg-secondary' />
-                  </div>
-                  <div className='h-4 w-16 rounded bg-secondary' />
-                </div>
-              ))}
-            </div>
-            <div className='h-72 rounded-sm bg-secondary' />
-          </div>
-        </div>
-      </div>
-    );
+    return <CartPageSkeleton />;
   }
 
   // Error state

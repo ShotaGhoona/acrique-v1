@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { useOrders } from '@/features/order/get-orders/lib/use-orders';
+import { OrdersListSkeleton } from './skeleton/OrdersListSkeleton';
 import type { Order, OrderStatus } from '@/entities/order/model/types';
 
 const statusLabels: Record<OrderStatus, string> = {
@@ -137,18 +138,6 @@ function EmptyState() {
   );
 }
 
-function LoadingSkeleton() {
-  return (
-    <div className='space-y-4'>
-      {[...Array(3)].map((_, i) => (
-        <div
-          key={i}
-          className='h-32 animate-pulse rounded-sm bg-secondary/50'
-        />
-      ))}
-    </div>
-  );
-}
 
 export function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
@@ -190,7 +179,7 @@ export function OrdersPage() {
 
         {/* Orders List */}
         {isLoading ? (
-          <LoadingSkeleton />
+          <OrdersListSkeleton />
         ) : error ? (
           <div className='rounded-sm border border-destructive/50 bg-destructive/10 p-6 text-center'>
             <p className='text-destructive'>注文履歴の読み込みに失敗しました</p>

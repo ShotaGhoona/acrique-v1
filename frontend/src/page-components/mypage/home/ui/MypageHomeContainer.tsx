@@ -21,6 +21,11 @@ import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { useGetMe } from '@/features/user/get-me/lib/use-get-me';
 import { useOrders } from '@/features/order/get-orders/lib/use-orders';
 import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
+import {
+  OrderStatusSummarySkeleton,
+  RecentOrdersSkeleton,
+  AccountInfoSkeleton,
+} from './skeleton/MypageHomeSkeleton';
 import type { Order, OrderStatus } from '@/entities/order/model/types';
 
 const statusLabels: Record<OrderStatus, string> = {
@@ -180,14 +185,7 @@ export function MypageDashboard() {
             注文状況
           </h2>
           {ordersLoading ? (
-            <div className='grid grid-cols-3 gap-4'>
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className='h-24 animate-pulse rounded-sm bg-secondary/50'
-                />
-              ))}
-            </div>
+            <OrderStatusSummarySkeleton />
           ) : (
             <OrderStatusSummary orders={orders} />
           )}
@@ -240,14 +238,7 @@ export function MypageDashboard() {
           <Card>
             <CardContent className='p-0'>
               {ordersLoading ? (
-                <div className='space-y-4 p-6'>
-                  {[...Array(3)].map((_, i) => (
-                    <div
-                      key={i}
-                      className='h-12 animate-pulse rounded-sm bg-secondary/50'
-                    />
-                  ))}
-                </div>
+                <RecentOrdersSkeleton />
               ) : recentOrders.length > 0 ? (
                 <div className='px-6'>
                   {recentOrders.map((order) => (
@@ -281,10 +272,7 @@ export function MypageDashboard() {
           <Card>
             <CardContent className='p-6'>
               {userLoading ? (
-                <div className='space-y-3'>
-                  <div className='h-5 w-32 animate-pulse rounded bg-secondary/50' />
-                  <div className='h-4 w-48 animate-pulse rounded bg-secondary/50' />
-                </div>
+                <AccountInfoSkeleton />
               ) : (
                 <div className='grid gap-4 sm:grid-cols-2'>
                   <div>

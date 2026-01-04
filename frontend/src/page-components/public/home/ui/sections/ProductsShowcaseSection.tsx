@@ -10,6 +10,7 @@ import {
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import type { ProductListItem } from '@/entities/product/model/types';
 import { useProductsByCategory } from '@/features/product/get-products/lib/use-products';
+import { ProductsGridSkeleton } from '../skeleton/ProductsShowcaseSkeleton';
 
 function ProductCard({
   product,
@@ -84,9 +85,7 @@ function CategorySection({
           className={`lg:col-span-9 ${reverse ? 'lg:order-1' : 'lg:order-2'}`}
         >
           {isLoading ? (
-            <div className='text-center text-muted-foreground'>
-              読み込み中...
-            </div>
+            <ProductsGridSkeleton />
           ) : (
             <div className='grid grid-cols-2 gap-6 md:grid-cols-3'>
               {products.map((product) => (

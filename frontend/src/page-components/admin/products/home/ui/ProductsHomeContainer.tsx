@@ -43,6 +43,7 @@ import {
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useProducts } from '@/features/product/get-products/lib/use-products';
+import { ProductsTableSkeleton } from './skeleton/ProductsTableSkeleton';
 import {
   categories,
   getCategoryIds,
@@ -80,9 +81,7 @@ export function ProductsHomeContainer() {
   if (isLoading) {
     return (
       <AdminLayout title='商品管理'>
-        <div className='flex min-h-[400px] items-center justify-center'>
-          <p className='text-muted-foreground'>読み込み中...</p>
-        </div>
+        <ProductsTableSkeleton />
       </AdminLayout>
     );
   }

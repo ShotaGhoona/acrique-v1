@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 
 from sqlalchemy.orm import Session
 
+from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
     ProductFeatureModel,
@@ -19,6 +20,7 @@ from app.infrastructure.db.models.product_model import (
     ProductSpecModel,
 )
 from app.infrastructure.db.models.user_model import UserModel
+from app.infrastructure.db.seeds.address_seed import ADDRESSES
 from app.infrastructure.db.seeds.product_seed import (
     PRODUCT_FAQS,
     PRODUCT_FEATURES,
@@ -142,6 +144,49 @@ def seed_users(session: Session) -> None:
     print(f'  ユーザーを {len(USERS)} 件登録しました')
 
 
+def seed_addresses(session: Session) -> None:
+    """配送先データをシード"""
+    print('配送先データをシード中...')
+
+    # ユーザーのメールアドレスからIDを取得するマップを作成
+    seed_emails = [user['email'] for user in USERS]
+    users = session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    email_to_user_id = {user.email: user.id for user in users}
+
+    # シードユーザーの既存配送先を削除
+    user_ids = list(email_to_user_id.values())
+    session.query(AddressModel).filter(AddressModel.user_id.in_(user_ids)).delete(
+        synchronize_session=False
+    )
+    session.commit()
+    print('  既存配送先を削除しました')
+
+    # 配送先を登録
+    count = 0
+    for address_data in ADDRESSES:
+        user_email = address_data['user_email']
+        if user_email not in email_to_user_id:
+            print(f'  警告: ユーザー {user_email} が見つかりません')
+            continue
+
+        address = AddressModel(
+            user_id=email_to_user_id[user_email],
+            label=address_data['label'],
+            name=address_data['name'],
+            postal_code=address_data['postal_code'],
+            prefecture=address_data['prefecture'],
+            city=address_data['city'],
+            address1=address_data['address1'],
+            address2=address_data['address2'],
+            phone=address_data['phone'],
+            is_default=address_data['is_default'],
+        )
+        session.add(address)
+        count += 1
+    session.commit()
+    print(f'  配送先を {count} 件登録しました')
+
+
 def run_all_seeds() -> None:
     """全シードを実行"""
     print('=' * 50)
@@ -151,6 +196,7 @@ def run_all_seeds() -> None:
     session = SessionLocal()
     try:
         seed_users(session)
+        seed_addresses(session)
         seed_products(session)
         print('=' * 50)
         print('シード完了')

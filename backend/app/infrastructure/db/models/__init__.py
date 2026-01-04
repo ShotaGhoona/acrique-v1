@@ -1,5 +1,6 @@
 """DBモデル"""
 
+from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.base import Base
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
@@ -18,6 +19,7 @@ __all__ = [
     'Base',
     'UserModel',
     'VerificationTokenModel',
+    'AddressModel',
     'ProductModel',
     'ProductImageModel',
     'ProductOptionModel',

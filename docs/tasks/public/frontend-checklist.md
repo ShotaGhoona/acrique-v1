@@ -94,6 +94,7 @@
 | API クライアント設定 | [x] |
 | エラーハンドリング | [ ] |
 | ローディング状態 | [ ] |
+| ローディングをスケルトンに置き換え | [ ] |
 | トースト通知 | [ ] |
 | モーダル共通 | [ ] |
 | ページネーション | [ ] |
@@ -143,3 +144,27 @@
 | プレビュー表示 | [ ] |
 | ファイル形式バリデーション | [ ] |
 | アップロード進捗 | [ ] |
+
+## ユーザー機能
+
+| タスク | 状況 |
+|--------|------|
+| entities/user | [x] |
+| features/user/get-me | [x] |
+| features/user/update-me | [x] |
+| features/user/change-password | [x] |
+| プロフィール編集UI | [ ] |
+| パスワード変更UI | [ ] |
+
+## 配送先機能
+
+| タスク | 状況 |
+|--------|------|
+| entities/address | [x] |
+| features/address/get-addresses | [x] |
+| features/address/create-address | [x] |
+| features/address/update-address | [x] |
+| features/address/delete-address | [x] |
+| features/address/set-default-address | [x] |
+| 配送先一覧UI | [ ] |
+| 配送先追加・編集フォーム | [ ] |

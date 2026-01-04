@@ -1,9 +1,9 @@
-import { HeroSection } from '@/widgets/home/ui/HeroSection';
-import { BrandStorySection } from '@/widgets/home/ui/BrandStorySection';
-import { ProductsShowcaseSection } from '@/widgets/home/ui/ProductsShowcaseSection';
-import { FeaturesSection } from '@/widgets/home/ui/FeaturesSection';
-import { GallerySection } from '@/widgets/home/ui/GallerySection';
-import { CTASection } from '@/widgets/home/ui/CTASection';
+import { HeroSection } from './sections/HeroSection';
+import { BrandStorySection } from './sections/BrandStorySection';
+import { ProductsShowcaseSection } from './sections/ProductsShowcaseSection';
+import { FeaturesSection } from './sections/FeaturesSection';
+import { GallerySection } from './sections/GallerySection';
+import { CTASection } from './sections/CTASection';
 
 export function HomePage() {
   return (

@@ -8,9 +8,9 @@ import { useCart } from '@/features/cart/get-cart';
 import { useUpdateCartItem } from '@/features/cart/update-cart-item';
 import { useDeleteCartItem } from '@/features/cart/delete-cart-item';
 import { useClearCart } from '@/features/cart/clear-cart';
-import { CartItemCard } from '@/widgets/cart/ui/CartItemCard';
-import { CartSummary } from '@/widgets/cart/ui/CartSummary';
-import { EmptyCart } from '@/widgets/cart/ui/EmptyCart';
+import { CartItemCard } from './sections/CartItemCard';
+import { CartSummary } from './sections/CartSummary';
+import { EmptyCart } from './sections/EmptyCart';
 
 export function CartPage() {
   const { data: cart, isLoading, error } = useCart();

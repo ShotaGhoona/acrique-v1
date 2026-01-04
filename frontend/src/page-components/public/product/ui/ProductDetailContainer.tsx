@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { ProductHeroSection } from '@/widgets/product/ui/ProductHeroSection';
-import { ProductDetailsSection } from '@/widgets/product/ui/ProductDetailsSection';
-import { ProductFAQSection } from '@/widgets/product/ui/ProductFAQSection';
-import { RelatedProductsSection } from '@/widgets/product/ui/RelatedProductsSection';
-import { StickyCartBar } from '@/widgets/product/ui/StickyCartBar';
+import { ProductHeroSection } from './sections/ProductHeroSection';
+import { ProductDetailsSection } from './sections/ProductDetailsSection';
+import { ProductFAQSection } from './sections/ProductFAQSection';
+import { RelatedProductsSection } from './sections/RelatedProductsSection';
+import { StickyCartBar } from './sections/StickyCartBar';
 import type { ProductDetail } from '@/entities/product';
 
 interface ProductPageProps {

@@ -1,8 +1,8 @@
 'use client';
 
-import { ContactHeroSection } from '@/widgets/contact/ui/ContactHeroSection';
-import { ContactFormSection } from '@/widgets/contact/ui/ContactFormSection';
-import { ContactInfoSection } from '@/widgets/contact/ui/ContactInfoSection';
+import { ContactHeroSection } from './sections/ContactHeroSection';
+import { ContactFormSection } from './sections/ContactFormSection';
+import { ContactInfoSection } from './sections/ContactInfoSection';
 
 export function ContactPage() {
   return (

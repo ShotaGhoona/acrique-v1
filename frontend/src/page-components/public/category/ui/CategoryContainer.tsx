@@ -7,11 +7,11 @@ import {
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import { useProductsByCategory } from '@/features/product/get-products';
-import { CategoryHeroSection } from '@/widgets/category/ui/CategoryHeroSection';
-import { CategoryProductsSection } from '@/widgets/category/ui/CategoryProductsSection';
-import { CategoryUseCasesSection } from '@/widgets/category/ui/CategoryUseCasesSection';
-import { CategoryFeaturesSection } from '@/widgets/category/ui/CategoryFeaturesSection';
-import { CategoryCTASection } from '@/widgets/category/ui/CategoryCTASection';
+import { CategoryHeroSection } from './sections/CategoryHeroSection';
+import { CategoryProductsSection } from './sections/CategoryProductsSection';
+import { CategoryUseCasesSection } from './sections/CategoryUseCasesSection';
+import { CategoryFeaturesSection } from './sections/CategoryFeaturesSection';
+import { CategoryCTASection } from './sections/CategoryCTASection';
 
 interface CategoryPageProps {
   categoryId: string;

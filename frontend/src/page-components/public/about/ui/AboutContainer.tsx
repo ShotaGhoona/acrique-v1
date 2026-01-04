@@ -1,11 +1,11 @@
 'use client';
 
-import { AboutHeroSection } from '@/widgets/about/ui/AboutHeroSection';
-import { AboutPhilosophySection } from '@/widgets/about/ui/AboutPhilosophySection';
-import { AboutStorySection } from '@/widgets/about/ui/AboutStorySection';
-import { AboutCraftSection } from '@/widgets/about/ui/AboutCraftSection';
-import { AboutValuesSection } from '@/widgets/about/ui/AboutValuesSection';
-import { AboutCTASection } from '@/widgets/about/ui/AboutCTASection';
+import { AboutHeroSection } from './sections/AboutHeroSection';
+import { AboutPhilosophySection } from './sections/AboutPhilosophySection';
+import { AboutStorySection } from './sections/AboutStorySection';
+import { AboutCraftSection } from './sections/AboutCraftSection';
+import { AboutValuesSection } from './sections/AboutValuesSection';
+import { AboutCTASection } from './sections/AboutCTASection';
 
 export function AboutPage() {
   return (

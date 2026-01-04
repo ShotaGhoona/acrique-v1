@@ -9,6 +9,7 @@ from app.application.schemas.order_schemas import (
     CancelOrderInputDTO,
     CancelOrderOutputDTO,
     CreateOrderInputDTO,
+    CreateOrderItemInputDTO,
     CreateOrderOutputDTO,
     GetOrderOutputDTO,
     GetOrdersInputDTO,
@@ -16,7 +17,6 @@ from app.application.schemas.order_schemas import (
     OrderDetailDTO,
     OrderDTO,
     OrderItemDTO,
-    OrderItemInputDTO,
 )
 from app.domain.entities.order import Order, OrderItem, OrderStatus
 from app.domain.repositories.address_repository import IAddressRepository
@@ -145,7 +145,7 @@ class OrderUsecase:
             )
 
     def _build_order_items_from_input(
-        self, items: list[OrderItemInputDTO]
+        self, items: list[CreateOrderItemInputDTO]
     ) -> list[OrderItem]:
         """入力から注文明細を作成"""
         order_items: list[OrderItem] = []

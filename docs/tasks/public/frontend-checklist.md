@@ -61,19 +61,19 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/admin/login` | 管理者ログイン | [x] | [ ] |
-| `/admin` | ダッシュボード | [x] | [ ] |
-| `/admin/orders` | 注文一覧 | [x] | [ ] |
-| `/admin/orders/[id]` | 注文詳細・編集 | [x] | [ ] |
+| `/admin/login` | 管理者ログイン | [x] | [x] |
+| `/admin` | ダッシュボード | [x] | [x] |
+| `/admin/orders` | 注文一覧 | [x] | [x] |
+| `/admin/orders/[id]` | 注文詳細・編集 | [x] | [x] |
 | `/admin/products` | 商品一覧 | [x] | [x] |
-| `/admin/products/new` | 商品追加 | [x] | [ ] |
+| `/admin/products/new` | 商品追加 | [x] | [x] |
 | `/admin/products/[id]` | 商品編集 | [x] | [x] |
 | `/admin/uploads` | 入稿データ一覧 | [x] | [ ] |
 | `/admin/uploads/[id]` | 入稿確認・承認 | [x] | [ ] |
-| `/admin/users` | 顧客一覧 | [x] | [ ] |
-| `/admin/users/[id]` | 顧客詳細 | [x] | [ ] |
-| `/admin/admins` | 管理者一覧 | [x] | [ ] |
-| `/admin/logs` | 操作ログ | [x] | [ ] |
+| `/admin/users` | 顧客一覧 | [x] | [x] |
+| `/admin/users/[id]` | 顧客詳細 | [x] | [x] |
+| `/admin/admins` | 管理者一覧 | [x] | [x] |
+| `/admin/logs` | 操作ログ | [x] | [x] |
 | `/admin/settings` | サイト設定 | [x] | [ ] |
 
 ---
@@ -190,3 +190,4 @@
 |--------|------|------|
 | レイアウト関係をlayout.tsxに集約 | [ ] | 各page.tsx内のレイアウト定義をApp Router の layout.tsx に移動し、page.tsx はコンテンツのみに専念させる |
 | page-componentsとwidgetsの構造整理 | [ ] | FSD設計に準拠した適切な責務分離・ディレクトリ構造の見直し |
+| adminのfeatureにtypeを入れてformを整理 | [ ] | |

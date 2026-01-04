@@ -121,10 +121,16 @@
 
 | タスク | 状況 |
 |--------|------|
-| カート追加 | [ ] |
-| 数量変更 | [ ] |
-| 削除 | [ ] |
-| 小計計算 | [ ] |
+| entities/cart | [x] |
+| features/cart/get-cart | [x] |
+| features/cart/add-to-cart | [x] |
+| features/cart/update-cart-item | [x] |
+| features/cart/delete-cart-item | [x] |
+| features/cart/clear-cart | [x] |
+| カート一覧UI | [ ] |
+| カート追加ボタン | [ ] |
+| 数量変更UI | [ ] |
+| 小計計算表示 | [ ] |
 | ローカルストレージ同期 | [ ] |
 
 ## 決済機能

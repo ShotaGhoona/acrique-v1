@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 from sqlalchemy.orm import Session
 
 from app.infrastructure.db.models.address_model import AddressModel
+from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
     ProductFeatureModel,
@@ -21,6 +22,7 @@ from app.infrastructure.db.models.product_model import (
 )
 from app.infrastructure.db.models.user_model import UserModel
 from app.infrastructure.db.seeds.address_seed import ADDRESSES
+from app.infrastructure.db.seeds.cart_seed import CART_ITEMS
 from app.infrastructure.db.seeds.product_seed import (
     PRODUCT_FAQS,
     PRODUCT_FEATURES,
@@ -130,6 +132,19 @@ def seed_users(session: Session) -> None:
 
     # 既存のシードユーザーを削除（メールアドレスで判定）
     seed_emails = [user['email'] for user in USERS]
+
+    # 先に関連するカートと配送先を削除（外部キー制約対応）
+    existing_users = session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    existing_user_ids = [u.id for u in existing_users]
+    if existing_user_ids:
+        session.query(CartItemModel).filter(
+            CartItemModel.user_id.in_(existing_user_ids)
+        ).delete(synchronize_session=False)
+        session.query(AddressModel).filter(
+            AddressModel.user_id.in_(existing_user_ids)
+        ).delete(synchronize_session=False)
+        session.commit()
+
     session.query(UserModel).filter(UserModel.email.in_(seed_emails)).delete(
         synchronize_session=False
     )
@@ -187,6 +202,43 @@ def seed_addresses(session: Session) -> None:
     print(f'  配送先を {count} 件登録しました')
 
 
+def seed_cart(session: Session) -> None:
+    """カートデータをシード"""
+    print('カートデータをシード中...')
+
+    # ユーザーのメールアドレスからIDを取得するマップを作成
+    seed_emails = [user['email'] for user in USERS]
+    users = session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    email_to_user_id = {user.email: user.id for user in users}
+
+    # シードユーザーの既存カートアイテムを削除
+    user_ids = list(email_to_user_id.values())
+    session.query(CartItemModel).filter(CartItemModel.user_id.in_(user_ids)).delete(
+        synchronize_session=False
+    )
+    session.commit()
+    print('  既存カートアイテムを削除しました')
+
+    # カートアイテムを登録
+    count = 0
+    for cart_item_data in CART_ITEMS:
+        user_email = cart_item_data['user_email']
+        if user_email not in email_to_user_id:
+            print(f'  警告: ユーザー {user_email} が見つかりません')
+            continue
+
+        cart_item = CartItemModel(
+            user_id=email_to_user_id[user_email],
+            product_id=cart_item_data['product_id'],
+            quantity=cart_item_data['quantity'],
+            options=cart_item_data.get('options'),
+        )
+        session.add(cart_item)
+        count += 1
+    session.commit()
+    print(f'  カートアイテムを {count} 件登録しました')
+
+
 def run_all_seeds() -> None:
     """全シードを実行"""
     print('=' * 50)
@@ -198,6 +250,7 @@ def run_all_seeds() -> None:
         seed_users(session)
         seed_addresses(session)
         seed_products(session)
+        seed_cart(session)
         print('=' * 50)
         print('シード完了')
         print('=' * 50)

@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.infrastructure.logging.logging import setup_logging
 from app.presentation.api.address_api import router as address_router
 from app.presentation.api.auth_api import router as auth_router
+from app.presentation.api.cart_api import router as cart_router
 from app.presentation.api.product_api import router as product_router
 from app.presentation.api.user_api import router as user_router
 
@@ -57,6 +58,7 @@ app.include_router(auth_router, prefix='/api')
 app.include_router(user_router, prefix='/api')
 app.include_router(address_router, prefix='/api')
 app.include_router(product_router, prefix='/api')
+app.include_router(cart_router, prefix='/api')
 
 
 # ヘルスチェックエンドポイント（ALB/ECS用）

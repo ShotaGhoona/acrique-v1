@@ -174,3 +174,16 @@
 | features/address/set-default-address | [x] |
 | 配送先一覧UI | [ ] |
 | 配送先追加・編集フォーム | [ ] |
+
+## 注文機能
+
+| タスク | 状況 |
+|--------|------|
+| entities/order | [x] |
+| features/order/get-orders | [x] |
+| features/order/get-order | [x] |
+| features/order/create-order | [x] |
+| features/order/cancel-order | [x] |
+| 注文一覧UI | [ ] |
+| 注文詳細UI | [ ] |
+| チェックアウトUI | [ ] |

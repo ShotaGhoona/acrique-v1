@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.application.use_cases.cart_usecase import CartUsecase
-from app.di.auth import get_db
+from app.di import get_db
 from app.infrastructure.db.repositories.cart_item_repository_impl import (
     CartItemRepositoryImpl,
 )

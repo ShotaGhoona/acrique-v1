@@ -1,13 +1,7 @@
+"""認証APIエンドポイント"""
+
 from fastapi import APIRouter, Depends, Response, status
 
-from app.application.schemas.auth_schemas import (
-    LoginInputDTO,
-    PasswordResetConfirmInputDTO,
-    PasswordResetRequestInputDTO,
-    RegisterInputDTO,
-    ResendVerificationInputDTO,
-    VerifyEmailInputDTO,
-)
 from app.application.use_cases.auth_usecase import AuthUsecase
 from app.di.auth import get_auth_usecase
 from app.infrastructure.security.security_service_impl import (
@@ -42,21 +36,8 @@ def register(
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> RegisterResponse:
     """会員登録エンドポイント"""
-    input_dto = RegisterInputDTO(
-        email=request.email,
-        password=request.password,
-        name=request.name,
-        name_kana=request.name_kana,
-        phone=request.phone,
-        company=request.company,
-    )
-    output_dto = auth_usecase.register(input_dto)
-
-    return RegisterResponse(
-        user_id=output_dto.user_id,
-        email=output_dto.email,
-        message=output_dto.message,
-    )
+    output_dto = auth_usecase.register(request.to_dto())
+    return RegisterResponse.from_dto(output_dto)
 
 
 @router.post('/login', response_model=LoginResponse, status_code=status.HTTP_200_OK)
@@ -66,9 +47,7 @@ def login(
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> LoginResponse:
     """ログインエンドポイント"""
-    input_dto = LoginInputDTO(email=request.email, password=request.password)
-
-    output_dto = auth_usecase.login(input_dto)
+    output_dto = auth_usecase.login(request.to_dto())
 
     # Cookieにアクセストークンを設定
     response.set_cookie(
@@ -80,11 +59,7 @@ def login(
         max_age=7 * 24 * 60 * 60,  # 7日間
     )
 
-    return LoginResponse(
-        message='ログイン成功',
-        access_token=output_dto.access_token,
-        user_id=output_dto.user_id,
-    )
+    return LoginResponse.from_dto(output_dto)
 
 
 @router.post('/logout', response_model=LogoutResponse, status_code=status.HTTP_200_OK)
@@ -96,8 +71,7 @@ def logout(
     """ログアウトエンドポイント"""
     output_dto = auth_usecase.logout()
     response.delete_cookie(key='access_token')
-
-    return LogoutResponse(message=output_dto.message)
+    return LogoutResponse.from_dto(output_dto)
 
 
 @router.get('/status', response_model=StatusResponse, status_code=status.HTTP_200_OK)
@@ -107,14 +81,7 @@ def get_status(
 ) -> StatusResponse:
     """認証状態取得エンドポイント"""
     output_dto = auth_usecase.get_auth_status(user_id=current_user.id)
-
-    return StatusResponse(
-        is_authenticated=output_dto.is_authenticated,
-        user_id=output_dto.user_id,
-        email=output_dto.email,
-        name=output_dto.name,
-        is_email_verified=output_dto.is_email_verified,
-    )
+    return StatusResponse.from_dto(output_dto)
 
 
 @router.post(
@@ -125,13 +92,8 @@ def verify_email(
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> VerifyEmailResponse:
     """メール認証エンドポイント"""
-    input_dto = VerifyEmailInputDTO(token=request.token)
-    output_dto = auth_usecase.verify_email(input_dto)
-
-    return VerifyEmailResponse(
-        message=output_dto.message,
-        verified_at=output_dto.verified_at,
-    )
+    output_dto = auth_usecase.verify_email(request.to_dto())
+    return VerifyEmailResponse.from_dto(output_dto)
 
 
 @router.post(
@@ -144,10 +106,8 @@ def request_password_reset(
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> PasswordResetResponse:
     """パスワードリセット依頼エンドポイント"""
-    input_dto = PasswordResetRequestInputDTO(email=request.email)
-    output_dto = auth_usecase.request_password_reset(input_dto)
-
-    return PasswordResetResponse(message=output_dto.message)
+    output_dto = auth_usecase.request_password_reset(request.to_dto())
+    return PasswordResetResponse.from_dto(output_dto)
 
 
 @router.post(
@@ -160,13 +120,8 @@ def confirm_password_reset(
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> PasswordResetConfirmResponse:
     """パスワードリセット実行エンドポイント"""
-    input_dto = PasswordResetConfirmInputDTO(
-        token=request.token,
-        new_password=request.new_password,
-    )
-    output_dto = auth_usecase.confirm_password_reset(input_dto)
-
-    return PasswordResetConfirmResponse(message=output_dto.message)
+    output_dto = auth_usecase.confirm_password_reset(request.to_dto())
+    return PasswordResetConfirmResponse.from_dto(output_dto)
 
 
 @router.post(
@@ -179,7 +134,5 @@ def resend_verification_email(
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> ResendVerificationResponse:
     """メール認証再送信エンドポイント"""
-    input_dto = ResendVerificationInputDTO(email=request.email)
-    output_dto = auth_usecase.resend_verification_email(input_dto)
-
-    return ResendVerificationResponse(message=output_dto.message)
+    output_dto = auth_usecase.resend_verification_email(request.to_dto())
+    return ResendVerificationResponse.from_dto(output_dto)

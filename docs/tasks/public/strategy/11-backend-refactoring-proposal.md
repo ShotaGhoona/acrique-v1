@@ -254,45 +254,67 @@ app.add_exception_handler(DomainException, domain_exception_handler)
 
 ---
 
-### 提案2: スキーマの整理（優先度: 中）
+### 提案2: スキーマの整理（優先度: 中） ✅ 完了
 
 **目的**: 二重管理の解消と変換コードの削減
 
-**選択肢A: Application層のDTOをPresentation層で直接使用**
+**採用**: 選択肢B（変換メソッドパターン）
 
-```python
-# presentation/api/auth_api.py
-from app.application.schemas.auth_schemas import RegisterInputDTO, RegisterOutputDTO
+アーキテクチャルール（line 303）に従い、`from_dto()`メソッドを使用する方式を採用。
+将来的なサニタイズ（strip_whitespace等）やファイルアップロード対応を考慮。
 
-@router.post('/register', response_model=RegisterOutputDTO)
-def register(
-    request: RegisterInputDTO,  # DTOを直接使用
-    auth_usecase: AuthUsecase = Depends(get_auth_usecase),
-) -> RegisterOutputDTO:
-    return auth_usecase.register(request)
-```
+**実装内容**:
 
-**選択肢B: Presentation層のスキーマに変換メソッドを追加**
+1. Presentation層のRequest/Responseに変換メソッドを追加
 
 ```python
 # presentation/schemas/auth_schemas.py
 class RegisterRequest(BaseModel):
-    ...
+    email: EmailStr = Field(..., description='メールアドレス')
+    password: str = Field(..., min_length=8, description='パスワード')
+    # ...
 
     def to_dto(self) -> RegisterInputDTO:
+        """Request → DTO 変換"""
         return RegisterInputDTO(**self.model_dump())
 
 class RegisterResponse(BaseModel):
-    ...
+    user_id: int
+    email: str
+    message: str
 
     @classmethod
-    def from_dto(cls, dto: RegisterOutputDTO) -> "RegisterResponse":
+    def from_dto(cls, dto: RegisterOutputDTO) -> RegisterResponse:
+        """DTO → Response 変換"""
         return cls(**dto.model_dump())
 ```
 
-**推奨**: 選択肢A（シンプルで保守性が高い）
+2. API層で変換メソッドを使用（コード量削減）
 
-ただし、Presentation層固有のフィールド（例: OpenAPI用のdescription）が必要な場合は選択肢Bを検討。
+```python
+# presentation/api/auth_api.py
+@router.post('/register', response_model=RegisterResponse)
+def register(
+    request: RegisterRequest,
+    auth_usecase: AuthUsecase = Depends(get_auth_usecase),
+) -> RegisterResponse:
+    output_dto = auth_usecase.register(request.to_dto())
+    return RegisterResponse.from_dto(output_dto)
+```
+
+**更新ファイル一覧**:
+- `presentation/schemas/auth_schemas.py` - 変換メソッド追加
+- `presentation/schemas/user_schemas.py` - 変換メソッド追加
+- `presentation/schemas/address_schemas.py` - 変換メソッド追加
+- `presentation/schemas/product_schemas.py` - 変換メソッド追加
+- `presentation/schemas/cart_schemas.py` - 変換メソッド追加
+- `presentation/schemas/order_schemas.py` - 変換メソッド追加
+- `presentation/api/auth_api.py` - 変換メソッド使用
+- `presentation/api/user_api.py` - 変換メソッド使用
+- `presentation/api/address_api.py` - 変換メソッド使用
+- `presentation/api/product_api.py` - 変換メソッド使用
+- `presentation/api/cart_api.py` - 変換メソッド使用
+- `presentation/api/order_api.py` - 変換メソッド使用
 
 ---
 
@@ -429,7 +451,7 @@ backend/app/
 |--------|------|------|------|
 | 高 | ドメイン例外の導入 | オニオンアーキテクチャ違反の解消 | **完了** (2026-01-04) |
 | 中 | DIモジュールの整理 | コードの重複削減 | **完了** (2026-01-04) |
-| 中 | スキーマの整理 | 保守性の向上 | 未着手 |
+| 中 | スキーマの整理 | 保守性の向上 | **完了** (2026-01-04) |
 | 低 | Value Objectsの導入 | 今後の拡張性向上 | 未着手 |
 | 低 | ログディレクトリの移動 | 軽微な構造改善 | 未着手 |
 

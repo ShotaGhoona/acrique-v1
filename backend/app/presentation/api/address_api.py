@@ -54,7 +54,9 @@ def get_address_list(
     )
 
 
-@router.post('', response_model=CreateAddressResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    '', response_model=CreateAddressResponse, status_code=status.HTTP_201_CREATED
+)
 def create_address(
     request: CreateAddressRequest,
     current_user: User = Depends(get_current_user_from_cookie),
@@ -92,7 +94,9 @@ def create_address(
     )
 
 
-@router.get('/{address_id}', response_model=GetAddressResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    '/{address_id}', response_model=GetAddressResponse, status_code=status.HTTP_200_OK
+)
 def get_address(
     address_id: int,
     current_user: User = Depends(get_current_user_from_cookie),

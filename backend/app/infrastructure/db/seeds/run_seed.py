@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.cart_item_model import CartItemModel
+from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
     ProductFeatureModel,
@@ -23,6 +24,7 @@ from app.infrastructure.db.models.product_model import (
 from app.infrastructure.db.models.user_model import UserModel
 from app.infrastructure.db.seeds.address_seed import ADDRESSES
 from app.infrastructure.db.seeds.cart_seed import CART_ITEMS
+from app.infrastructure.db.seeds.order_seed import ORDERS
 from app.infrastructure.db.seeds.product_seed import (
     PRODUCT_FAQS,
     PRODUCT_FEATURES,
@@ -133,13 +135,29 @@ def seed_users(session: Session) -> None:
     # 既存のシードユーザーを削除（メールアドレスで判定）
     seed_emails = [user['email'] for user in USERS]
 
-    # 先に関連するカートと配送先を削除（外部キー制約対応）
-    existing_users = session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    # 先に関連するカート、注文、配送先を削除（外部キー制約対応）
+    existing_users = (
+        session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    )
     existing_user_ids = [u.id for u in existing_users]
     if existing_user_ids:
+        # 注文明細を削除
+        session.query(OrderItemModel).filter(
+            OrderItemModel.order_id.in_(
+                session.query(OrderModel.id).filter(
+                    OrderModel.user_id.in_(existing_user_ids)
+                )
+            )
+        ).delete(synchronize_session=False)
+        # 注文を削除
+        session.query(OrderModel).filter(
+            OrderModel.user_id.in_(existing_user_ids)
+        ).delete(synchronize_session=False)
+        # カートを削除
         session.query(CartItemModel).filter(
             CartItemModel.user_id.in_(existing_user_ids)
         ).delete(synchronize_session=False)
+        # 配送先を削除
         session.query(AddressModel).filter(
             AddressModel.user_id.in_(existing_user_ids)
         ).delete(synchronize_session=False)
@@ -239,6 +257,102 @@ def seed_cart(session: Session) -> None:
     print(f'  カートアイテムを {count} 件登録しました')
 
 
+def seed_orders(session: Session) -> None:
+    """注文データをシード"""
+    print('注文データをシード中...')
+
+    # ユーザーのメールアドレスからIDを取得するマップを作成
+    seed_emails = [user['email'] for user in USERS]
+    users = session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    email_to_user_id = {user.email: user.id for user in users}
+
+    # ユーザーごとの配送先を取得
+    user_ids = list(email_to_user_id.values())
+    addresses = (
+        session.query(AddressModel).filter(AddressModel.user_id.in_(user_ids)).all()
+    )
+    user_addresses: dict[int, list[AddressModel]] = {}
+    for addr in addresses:
+        if addr.user_id not in user_addresses:
+            user_addresses[addr.user_id] = []
+        user_addresses[addr.user_id].append(addr)
+
+    # シードユーザーの既存注文を削除（注文番号で判定）
+    seed_order_numbers = [order['order_number'] for order in ORDERS]
+    session.query(OrderItemModel).filter(
+        OrderItemModel.order_id.in_(
+            session.query(OrderModel.id).filter(
+                OrderModel.order_number.in_(seed_order_numbers)
+            )
+        )
+    ).delete(synchronize_session=False)
+    session.query(OrderModel).filter(
+        OrderModel.order_number.in_(seed_order_numbers)
+    ).delete(synchronize_session=False)
+    session.commit()
+    print('  既存シード注文を削除しました')
+
+    # 注文を登録
+    order_count = 0
+    item_count = 0
+    for order_data in ORDERS:
+        user_email = order_data['user_email']
+        if user_email not in email_to_user_id:
+            print(f'  警告: ユーザー {user_email} が見つかりません')
+            continue
+
+        user_id = email_to_user_id[user_email]
+
+        # 配送先IDを取得
+        shipping_address_id = None
+        if user_id in user_addresses and user_addresses[user_id]:
+            addr_index = order_data.get('shipping_address_index', 0)
+            if addr_index < len(user_addresses[user_id]):
+                shipping_address_id = user_addresses[user_id][addr_index].id
+
+        order = OrderModel(
+            user_id=user_id,
+            order_number=order_data['order_number'],
+            status=order_data['status'],
+            shipping_address_id=shipping_address_id,
+            subtotal=order_data['subtotal'],
+            shipping_fee=order_data['shipping_fee'],
+            tax=order_data['tax'],
+            total=order_data['total'],
+            payment_method=order_data.get('payment_method'),
+            paid_at=order_data.get('paid_at'),
+            shipped_at=order_data.get('shipped_at'),
+            tracking_number=order_data.get('tracking_number'),
+            delivered_at=order_data.get('delivered_at'),
+            cancelled_at=order_data.get('cancelled_at'),
+            cancel_reason=order_data.get('cancel_reason'),
+            notes=order_data.get('notes'),
+        )
+        session.add(order)
+        session.flush()  # IDを取得するためにflush
+
+        # 注文明細を登録
+        for item_data in order_data.get('items', []):
+            item = OrderItemModel(
+                order_id=order.id,
+                product_id=item_data['product_id'],
+                product_name=item_data['product_name'],
+                product_name_ja=item_data.get('product_name_ja'),
+                quantity=item_data['quantity'],
+                unit_price=item_data['unit_price'],
+                options=item_data.get('options'),
+                subtotal=item_data['subtotal'],
+            )
+            session.add(item)
+            item_count += 1
+
+        order_count += 1
+
+    session.commit()
+    print(f'  注文を {order_count} 件登録しました')
+    print(f'  注文明細を {item_count} 件登録しました')
+
+
 def run_all_seeds() -> None:
     """全シードを実行"""
     print('=' * 50)
@@ -251,6 +365,7 @@ def run_all_seeds() -> None:
         seed_addresses(session)
         seed_products(session)
         seed_cart(session)
+        seed_orders(session)
         print('=' * 50)
         print('シード完了')
         print('=' * 50)

@@ -34,7 +34,7 @@ class AddressRepositoryImpl(IAddressRepository):
         """ユーザーのデフォルト配送先を取得"""
         address_model = (
             self.session.query(AddressModel)
-            .filter(AddressModel.user_id == user_id, AddressModel.is_default == True)
+            .filter(AddressModel.user_id == user_id, AddressModel.is_default.is_(True))
             .first()
         )
         if address_model is None:
@@ -113,7 +113,7 @@ class AddressRepositoryImpl(IAddressRepository):
     def clear_default(self, user_id: int) -> bool:
         """ユーザーのデフォルト配送先をクリア"""
         self.session.query(AddressModel).filter(
-            AddressModel.user_id == user_id, AddressModel.is_default == True
+            AddressModel.user_id == user_id, AddressModel.is_default.is_(True)
         ).update({'is_default': False})
         self.session.flush()
         return True

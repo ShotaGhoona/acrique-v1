@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from sqlalchemy import extract, or_
 from sqlalchemy.orm import Session
 
 from app.domain.entities.user import User
@@ -86,6 +87,55 @@ class UserRepositoryImpl(IUserRepository):
         self.session.delete(user_model)
         self.session.flush()
         return True
+
+    def get_all(
+        self,
+        search: str | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[User]:
+        """ユーザー一覧を取得（検索・ページネーション対応）"""
+        query = self.session.query(UserModel)
+
+        if search:
+            search_pattern = f'%{search}%'
+            query = query.filter(
+                or_(
+                    UserModel.email.ilike(search_pattern),
+                    UserModel.name.ilike(search_pattern),
+                )
+            )
+
+        query = query.order_by(UserModel.created_at.desc())
+        user_models = query.offset(offset).limit(limit).all()
+        return [self._to_entity(m) for m in user_models]
+
+    def count_all(self, search: str | None = None) -> int:
+        """ユーザー数を取得"""
+        query = self.session.query(UserModel)
+
+        if search:
+            search_pattern = f'%{search}%'
+            query = query.filter(
+                or_(
+                    UserModel.email.ilike(search_pattern),
+                    UserModel.name.ilike(search_pattern),
+                )
+            )
+
+        return query.count()
+
+    def count_new_this_month(self) -> int:
+        """今月の新規ユーザー数を取得"""
+        now = datetime.now()
+        return (
+            self.session.query(UserModel)
+            .filter(
+                extract('year', UserModel.created_at) == now.year,
+                extract('month', UserModel.created_at) == now.month,
+            )
+            .count()
+        )
 
     def _to_entity(self, user_model: UserModel) -> User:
         """DBモデルをエンティティに変換"""

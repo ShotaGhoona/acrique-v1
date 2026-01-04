@@ -1,7 +1,9 @@
 """注文リポジトリ実装"""
 
 from datetime import datetime
+from typing import Any
 
+from sqlalchemy import and_, extract, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app.domain.entities.order import Order, OrderItem, OrderStatus, PaymentMethod
@@ -10,6 +12,7 @@ from app.domain.repositories.order_repository import (
     IOrderRepository,
 )
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
+from app.infrastructure.db.models.user_model import UserModel
 
 
 class OrderRepositoryImpl(IOrderRepository):
@@ -168,6 +171,192 @@ class OrderRepositoryImpl(IOrderRepository):
         )
 
         return f'{prefix}{count + 1:03d}'
+
+    def get_total_spent_by_user_id(self, user_id: int) -> int:
+        """ユーザーの累計購入金額を取得（キャンセル・未払いを除く）"""
+        excluded_statuses = [
+            OrderStatus.PENDING.value,
+            OrderStatus.AWAITING_PAYMENT.value,
+            OrderStatus.CANCELLED.value,
+        ]
+        result = (
+            self.session.query(func.coalesce(func.sum(OrderModel.total), 0))
+            .filter(OrderModel.user_id == user_id)
+            .filter(OrderModel.status.notin_(excluded_statuses))
+            .scalar()
+        )
+        return int(result)
+
+    def get_all(
+        self,
+        search: str | None = None,
+        status: list[OrderStatus] | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[Order]:
+        """注文一覧を取得（Admin用）"""
+        query = self.session.query(OrderModel).options(joinedload(OrderModel.items))
+
+        # 検索（注文番号、顧客名、メールアドレス）
+        if search:
+            search_pattern = f'%{search}%'
+            query = query.join(UserModel, OrderModel.user_id == UserModel.id).filter(
+                or_(
+                    OrderModel.order_number.ilike(search_pattern),
+                    UserModel.name.ilike(search_pattern),
+                    UserModel.email.ilike(search_pattern),
+                )
+            )
+
+        # ステータスフィルタ
+        if status:
+            status_values = [s.value for s in status]
+            query = query.filter(OrderModel.status.in_(status_values))
+
+        # 日付範囲フィルタ
+        if date_from:
+            query = query.filter(OrderModel.created_at >= date_from)
+        if date_to:
+            query = query.filter(OrderModel.created_at <= date_to)
+
+        order_models = (
+            query.order_by(OrderModel.created_at.desc()).offset(offset).limit(limit).all()
+        )
+        return [self._to_entity(model) for model in order_models]
+
+    def count_all(
+        self,
+        search: str | None = None,
+        status: list[OrderStatus] | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+    ) -> int:
+        """注文数を取得（Admin用）"""
+        query = self.session.query(OrderModel)
+
+        # 検索（注文番号、顧客名、メールアドレス）
+        if search:
+            search_pattern = f'%{search}%'
+            query = query.join(UserModel, OrderModel.user_id == UserModel.id).filter(
+                or_(
+                    OrderModel.order_number.ilike(search_pattern),
+                    UserModel.name.ilike(search_pattern),
+                    UserModel.email.ilike(search_pattern),
+                )
+            )
+
+        # ステータスフィルタ
+        if status:
+            status_values = [s.value for s in status]
+            query = query.filter(OrderModel.status.in_(status_values))
+
+        # 日付範囲フィルタ
+        if date_from:
+            query = query.filter(OrderModel.created_at >= date_from)
+        if date_to:
+            query = query.filter(OrderModel.created_at <= date_to)
+
+        return query.count()
+
+    def get_stats(
+        self,
+        date_from: datetime,
+        date_to: datetime,
+        group_by: str = 'daily',
+    ) -> list[dict[str, Any]]:
+        """売上統計を取得"""
+        # キャンセル・未払いを除外
+        excluded_statuses = [
+            OrderStatus.PENDING.value,
+            OrderStatus.AWAITING_PAYMENT.value,
+            OrderStatus.CANCELLED.value,
+        ]
+
+        if group_by == 'daily':
+            date_expr = func.date(OrderModel.created_at)
+        elif group_by == 'weekly':
+            date_expr = func.date_trunc('week', OrderModel.created_at)
+        else:  # monthly
+            date_expr = func.date_trunc('month', OrderModel.created_at)
+
+        results = (
+            self.session.query(
+                date_expr.label('date'),
+                func.count(OrderModel.id).label('orders'),
+                func.coalesce(func.sum(OrderModel.total), 0).label('revenue'),
+            )
+            .filter(OrderModel.created_at >= date_from)
+            .filter(OrderModel.created_at <= date_to)
+            .filter(OrderModel.status.notin_(excluded_statuses))
+            .group_by(date_expr)
+            .order_by(date_expr)
+            .all()
+        )
+
+        return [
+            {
+                'date': str(row.date),
+                'orders': row.orders,
+                'revenue': int(row.revenue),
+            }
+            for row in results
+        ]
+
+    def get_today_stats(self) -> dict[str, Any]:
+        """本日の統計を取得"""
+        today = datetime.now()
+        today_start = datetime(today.year, today.month, today.day)
+        today_end = datetime(today.year, today.month, today.day, 23, 59, 59)
+
+        # キャンセル・未払いを除外
+        excluded_statuses = [
+            OrderStatus.PENDING.value,
+            OrderStatus.AWAITING_PAYMENT.value,
+            OrderStatus.CANCELLED.value,
+        ]
+
+        result = (
+            self.session.query(
+                func.count(OrderModel.id).label('orders'),
+                func.coalesce(func.sum(OrderModel.total), 0).label('revenue'),
+            )
+            .filter(OrderModel.created_at >= today_start)
+            .filter(OrderModel.created_at <= today_end)
+            .filter(OrderModel.status.notin_(excluded_statuses))
+            .first()
+        )
+
+        return {
+            'orders': result.orders if result else 0,
+            'revenue': int(result.revenue) if result else 0,
+        }
+
+    def get_pending_count(self) -> int:
+        """対応待ち注文数を取得"""
+        pending_statuses = [
+            OrderStatus.PAID.value,
+            OrderStatus.AWAITING_DATA.value,
+            OrderStatus.DATA_REVIEWING.value,
+        ]
+        return (
+            self.session.query(OrderModel)
+            .filter(OrderModel.status.in_(pending_statuses))
+            .count()
+        )
+
+    def get_processing_count(self) -> int:
+        """製作中注文数を取得"""
+        processing_statuses = [
+            OrderStatus.CONFIRMED.value,
+            OrderStatus.PROCESSING.value,
+        ]
+        return (
+            self.session.query(OrderModel)
+            .filter(OrderModel.status.in_(processing_statuses))
+            .count()
+        )
 
     def _to_entity(self, order_model: OrderModel) -> Order:
         """DBモデルをエンティティに変換"""

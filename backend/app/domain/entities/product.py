@@ -95,7 +95,7 @@ class ProductOptionValue(BaseModel):
     """商品オプション値エンティティ"""
 
     id: int | None = Field(None, description='オプション値ID')
-    option_id: int = Field(..., description='オプションID')
+    option_id: int | None = Field(None, description='オプションID')
     label: str = Field(..., description='ラベル (50mm角)')
     price_diff: int = Field(default=0, description='価格差分')
     description: str | None = Field(None, description='説明')

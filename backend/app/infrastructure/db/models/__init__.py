@@ -1,6 +1,7 @@
 """DBモデル"""
 
 from app.infrastructure.db.models.address_model import AddressModel
+from app.infrastructure.db.models.admin_model import AdminLogModel, AdminModel
 from app.infrastructure.db.models.base import Base
 from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
@@ -22,6 +23,8 @@ __all__ = [
     'UserModel',
     'VerificationTokenModel',
     'AddressModel',
+    'AdminModel',
+    'AdminLogModel',
     'CartItemModel',
     'OrderModel',
     'OrderItemModel',

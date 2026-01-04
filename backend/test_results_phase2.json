@@ -1,0 +1,825 @@
+[
+  {
+    "name": "Admin Login",
+    "method": "POST",
+    "endpoint": "/api/admin/auth/login",
+    "status": 200,
+    "success": true,
+    "response": {
+      "admin_id": 1,
+      "name": "システム管理者",
+      "role": "super_admin",
+      "message": "ログインしました"
+    }
+  },
+  {
+    "name": "Dashboard",
+    "method": "GET",
+    "endpoint": "/api/admin/dashboard",
+    "status": 200,
+    "success": true,
+    "response": {
+      "summary": {
+        "today_orders": 2,
+        "today_revenue": 44500,
+        "pending_orders": 0,
+        "processing_orders": 1,
+        "new_customers_this_month": 4
+      }
+    }
+  },
+  {
+    "name": "Dashboard Stats",
+    "method": "GET",
+    "endpoint": "/api/admin/dashboard/stats",
+    "status": 200,
+    "success": true,
+    "response": {
+      "data": [
+        {
+          "date": "2026-01-04",
+          "orders": 2,
+          "revenue": 44500
+        }
+      ],
+      "summary": {
+        "total_orders": 2,
+        "total_revenue": 44500
+      }
+    }
+  },
+  {
+    "name": "Get Orders",
+    "method": "GET",
+    "endpoint": "/api/admin/orders",
+    "status": 200,
+    "success": true,
+    "response": {
+      "orders": [
+        {
+          "id": 3,
+          "user_id": 7,
+          "order_number": "ORD-20250101-0001",
+          "status": "delivered",
+          "subtotal": 15000,
+          "shipping_fee": 500,
+          "tax": 1500,
+          "total": 17000,
+          "payment_method": "stripe",
+          "paid_at": "2025-12-25T02:04:10.732253",
+          "shipped_at": "2025-12-27T02:04:10.732258",
+          "tracking_number": "1234-5678-9012",
+          "delivered_at": "2025-12-30T02:04:10.732259",
+          "cancelled_at": null,
+          "notes": "配達時間は午後でお願いします",
+          "created_at": "2026-01-04T02:04:10.867095"
+        },
+        {
+          "id": 4,
+          "user_id": 7,
+          "order_number": "ORD-20250103-0002",
+          "status": "awaiting_payment",
+          "subtotal": 8000,
+          "shipping_fee": 500,
+          "tax": 800,
+          "total": 9300,
+          "payment_method": "bank_transfer",
+          "paid_at": null,
+          "shipped_at": null,
+          "tracking_number": null,
+          "delivered_at": null,
+          "cancelled_at": null,
+          "notes": null,
+          "created_at": "2026-01-04T02:04:10.867095"
+        },
+        {
+          "id": 5,
+          "user_id": 6,
+          "order_number": "ORD-20250102-0003",
+          "status": "processing",
+          "subtotal": 25000,
+          "shipping_fee": 0,
+          "tax": 2500,
+          "total": 27500,
+          "payment_method": "stripe",
+          "paid_at": "2026-01-02T02:04:10.732261",
+          "shipped_at": null,
+          "tracking_number": null,
+          "delivered_at": null,
+          "cancelled_at": null,
+          "notes": "領収書を同封してください",
+          "created_at": "2026-01-04T02:04:10.867095"
+        },
+        {
+          "id": 6,
+          "user_id": 6,
+          "order_number": "ORD-20250101-0004",
+          "status": "cancelled",
+          "subtotal": 12000,
+          "shipping_fee": 500,
+          "tax": 1200,
+          "total": 13700,
+          "payment_method": "stripe",
+          "paid_at": null,
+          "shipped_at": null,
+          "tracking_number": null,
+          "delivered_at": null,
+          "cancelled_at": "2025-12-28T02:04:10.732269",
+          "notes": null,
+          "created_at": "2026-01-04T02:04:10.867095"
+        }
+      ],
+      "total": 4,
+      "limit": 10,
+      "offset": 0
+    }
+  },
+  {
+    "name": "Get Order Detail",
+    "method": "GET",
+    "endpoint": "/api/admin/orders/3",
+    "status": 200,
+    "success": true,
+    "response": {
+      "order": {
+        "id": 3,
+        "user_id": 7,
+        "order_number": "ORD-20250101-0001",
+        "status": "delivered",
+        "subtotal": 15000,
+        "shipping_fee": 500,
+        "tax": 1500,
+        "total": 17000,
+        "payment_method": "stripe",
+        "paid_at": "2025-12-25T02:04:10.732253",
+        "shipped_at": "2025-12-27T02:04:10.732258",
+        "tracking_number": "1234-5678-9012",
+        "delivered_at": "2025-12-30T02:04:10.732259",
+        "cancelled_at": null,
+        "notes": "配達時間は午後でお願いします",
+        "created_at": "2026-01-04T02:04:10.867095",
+        "shipping_address_id": 13,
+        "stripe_payment_intent_id": null,
+        "confirmed_at": null,
+        "cancel_reason": null,
+        "admin_notes": null,
+        "updated_at": "2026-01-04T02:04:10.867095",
+        "items": [
+          {
+            "id": 5,
+            "product_id": "qr-cube",
+            "product_name": "QR Cube",
+            "product_name_ja": "QRキューブ",
+            "quantity": 2,
+            "unit_price": 5000,
+            "options": {
+              "size": {
+                "label": "M（60mm）",
+                "value": "medium",
+                "price_diff": 0
+              },
+              "finish": {
+                "label": "ミラー仕上げ",
+                "value": "mirror",
+                "price_diff": 1000
+              }
+            },
+            "subtotal": 10000
+          },
+          {
+            "id": 6,
+            "product_id": "logo-cutout",
+            "product_name": "Logo Cutout",
+            "product_name_ja": "ロゴ切り抜き",
+            "quantity": 1,
+            "unit_price": 5000,
+            "options": {
+              "size": {
+                "label": "S（100mm）",
+                "value": "small",
+                "price_diff": 0
+              }
+            },
+            "subtotal": 5000
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Update Order",
+    "method": "PUT",
+    "endpoint": "/api/admin/orders/3",
+    "status": 200,
+    "success": true,
+    "response": {
+      "order": {
+        "id": 3,
+        "user_id": 7,
+        "order_number": "ORD-20250101-0001",
+        "status": "delivered",
+        "subtotal": 15000,
+        "shipping_fee": 500,
+        "tax": 1500,
+        "total": 17000,
+        "payment_method": "stripe",
+        "paid_at": "2025-12-25T02:04:10.732253",
+        "shipped_at": "2025-12-27T02:04:10.732258",
+        "tracking_number": "1234-5678-9012",
+        "delivered_at": "2025-12-30T02:04:10.732259",
+        "cancelled_at": null,
+        "notes": "配達時間は午後でお願いします",
+        "created_at": "2026-01-04T02:04:10.867095",
+        "shipping_address_id": 13,
+        "stripe_payment_intent_id": null,
+        "confirmed_at": null,
+        "cancel_reason": null,
+        "admin_notes": "テスト管理者メモ",
+        "updated_at": "2026-01-04T17:49:05.196508",
+        "items": [
+          {
+            "id": 5,
+            "product_id": "qr-cube",
+            "product_name": "QR Cube",
+            "product_name_ja": "QRキューブ",
+            "quantity": 2,
+            "unit_price": 5000,
+            "options": {
+              "size": {
+                "label": "M（60mm）",
+                "value": "medium",
+                "price_diff": 0
+              },
+              "finish": {
+                "label": "ミラー仕上げ",
+                "value": "mirror",
+                "price_diff": 1000
+              }
+            },
+            "subtotal": 10000
+          },
+          {
+            "id": 6,
+            "product_id": "logo-cutout",
+            "product_name": "Logo Cutout",
+            "product_name_ja": "ロゴ切り抜き",
+            "quantity": 1,
+            "unit_price": 5000,
+            "options": {
+              "size": {
+                "label": "S（100mm）",
+                "value": "small",
+                "price_diff": 0
+              }
+            },
+            "subtotal": 5000
+          }
+        ]
+      },
+      "message": "注文情報を更新しました"
+    }
+  },
+  {
+    "name": "Get Products",
+    "method": "GET",
+    "endpoint": "/api/admin/products",
+    "status": 200,
+    "success": true,
+    "response": {
+      "products": [
+        {
+          "id": "wall-sign",
+          "name": "Floating Wall Sign",
+          "name_ja": "フローティングウォールサイン",
+          "slug": "wall-sign",
+          "tagline": "エントランスを、格上げする。",
+          "base_price": 38000,
+          "category_id": "office",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 1,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/wall-sign-1.jpg"
+        },
+        {
+          "id": "qr-cube",
+          "name": "QR Code Cube",
+          "name_ja": "QRコードキューブ",
+          "slug": "qr-cube",
+          "tagline": "あなたのQRを、アートに。",
+          "base_price": 8800,
+          "category_id": "shop",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 1,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/qr-cube-1.jpg"
+        },
+        {
+          "id": "card-display",
+          "name": "Trading Card Display",
+          "name_ja": "トレカディスプレイ",
+          "slug": "card-display",
+          "tagline": "大切な1枚を、博物館レベルで。",
+          "base_price": 12800,
+          "category_id": "you",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 1,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/card-display-1.jpg"
+        },
+        {
+          "id": "tombstones",
+          "name": "Deal Tombstones",
+          "name_ja": "成約記念モニュメント",
+          "slug": "tombstones",
+          "tagline": "節目を、刻む。",
+          "base_price": 28000,
+          "category_id": "office",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 2,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/tombstones-1.jpg"
+        },
+        {
+          "id": "logo-cutout",
+          "name": "Logo Cutout Object",
+          "name_ja": "ロゴカットアウト",
+          "slug": "logo-cutout",
+          "tagline": "ブランドを、立体化する。",
+          "base_price": 12800,
+          "category_id": "shop",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 2,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/logo-cutout-1.jpg"
+        },
+        {
+          "id": "wedding-board",
+          "name": "Wedding Welcome Board",
+          "name_ja": "ウェディングボード",
+          "slug": "wedding-board",
+          "tagline": "二人の門出を、彩る。",
+          "base_price": 25000,
+          "category_id": "you",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 2,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/wedding-board-1.jpg"
+        },
+        {
+          "id": "name-plate",
+          "name": "Desk Name Plate",
+          "name_ja": "役員用ネームプレート",
+          "slug": "name-plate",
+          "tagline": "デスクに、威厳を。",
+          "base_price": 18000,
+          "category_id": "office",
+          "is_active": true,
+          "is_featured": false,
+          "sort_order": 3,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/name-plate-1.jpg"
+        },
+        {
+          "id": "price-tag",
+          "name": "Luxury Price Tag",
+          "name_ja": "プライスタグ",
+          "slug": "price-tag",
+          "tagline": "商品の価値を、引き立てる。",
+          "base_price": 3800,
+          "category_id": "shop",
+          "is_active": true,
+          "is_featured": false,
+          "sort_order": 3,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/price-tag-1.jpg"
+        },
+        {
+          "id": "baby-print",
+          "name": "Baby Hand/Foot Print",
+          "name_ja": "手形足形アート",
+          "slug": "baby-print",
+          "tagline": "成長の証を、永遠に。",
+          "base_price": 18000,
+          "category_id": "you",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 3,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/baby-print-1.jpg"
+        },
+        {
+          "id": "award",
+          "name": "Award Trophy",
+          "name_ja": "アワードトロフィー",
+          "slug": "award",
+          "tagline": "功績を、称える。",
+          "base_price": 15000,
+          "category_id": "office",
+          "is_active": true,
+          "is_featured": true,
+          "sort_order": 4,
+          "created_at": "2026-01-04T02:04:10.842266",
+          "updated_at": "2026-01-04T02:04:10.842266",
+          "main_image_url": "/images/products/award-1.jpg"
+        }
+      ],
+      "total": 18,
+      "limit": 10,
+      "offset": 0
+    }
+  },
+  {
+    "name": "Create Product",
+    "method": "POST",
+    "endpoint": "/api/admin/products",
+    "status": 201,
+    "success": true,
+    "response": {
+      "product": {
+        "id": "test-product-001",
+        "name": "Test Product",
+        "name_ja": "テスト商品",
+        "slug": "test-product-001",
+        "tagline": "テスト用商品です",
+        "base_price": 10000,
+        "category_id": "shop",
+        "is_active": false,
+        "is_featured": false,
+        "sort_order": 999,
+        "created_at": "2026-01-04T17:49:05.218712",
+        "updated_at": "2026-01-04T17:49:05.218712",
+        "main_image_url": null,
+        "description": "これはテスト用の商品説明です。",
+        "long_description": null,
+        "price_note": null,
+        "lead_time_days": null,
+        "lead_time_note": null,
+        "requires_upload": false,
+        "upload_type": null,
+        "upload_note": null,
+        "images": [],
+        "options": [],
+        "specs": [],
+        "features": [],
+        "faqs": []
+      },
+      "message": "商品を作成しました"
+    }
+  },
+  {
+    "name": "Get Product Detail",
+    "method": "GET",
+    "endpoint": "/api/admin/products/test-product-001",
+    "status": 200,
+    "success": true,
+    "response": {
+      "product": {
+        "id": "test-product-001",
+        "name": "Test Product",
+        "name_ja": "テスト商品",
+        "slug": "test-product-001",
+        "tagline": "テスト用商品です",
+        "base_price": 10000,
+        "category_id": "shop",
+        "is_active": false,
+        "is_featured": false,
+        "sort_order": 999,
+        "created_at": "2026-01-04T17:49:05.218712",
+        "updated_at": "2026-01-04T17:49:05.218712",
+        "main_image_url": null,
+        "description": "これはテスト用の商品説明です。",
+        "long_description": null,
+        "price_note": null,
+        "lead_time_days": null,
+        "lead_time_note": null,
+        "requires_upload": false,
+        "upload_type": null,
+        "upload_note": null,
+        "images": [],
+        "options": [],
+        "specs": [],
+        "features": [],
+        "faqs": []
+      }
+    }
+  },
+  {
+    "name": "Update Product",
+    "method": "PUT",
+    "endpoint": "/api/admin/products/test-product-001",
+    "status": 200,
+    "success": true,
+    "response": {
+      "product": {
+        "id": "test-product-001",
+        "name": "Test Product",
+        "name_ja": "テスト商品",
+        "slug": "test-product-001",
+        "tagline": "更新されたタグライン",
+        "base_price": 12000,
+        "category_id": "shop",
+        "is_active": false,
+        "is_featured": false,
+        "sort_order": 999,
+        "created_at": "2026-01-04T17:49:05.218712",
+        "updated_at": "2026-01-04T17:49:05.240637",
+        "main_image_url": null,
+        "description": "これはテスト用の商品説明です。",
+        "long_description": null,
+        "price_note": null,
+        "lead_time_days": null,
+        "lead_time_note": null,
+        "requires_upload": false,
+        "upload_type": null,
+        "upload_note": null,
+        "images": [],
+        "options": [],
+        "specs": [],
+        "features": [],
+        "faqs": []
+      },
+      "message": "商品を更新しました"
+    }
+  },
+  {
+    "name": "Update Product Specs",
+    "method": "PUT",
+    "endpoint": "/api/admin/products/test-product-001/specs",
+    "status": 200,
+    "success": true,
+    "response": {
+      "specs": [
+        {
+          "id": 57,
+          "label": "サイズ",
+          "value": "100x100x100mm",
+          "sort_order": 0
+        },
+        {
+          "id": 58,
+          "label": "重量",
+          "value": "500g",
+          "sort_order": 1
+        }
+      ],
+      "message": "スペックを更新しました"
+    }
+  },
+  {
+    "name": "Update Product Options",
+    "method": "PUT",
+    "endpoint": "/api/admin/products/test-product-001/options",
+    "status": 200,
+    "success": true,
+    "response": {
+      "options": [
+        {
+          "id": 43,
+          "name": "カラー",
+          "is_required": true,
+          "sort_order": 0,
+          "values": [
+            {
+              "id": 124,
+              "label": "ブラック",
+              "price_diff": 0,
+              "description": null,
+              "sort_order": 0
+            },
+            {
+              "id": 125,
+              "label": "ホワイト",
+              "price_diff": 500,
+              "description": null,
+              "sort_order": 1
+            }
+          ]
+        }
+      ],
+      "message": "オプションを更新しました"
+    }
+  },
+  {
+    "name": "Delete Product",
+    "method": "DELETE",
+    "endpoint": "/api/admin/products/test-product-001",
+    "status": 200,
+    "success": true,
+    "response": {
+      "message": "商品を削除しました"
+    }
+  },
+  {
+    "name": "Get Logs",
+    "method": "GET",
+    "endpoint": "/api/admin/logs",
+    "status": 200,
+    "success": true,
+    "response": {
+      "logs": [
+        {
+          "id": 11,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:49:04.864501"
+        },
+        {
+          "id": 10,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:47:27.831095"
+        },
+        {
+          "id": 9,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:47:08.503863"
+        },
+        {
+          "id": 7,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:44:05.884885"
+        },
+        {
+          "id": 8,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:44:05.884648"
+        },
+        {
+          "id": 6,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:44:05.884475"
+        },
+        {
+          "id": 5,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "logout",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:07:02.666253"
+        },
+        {
+          "id": 4,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "delete",
+          "target_type": "admin",
+          "target_id": "2",
+          "details": {
+            "email": "staff@acrique.jp"
+          },
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:05:14.848779"
+        },
+        {
+          "id": 3,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "update",
+          "target_type": "admin",
+          "target_id": "2",
+          "details": null,
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:05:14.810847"
+        },
+        {
+          "id": 2,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "create",
+          "target_type": "admin",
+          "target_id": "2",
+          "details": {
+            "role": "staff",
+            "email": "staff@acrique.jp"
+          },
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:04:58.728454"
+        }
+      ],
+      "total": 11,
+      "limit": 10,
+      "offset": 0
+    }
+  },
+  {
+    "name": "Get Logs (Filtered)",
+    "method": "GET",
+    "endpoint": "/api/admin/logs?action=login",
+    "status": 200,
+    "success": true,
+    "response": {
+      "logs": [
+        {
+          "id": 11,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:49:04.864501"
+        },
+        {
+          "id": 10,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:47:27.831095"
+        },
+        {
+          "id": 9,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:47:08.503863"
+        },
+        {
+          "id": 7,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "192.168.65.1",
+          "created_at": "2026-01-04T17:44:05.884885"
+        },
+        {
+          "id": 8,
+          "admin_id": 1,
+          "admin_name": "システム管理者",
+          "action": "login",
+          "target_type": "admin",
+          "target_id": "1",
+          "details": null,
+          "ip_address": "127.0.0.1",
+          "created_at": "2026-01-04T17:44:05.884648"
+        }
+      ],
+      "total": 7,
+      "limit": 5,
+      "offset": 0
+    }
+  }
+]

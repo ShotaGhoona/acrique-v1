@@ -2,6 +2,7 @@
 
 from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.base import Base
+from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
     ProductFeatureModel,
@@ -20,6 +21,7 @@ __all__ = [
     'UserModel',
     'VerificationTokenModel',
     'AddressModel',
+    'CartItemModel',
     'ProductModel',
     'ProductImageModel',
     'ProductOptionModel',

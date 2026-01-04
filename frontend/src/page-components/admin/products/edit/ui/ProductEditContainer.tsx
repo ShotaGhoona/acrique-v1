@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, ImagePlus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Settings2, List, Star, HelpCircle } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -24,7 +24,14 @@ import {
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useProduct } from '@/features/product/get-product/lib/use-product';
+import { useUpdateProduct } from '@/features/admin-product/update-product/lib/use-update-product';
+import { useDeleteProduct } from '@/features/admin-product/delete-product/lib/use-delete-product';
 import { ProductEditSkeleton } from './skeleton/ProductEditSkeleton';
+import { ProductImagesEditor } from './ProductImagesEditor';
+import { ProductOptionsEditor } from './ProductOptionsEditor';
+import { ProductSpecsEditor } from './ProductSpecsEditor';
+import { ProductFeaturesEditor } from './ProductFeaturesEditor';
+import { ProductFaqsEditor } from './ProductFaqsEditor';
 import {
   categories,
   getCategoryIds,
@@ -39,6 +46,14 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
   const router = useRouter();
   const categoryIds = getCategoryIds();
   const { data: product, isLoading, error } = useProduct(productId);
+  const updateProductMutation = useUpdateProduct();
+  const deleteProductMutation = useDeleteProduct();
+
+  // ダイアログの開閉状態
+  const [optionsDialogOpen, setOptionsDialogOpen] = useState(false);
+  const [specsDialogOpen, setSpecsDialogOpen] = useState(false);
+  const [featuresDialogOpen, setFeaturesDialogOpen] = useState(false);
+  const [faqsDialogOpen, setFaqsDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -81,15 +96,43 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: API呼び出しを実装
-    alert('商品更新APIは未実装です');
+    if (!formData.category_id) return;
+
+    updateProductMutation.mutate(
+      {
+        productId,
+        data: {
+          name: formData.name,
+          name_ja: formData.name_ja,
+          category_id: formData.category_id,
+          tagline: formData.tagline || undefined,
+          description: formData.description || undefined,
+          long_description: formData.long_description || undefined,
+          base_price: parseInt(formData.base_price, 10),
+          price_note: formData.price_note || undefined,
+          lead_time_days: formData.lead_time_days ? parseInt(formData.lead_time_days, 10) : undefined,
+          lead_time_note: formData.lead_time_note || undefined,
+          is_featured: formData.is_featured,
+          requires_upload: formData.requires_upload,
+          upload_type: formData.upload_type || undefined,
+          upload_note: formData.upload_note || undefined,
+        },
+      },
+      {
+        onSuccess: () => {
+          alert('商品を更新しました');
+        },
+      },
+    );
   };
 
   const handleDelete = () => {
-    if (confirm('本当に削除しますか？')) {
-      // TODO: API呼び出しを実装
-      alert('商品削除APIは未実装です');
-      router.push('/admin/products');
+    if (confirm('本当に削除しますか？この操作は取り消せません。')) {
+      deleteProductMutation.mutate(productId, {
+        onSuccess: () => {
+          router.push('/admin/products');
+        },
+      });
     }
   };
 
@@ -133,13 +176,20 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
           </Button>
         </Link>
         <div className='flex gap-2'>
-          <Button variant='destructive' onClick={handleDelete}>
+          <Button
+            variant='destructive'
+            onClick={handleDelete}
+            disabled={deleteProductMutation.isPending}
+          >
             <Trash2 className='mr-2 h-4 w-4' />
-            削除
+            {deleteProductMutation.isPending ? '削除中...' : '削除'}
           </Button>
-          <Button onClick={handleSubmit}>
+          <Button
+            onClick={handleSubmit}
+            disabled={updateProductMutation.isPending}
+          >
             <Save className='mr-2 h-4 w-4' />
-            保存
+            {updateProductMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </div>
       </div>
@@ -220,30 +270,68 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
                 <CardTitle>商品画像</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
-                  {product.images.map((image) => (
-                    <div
-                      key={image.id}
-                      className='relative aspect-square rounded-lg bg-muted'
-                    >
-                      <div className='flex h-full items-center justify-center text-xs text-muted-foreground'>
-                        {image.alt ?? 'Image'}
-                      </div>
-                      {image.is_main && (
-                        <span className='absolute left-1 top-1 rounded bg-primary px-1.5 py-0.5 text-[10px] text-primary-foreground'>
-                          メイン
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                  <button
+                <ProductImagesEditor
+                  productId={productId}
+                  images={product.images}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Additional Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>追加設定</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className='grid gap-3 sm:grid-cols-2'>
+                  <Button
                     type='button'
-                    className='flex aspect-square flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-muted-foreground/50'
-                    onClick={() => alert('画像アップロードは未実装です')}
+                    variant='outline'
+                    className='justify-start'
+                    onClick={() => setOptionsDialogOpen(true)}
                   >
-                    <ImagePlus className='h-8 w-8' />
-                    <span className='mt-2 text-xs'>画像を追加</span>
-                  </button>
+                    <Settings2 className='mr-2 h-4 w-4' />
+                    オプション設定
+                    <span className='ml-auto text-xs text-muted-foreground'>
+                      {product.options.length}件
+                    </span>
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='justify-start'
+                    onClick={() => setSpecsDialogOpen(true)}
+                  >
+                    <List className='mr-2 h-4 w-4' />
+                    仕様・スペック
+                    <span className='ml-auto text-xs text-muted-foreground'>
+                      {product.specs.length}件
+                    </span>
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='justify-start'
+                    onClick={() => setFeaturesDialogOpen(true)}
+                  >
+                    <Star className='mr-2 h-4 w-4' />
+                    商品の特長
+                    <span className='ml-auto text-xs text-muted-foreground'>
+                      {product.features.length}件
+                    </span>
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='justify-start'
+                    onClick={() => setFaqsDialogOpen(true)}
+                  >
+                    <HelpCircle className='mr-2 h-4 w-4' />
+                    よくある質問
+                    <span className='ml-auto text-xs text-muted-foreground'>
+                      {product.faqs.length}件
+                    </span>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -452,6 +540,32 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
           </div>
         </div>
       </form>
+
+      {/* Editor Dialogs */}
+      <ProductOptionsEditor
+        productId={productId}
+        options={product.options}
+        open={optionsDialogOpen}
+        onOpenChange={setOptionsDialogOpen}
+      />
+      <ProductSpecsEditor
+        productId={productId}
+        specs={product.specs}
+        open={specsDialogOpen}
+        onOpenChange={setSpecsDialogOpen}
+      />
+      <ProductFeaturesEditor
+        productId={productId}
+        features={product.features}
+        open={featuresDialogOpen}
+        onOpenChange={setFeaturesDialogOpen}
+      />
+      <ProductFaqsEditor
+        productId={productId}
+        faqs={product.faqs}
+        open={faqsDialogOpen}
+        onOpenChange={setFaqsDialogOpen}
+      />
     </AdminLayout>
   );
 }

@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
+import { useCreateProduct } from '@/features/admin-product/create-product/lib/use-create-product';
 import {
   categories,
   getCategoryIds,
@@ -32,8 +33,10 @@ import type { CategoryId } from '@/shared/domain/category/model/types';
 export function ProductNewContainer() {
   const router = useRouter();
   const categoryIds = getCategoryIds();
+  const createProductMutation = useCreateProduct();
 
   const [formData, setFormData] = useState({
+    id: '',
     name: '',
     name_ja: '',
     category_id: '' as CategoryId | '',
@@ -52,9 +55,35 @@ export function ProductNewContainer() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: API呼び出しを実装
-    alert('商品作成APIは未実装です');
-    router.push('/admin/products');
+    if (!formData.id || !formData.category_id || !formData.name || !formData.name_ja || !formData.base_price) {
+      alert('商品ID、カテゴリ、商品名、基本価格は必須です');
+      return;
+    }
+
+    createProductMutation.mutate(
+      {
+        id: formData.id,
+        name: formData.name,
+        name_ja: formData.name_ja,
+        category_id: formData.category_id,
+        tagline: formData.tagline || undefined,
+        description: formData.description || undefined,
+        long_description: formData.long_description || undefined,
+        base_price: parseInt(formData.base_price, 10),
+        price_note: formData.price_note || undefined,
+        lead_time_days: formData.lead_time_days ? parseInt(formData.lead_time_days, 10) : undefined,
+        lead_time_note: formData.lead_time_note || undefined,
+        is_featured: formData.is_featured,
+        requires_upload: formData.requires_upload,
+        upload_type: formData.upload_type || undefined,
+        upload_note: formData.upload_note || undefined,
+      },
+      {
+        onSuccess: () => {
+          router.push('/admin/products');
+        },
+      },
+    );
   };
 
   return (
@@ -67,9 +96,9 @@ export function ProductNewContainer() {
             一覧に戻る
           </Button>
         </Link>
-        <Button onClick={handleSubmit}>
+        <Button onClick={handleSubmit} disabled={createProductMutation.isPending}>
           <Save className='mr-2 h-4 w-4' />
-          保存
+          {createProductMutation.isPending ? '作成中...' : '保存'}
         </Button>
       </div>
 
@@ -83,6 +112,20 @@ export function ProductNewContainer() {
                 <CardTitle>基本情報</CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='id'>商品ID（英数字・URLに使用）</Label>
+                  <Input
+                    id='id'
+                    value={formData.id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })
+                    }
+                    placeholder='qr-code-cube'
+                  />
+                  <p className='text-xs text-muted-foreground'>
+                    英小文字、数字、ハイフンのみ使用可能
+                  </p>
+                </div>
                 <div className='grid gap-4 sm:grid-cols-2'>
                   <div className='space-y-2'>
                     <Label htmlFor='name'>商品名（英語）</Label>

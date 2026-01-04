@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Package, Truck, CreditCard, User } from 'lucide-react';
+import { ArrowLeft, Package, Truck, CreditCard, FileText } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -10,6 +10,10 @@ import {
 } from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
+import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
+import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
+import { Input } from '@/shared/ui/shadcn/ui/input';
+import { Label } from '@/shared/ui/shadcn/ui/label';
 import {
   Table,
   TableBody,
@@ -26,19 +30,54 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import {
-  getOrderById,
-  orderStatusLabels,
-  orderStatusColors,
-  type OrderStatus,
-} from '../../home/dummy-data/orders';
+import { useAdminOrder } from '@/features/admin-order/get-order/lib/use-admin-order';
+import { useUpdateOrderStatus } from '@/features/admin-order/update-order-status/lib/use-update-order-status';
+import { useUpdateAdminOrder } from '@/features/admin-order/update-order/lib/use-update-admin-order';
+import { useShipOrder } from '@/features/admin-order/ship-order/lib/use-ship-order';
+import type { OrderStatus } from '@/entities/admin-order/model/types';
+import { useState } from 'react';
+
+const orderStatusLabels: Record<OrderStatus, string> = {
+  pending: '未処理',
+  awaiting_payment: '支払待ち',
+  paid: '支払済み',
+  awaiting_data: '入稿待ち',
+  data_reviewing: '入稿確認中',
+  confirmed: '確定',
+  processing: '製作中',
+  shipped: '発送済み',
+  delivered: '配達完了',
+  cancelled: 'キャンセル',
+};
+
+const orderStatusColors: Record<
+  OrderStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
+  pending: 'default',
+  awaiting_payment: 'default',
+  paid: 'secondary',
+  awaiting_data: 'secondary',
+  data_reviewing: 'secondary',
+  confirmed: 'secondary',
+  processing: 'secondary',
+  shipped: 'outline',
+  delivered: 'outline',
+  cancelled: 'destructive',
+};
 
 interface OrderDetailContainerProps {
   orderId: string;
 }
 
 export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
-  const order = getOrderById(orderId);
+  const orderIdNum = parseInt(orderId, 10);
+  const { data, isLoading } = useAdminOrder(orderIdNum);
+  const updateStatusMutation = useUpdateOrderStatus();
+  const updateOrderMutation = useUpdateAdminOrder();
+  const shipOrderMutation = useShipOrder();
+  const [adminNotes, setAdminNotes] = useState('');
+  const [trackingNumber, setTrackingNumber] = useState('');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -46,6 +85,53 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
       currency: 'JPY',
     }).format(amount);
   };
+
+  const handleStatusChange = (newStatus: OrderStatus) => {
+    updateStatusMutation.mutate({
+      orderId: orderIdNum,
+      data: { status: newStatus },
+    });
+  };
+
+  const handleSaveNotes = () => {
+    updateOrderMutation.mutate({
+      orderId: orderIdNum,
+      data: { admin_notes: adminNotes },
+    });
+  };
+
+  const handleShipOrder = () => {
+    if (!trackingNumber.trim()) {
+      alert('追跡番号を入力してください');
+      return;
+    }
+    shipOrderMutation.mutate({
+      orderId: orderIdNum,
+      data: { tracking_number: trackingNumber },
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <AdminLayout title='注文詳細'>
+        <div className='space-y-6'>
+          <Skeleton className='h-10 w-32' />
+          <div className='grid gap-6 lg:grid-cols-3'>
+            <div className='space-y-6 lg:col-span-2'>
+              <Skeleton className='h-64 w-full' />
+              <Skeleton className='h-32 w-full' />
+            </div>
+            <div className='space-y-6'>
+              <Skeleton className='h-32 w-full' />
+              <Skeleton className='h-32 w-full' />
+            </div>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  const order = data?.order;
 
   if (!order) {
     return (
@@ -64,7 +150,7 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
   }
 
   return (
-    <AdminLayout title={`注文詳細: ${order.id}`}>
+    <AdminLayout title={`注文詳細: ${order.order_number}`}>
       {/* Header */}
       <div className='mb-6 flex items-center justify-between'>
         <Link href='/admin/orders'>
@@ -75,12 +161,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
         </Link>
         <div className='flex gap-2'>
           <Select
-            defaultValue={order.status}
-            onValueChange={(value) =>
-              alert(
-                `ステータスを「${orderStatusLabels[value as OrderStatus]}」に変更（未実装）`,
-              )
-            }
+            value={order.status}
+            onValueChange={(value) => handleStatusChange(value as OrderStatus)}
+            disabled={updateStatusMutation.isPending}
           >
             <SelectTrigger className='w-40'>
               <SelectValue />
@@ -93,7 +176,6 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={() => alert('注文を更新（未実装）')}>保存</Button>
         </div>
       </div>
 
@@ -120,13 +202,26 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                   {order.items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className='font-medium'>
-                        {item.productName}
+                        <div>
+                          {item.product_name_ja || item.product_name}
+                          {item.options && Object.keys(item.options).length > 0 && (
+                            <div className='mt-1 text-xs text-muted-foreground'>
+                              {Object.entries(item.options).map(([key, val]) => (
+                                <span key={key} className='mr-2'>
+                                  {typeof val === 'object' && val !== null && 'label' in val
+                                    ? String((val as { label: string }).label)
+                                    : String(val)}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className='text-right'>
                         {item.quantity}
                       </TableCell>
                       <TableCell className='text-right'>
-                        {formatCurrency(item.unitPrice)}
+                        {formatCurrency(item.unit_price)}
                       </TableCell>
                       <TableCell className='text-right'>
                         {formatCurrency(item.subtotal)}
@@ -134,11 +229,35 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                     </TableRow>
                   ))}
                   <TableRow>
+                    <TableCell colSpan={3} className='text-right'>
+                      小計
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      {formatCurrency(order.subtotal)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={3} className='text-right'>
+                      送料
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      {formatCurrency(order.shipping_fee)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={3} className='text-right'>
+                      消費税
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      {formatCurrency(order.tax)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell colSpan={3} className='text-right font-medium'>
                       合計
                     </TableCell>
                     <TableCell className='text-right text-lg font-bold'>
-                      {formatCurrency(order.totalAmount)}
+                      {formatCurrency(order.total)}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -146,54 +265,92 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
             </CardContent>
           </Card>
 
-          {/* Shipping Info */}
+          {/* Admin Notes */}
           <Card>
             <CardHeader className='flex flex-row items-center gap-2'>
-              <Truck className='h-5 w-5' />
-              <CardTitle>配送情報</CardTitle>
+              <FileText className='h-5 w-5' />
+              <CardTitle>管理者メモ</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <div>
-                  <span className='text-sm text-muted-foreground'>
-                    配送先住所
-                  </span>
-                  <p className='font-medium'>{order.shippingAddress}</p>
-                </div>
-                <div>
-                  <span className='text-sm text-muted-foreground'>
-                    配送ステータス
-                  </span>
-                  <div className='mt-1'>
-                    <Badge variant={orderStatusColors[order.status]}>
-                      {orderStatusLabels[order.status]}
-                    </Badge>
-                  </div>
-                </div>
+                <Label htmlFor='admin-notes'>内部メモ（顧客には表示されません）</Label>
+                <Textarea
+                  id='admin-notes'
+                  placeholder='管理者用のメモを入力...'
+                  defaultValue={order.admin_notes || ''}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  rows={3}
+                />
               </div>
+              <Button
+                onClick={handleSaveNotes}
+                disabled={updateOrderMutation.isPending}
+                size='sm'
+              >
+                {updateOrderMutation.isPending ? '保存中...' : 'メモを保存'}
+              </Button>
             </CardContent>
           </Card>
         </div>
 
         {/* Sidebar */}
         <div className='space-y-6'>
-          {/* Customer Info */}
+          {/* Status & Shipping */}
           <Card>
             <CardHeader className='flex flex-row items-center gap-2'>
-              <User className='h-5 w-5' />
-              <CardTitle>顧客情報</CardTitle>
+              <Truck className='h-5 w-5' />
+              <CardTitle>配送情報</CardTitle>
             </CardHeader>
-            <CardContent className='space-y-2'>
+            <CardContent className='space-y-3'>
               <div>
-                <span className='text-sm text-muted-foreground'>氏名</span>
-                <p className='font-medium'>{order.customerName}</p>
+                <span className='text-sm text-muted-foreground'>ステータス</span>
+                <div className='mt-1'>
+                  <Badge variant={orderStatusColors[order.status]}>
+                    {orderStatusLabels[order.status]}
+                  </Badge>
+                </div>
               </div>
-              <div>
-                <span className='text-sm text-muted-foreground'>
-                  メールアドレス
-                </span>
-                <p className='font-medium'>{order.customerEmail}</p>
-              </div>
+              {order.tracking_number && (
+                <div>
+                  <span className='text-sm text-muted-foreground'>追跡番号</span>
+                  <p className='font-medium'>{order.tracking_number}</p>
+                </div>
+              )}
+              {order.shipped_at && (
+                <div>
+                  <span className='text-sm text-muted-foreground'>発送日</span>
+                  <p className='font-medium'>
+                    {new Date(order.shipped_at).toLocaleDateString('ja-JP')}
+                  </p>
+                </div>
+              )}
+              {order.delivered_at && (
+                <div>
+                  <span className='text-sm text-muted-foreground'>配達完了日</span>
+                  <p className='font-medium'>
+                    {new Date(order.delivered_at).toLocaleDateString('ja-JP')}
+                  </p>
+                </div>
+              )}
+              {order.status === 'processing' && !order.shipped_at && (
+                <div className='space-y-2 border-t pt-3'>
+                  <Label htmlFor='tracking-number'>発送処理</Label>
+                  <Input
+                    id='tracking-number'
+                    placeholder='追跡番号を入力'
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                  />
+                  <Button
+                    onClick={handleShipOrder}
+                    disabled={shipOrderMutation.isPending || !trackingNumber.trim()}
+                    size='sm'
+                    className='w-full'
+                  >
+                    {shipOrderMutation.isPending ? '発送処理中...' : '発送完了にする'}
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -203,32 +360,32 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               <CreditCard className='h-5 w-5' />
               <CardTitle>決済情報</CardTitle>
             </CardHeader>
-            <CardContent className='space-y-2'>
+            <CardContent className='space-y-3'>
+              <div>
+                <span className='text-sm text-muted-foreground'>決済方法</span>
+                <p className='font-medium'>
+                  {order.payment_method === 'stripe' ? 'クレジットカード' : '銀行振込'}
+                </p>
+              </div>
               <div>
                 <span className='text-sm text-muted-foreground'>決済状況</span>
                 <div className='mt-1'>
-                  <Badge
-                    variant={
-                      order.paymentStatus === 'paid'
-                        ? 'outline'
-                        : order.paymentStatus === 'refunded'
-                          ? 'destructive'
-                          : 'default'
-                    }
-                  >
-                    {order.paymentStatus === 'paid'
-                      ? '支払済'
-                      : order.paymentStatus === 'refunded'
-                        ? '返金済'
-                        : '未払い'}
+                  <Badge variant={order.paid_at ? 'outline' : 'default'}>
+                    {order.paid_at ? '支払済' : '未払い'}
                   </Badge>
                 </div>
               </div>
+              {order.paid_at && (
+                <div>
+                  <span className='text-sm text-muted-foreground'>支払日</span>
+                  <p className='font-medium'>
+                    {new Date(order.paid_at).toLocaleDateString('ja-JP')}
+                  </p>
+                </div>
+              )}
               <div>
                 <span className='text-sm text-muted-foreground'>合計金額</span>
-                <p className='text-lg font-bold'>
-                  {formatCurrency(order.totalAmount)}
-                </p>
+                <p className='text-lg font-bold'>{formatCurrency(order.total)}</p>
               </div>
             </CardContent>
           </Card>
@@ -244,19 +401,77 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                   <div className='mt-1.5 h-2 w-2 rounded-full bg-primary' />
                   <div>
                     <p className='font-medium'>注文作成</p>
-                    <p className='text-muted-foreground'>{order.createdAt}</p>
+                    <p className='text-muted-foreground'>
+                      {order.created_at
+                        ? new Date(order.created_at).toLocaleString('ja-JP')
+                        : '-'}
+                    </p>
                   </div>
                 </div>
-                <div className='flex gap-3 text-sm'>
-                  <div className='mt-1.5 h-2 w-2 rounded-full bg-muted' />
-                  <div>
-                    <p className='font-medium'>最終更新</p>
-                    <p className='text-muted-foreground'>{order.updatedAt}</p>
+                {order.paid_at && (
+                  <div className='flex gap-3 text-sm'>
+                    <div className='mt-1.5 h-2 w-2 rounded-full bg-green-500' />
+                    <div>
+                      <p className='font-medium'>支払完了</p>
+                      <p className='text-muted-foreground'>
+                        {new Date(order.paid_at).toLocaleString('ja-JP')}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
+                {order.shipped_at && (
+                  <div className='flex gap-3 text-sm'>
+                    <div className='mt-1.5 h-2 w-2 rounded-full bg-blue-500' />
+                    <div>
+                      <p className='font-medium'>発送完了</p>
+                      <p className='text-muted-foreground'>
+                        {new Date(order.shipped_at).toLocaleString('ja-JP')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {order.delivered_at && (
+                  <div className='flex gap-3 text-sm'>
+                    <div className='mt-1.5 h-2 w-2 rounded-full bg-green-600' />
+                    <div>
+                      <p className='font-medium'>配達完了</p>
+                      <p className='text-muted-foreground'>
+                        {new Date(order.delivered_at).toLocaleString('ja-JP')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {order.cancelled_at && (
+                  <div className='flex gap-3 text-sm'>
+                    <div className='mt-1.5 h-2 w-2 rounded-full bg-red-500' />
+                    <div>
+                      <p className='font-medium'>キャンセル</p>
+                      <p className='text-muted-foreground'>
+                        {new Date(order.cancelled_at).toLocaleString('ja-JP')}
+                      </p>
+                      {order.cancel_reason && (
+                        <p className='text-muted-foreground'>
+                          理由: {order.cancel_reason}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
+
+          {/* Customer Notes */}
+          {order.notes && (
+            <Card>
+              <CardHeader>
+                <CardTitle>お客様メモ</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className='text-sm text-muted-foreground'>{order.notes}</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </AdminLayout>

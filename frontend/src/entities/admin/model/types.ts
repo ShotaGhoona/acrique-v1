@@ -1,4 +1,4 @@
-import type { AdminRole } from '@/entities/admin-auth/model/types';
+import type { AdminRole } from '@/shared/domain/admin/model/types';
 
 // Re-export for convenience
 export type { AdminRole };

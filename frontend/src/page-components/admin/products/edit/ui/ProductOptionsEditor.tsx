@@ -25,19 +25,19 @@ import {
   CollapsibleTrigger,
 } from '@/shared/ui/shadcn/ui/collapsible';
 import { useUpdateProductOptions } from '@/features/admin-product/update-options/lib/use-update-product-options';
-import type { ProductOption, ProductOptionValue } from '@/entities/product/model/types';
+import type { AdminProductOption, AdminProductOptionValue } from '@/entities/admin-product/model/types';
 
-// フォーム用の型（idはオプション）
+// フォーム用の型（新規追加時はidがnull）
 interface OptionValueFormItem {
-  id?: number;
+  id: number | null;
   label: string;
   price_diff: number;
-  description?: string | null;
+  description: string | null;
   sort_order: number;
 }
 
 interface OptionFormItem {
-  id?: number;
+  id: number | null;
   name: string;
   is_required: boolean;
   sort_order: number;
@@ -46,7 +46,7 @@ interface OptionFormItem {
 
 interface ProductOptionsEditorProps {
   productId: string;
-  options: ProductOption[];
+  options: AdminProductOption[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -86,6 +86,7 @@ export function ProductOptionsEditor({
     setOptions([
       ...options,
       {
+        id: null,
         name: '',
         is_required: false,
         sort_order: options.length,
@@ -111,8 +112,10 @@ export function ProductOptionsEditor({
       values: [
         ...option.values,
         {
+          id: null,
           label: '',
           price_diff: 0,
+          description: null,
           sort_order: option.values.length,
         },
       ],

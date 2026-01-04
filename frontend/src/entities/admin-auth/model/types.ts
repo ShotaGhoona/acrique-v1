@@ -1,5 +1,7 @@
 // === 管理者ロール ===
-export type AdminRole = 'super_admin' | 'admin' | 'staff';
+import type { AdminRole } from '@/shared/domain/admin/model/types';
+
+export type { AdminRole };
 
 // === 管理者情報 ===
 export interface AdminInfo {

@@ -38,13 +38,6 @@ export function UsersHomeContainer() {
     limit: 50,
   });
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency: 'JPY',
-    }).format(amount);
-  };
-
   return (
     <AdminLayout title='顧客管理'>
       <Card>
@@ -78,39 +71,33 @@ export function UsersHomeContainer() {
                   <TableRow>
                     <TableHead>顧客ID</TableHead>
                     <TableHead>名前</TableHead>
-                    <TableHead className='text-right'>注文数</TableHead>
-                    <TableHead className='text-right'>累計購入額</TableHead>
+                    <TableHead>会社名</TableHead>
                     <TableHead>ステータス</TableHead>
                     <TableHead>登録日</TableHead>
                     <TableHead className='w-12'></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(data?.users ?? []).map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className='font-medium'>{user.id}</TableCell>
+                  {(data?.customers ?? []).map((customer) => (
+                    <TableRow key={customer.id}>
+                      <TableCell className='font-medium'>{customer.id}</TableCell>
                       <TableCell>
                         <div>
-                          <div className='font-medium'>{user.name || '-'}</div>
+                          <div className='font-medium'>{customer.name || '-'}</div>
                           <div className='text-xs text-muted-foreground'>
-                            {user.email}
+                            {customer.email}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className='text-right'>
-                        {user.order_count}
-                      </TableCell>
-                      <TableCell className='text-right'>
-                        {formatCurrency(user.total_spent)}
-                      </TableCell>
+                      <TableCell>{customer.company || '-'}</TableCell>
                       <TableCell>
-                        <Badge variant={user.is_verified ? 'outline' : 'default'}>
-                          {user.is_verified ? '認証済み' : '未認証'}
+                        <Badge variant={customer.is_email_verified ? 'outline' : 'default'}>
+                          {customer.is_email_verified ? '認証済み' : '未認証'}
                         </Badge>
                       </TableCell>
                       <TableCell className='text-muted-foreground'>
-                        {user.created_at
-                          ? new Date(user.created_at).toLocaleDateString('ja-JP')
+                        {customer.created_at
+                          ? new Date(customer.created_at).toLocaleDateString('ja-JP')
                           : '-'}
                       </TableCell>
                       <TableCell>
@@ -122,14 +109,14 @@ export function UsersHomeContainer() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align='end'>
                             <DropdownMenuItem asChild>
-                              <Link href={`/admin/users/${user.id}`}>
+                              <Link href={`/admin/users/${customer.id}`}>
                                 <Eye className='mr-2 h-4 w-4' />
                                 詳細を見る
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                alert(`メール送信: ${user.email}（未実装）`)
+                                alert(`メール送信: ${customer.email}（未実装）`)
                               }
                             >
                               <Mail className='mr-2 h-4 w-4' />
@@ -143,15 +130,15 @@ export function UsersHomeContainer() {
                 </TableBody>
               </Table>
 
-              {(data?.users ?? []).length === 0 && (
+              {(data?.customers ?? []).length === 0 && (
                 <div className='py-12 text-center text-muted-foreground'>
                   該当する顧客がいません
                 </div>
               )}
 
-              {data?.users && data.total > data.users.length && (
+              {data?.customers && data.total > data.customers.length && (
                 <div className='mt-4 text-center text-sm text-muted-foreground'>
-                  {data.total}件中 {data.users.length}件を表示
+                  {data.total}件中 {data.customers.length}件を表示
                 </div>
               )}
             </>

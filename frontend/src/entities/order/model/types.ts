@@ -1,18 +1,10 @@
-// === 注文ステータス ===
-export type OrderStatus =
-  | 'pending'
-  | 'awaiting_payment'
-  | 'paid'
-  | 'awaiting_data'
-  | 'data_reviewing'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled';
+// === 注文ステータス・決済方法 ===
+import type {
+  OrderStatus,
+  PaymentMethod,
+} from '@/shared/domain/order/model/types';
 
-// === 決済方法 ===
-export type PaymentMethod = 'stripe' | 'bank_transfer';
+export type { OrderStatus, PaymentMethod };
 
 // === 注文明細型 ===
 export interface OrderItem {

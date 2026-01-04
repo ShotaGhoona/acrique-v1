@@ -76,7 +76,7 @@ export function LogsContainer() {
 
   const filteredLogs = (data?.logs ?? []).filter((log) => {
     const matchesSearch =
-      log.admin_name.toLowerCase().includes(searchQuery.toLowerCase());
+      (log.admin_name ?? '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
 

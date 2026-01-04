@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminOrderApi } from '@/entities/admin-order/api/admin-order-api';
 import type { ShipOrderRequest } from '@/entities/admin-order/model/types';
-import { ADMIN_ORDERS_QUERY_KEY } from '../../get-orders/lib/use-admin-orders';
-import { ADMIN_ORDER_QUERY_KEY } from '../../get-order/lib/use-admin-order';
-import { ADMIN_DASHBOARD_QUERY_KEY } from '@/features/admin-dashboard/get-dashboard/lib/use-admin-dashboard';
+import {
+  ADMIN_ORDERS_QUERY_KEY,
+  ADMIN_ORDER_QUERY_KEY,
+  ADMIN_DASHBOARD_QUERY_KEY,
+} from '@/shared/api/query-keys';
 
 export function useShipOrder() {
   const queryClient = useQueryClient();

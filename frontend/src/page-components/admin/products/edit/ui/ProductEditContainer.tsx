@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useProduct } from '@/features/product/get-product/lib/use-product';
+import { useAdminProduct } from '@/features/admin-product/get-product/lib/use-admin-product';
 import { useUpdateProduct } from '@/features/admin-product/update-product/lib/use-update-product';
 import { useDeleteProduct } from '@/features/admin-product/delete-product/lib/use-delete-product';
 import { ProductEditSkeleton } from './skeleton/ProductEditSkeleton';
@@ -45,7 +45,8 @@ interface ProductEditContainerProps {
 export function ProductEditContainer({ productId }: ProductEditContainerProps) {
   const router = useRouter();
   const categoryIds = getCategoryIds();
-  const { data: product, isLoading, error } = useProduct(productId);
+  const { data: productData, isLoading, error } = useAdminProduct(productId);
+  const product = productData?.product;
   const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();
 
@@ -77,8 +78,8 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
     if (product) {
       setFormData({
         name: product.name,
-        name_ja: product.name_ja,
-        category_id: product.category_id,
+        name_ja: product.name_ja ?? '',
+        category_id: product.category_id as '' | CategoryId,
         tagline: product.tagline ?? '',
         description: product.description ?? '',
         long_description: product.long_description ?? '',

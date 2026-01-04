@@ -12,11 +12,11 @@ import {
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { useUpdateProductSpecs } from '@/features/admin-product/update-specs/lib/use-update-product-specs';
-import type { ProductSpec } from '@/entities/product/model/types';
+import type { AdminProductSpec } from '@/entities/admin-product/model/types';
 
-// フォーム用の型（idはオプション）
+// フォーム用の型（新規追加時はidがnull）
 interface SpecFormItem {
-  id?: number;
+  id: number | null;
   label: string;
   value: string;
   sort_order: number;
@@ -24,7 +24,7 @@ interface SpecFormItem {
 
 interface ProductSpecsEditorProps {
   productId: string;
-  specs: ProductSpec[];
+  specs: AdminProductSpec[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -50,6 +50,7 @@ export function ProductSpecsEditor({
     setSpecs([
       ...specs,
       {
+        id: null,
         label: '',
         value: '',
         sort_order: specs.length,

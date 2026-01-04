@@ -8,7 +8,7 @@ export type LogTargetType = 'admin' | 'user' | 'product' | 'order';
 export interface AdminLog {
   id: number;
   admin_id: number;
-  admin_name: string;
+  admin_name: string | null;
   action: LogAction;
   target_type: LogTargetType;
   target_id: string | null;

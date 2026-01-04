@@ -14,11 +14,11 @@ import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
 import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { useUpdateProductFaqs } from '@/features/admin-product/update-faqs/lib/use-update-product-faqs';
-import type { ProductFaq } from '@/entities/product/model/types';
+import type { AdminProductFaq } from '@/entities/admin-product/model/types';
 
-// フォーム用の型（idはオプション）
+// フォーム用の型（新規追加時はidがnull）
 interface FaqFormItem {
-  id?: number;
+  id: number | null;
   question: string;
   answer: string;
   sort_order: number;
@@ -26,7 +26,7 @@ interface FaqFormItem {
 
 interface ProductFaqsEditorProps {
   productId: string;
-  faqs: ProductFaq[];
+  faqs: AdminProductFaq[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -52,6 +52,7 @@ export function ProductFaqsEditor({
     setFaqs([
       ...faqs,
       {
+        id: null,
         question: '',
         answer: '',
         sort_order: faqs.length,

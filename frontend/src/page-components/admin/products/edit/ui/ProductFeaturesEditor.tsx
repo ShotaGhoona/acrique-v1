@@ -14,19 +14,19 @@ import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
 import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { useUpdateProductFeatures } from '@/features/admin-product/update-features/lib/use-update-product-features';
-import type { ProductFeature } from '@/entities/product/model/types';
+import type { AdminProductFeature } from '@/entities/admin-product/model/types';
 
-// フォーム用の型（idはオプション）
+// フォーム用の型（新規追加時はidがnull）
 interface FeatureFormItem {
-  id?: number;
+  id: number | null;
   title: string;
-  description?: string | null;
+  description: string;
   sort_order: number;
 }
 
 interface ProductFeaturesEditorProps {
   productId: string;
-  features: ProductFeature[];
+  features: AdminProductFeature[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -52,6 +52,7 @@ export function ProductFeaturesEditor({
     setFeatures([
       ...features,
       {
+        id: null,
         title: '',
         description: '',
         sort_order: features.length,

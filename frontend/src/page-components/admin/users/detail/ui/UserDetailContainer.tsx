@@ -80,9 +80,9 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
     );
   }
 
-  const user = userData?.user;
+  const customer = userData?.customer;
 
-  if (!user) {
+  if (!customer) {
     return (
       <AdminLayout title='顧客詳細'>
         <div className='flex flex-col items-center justify-center py-12'>
@@ -99,7 +99,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
   }
 
   return (
-    <AdminLayout title={`顧客詳細: ${user.name || user.email}`}>
+    <AdminLayout title={`顧客詳細: ${customer.name || customer.email}`}>
       {/* Header */}
       <div className='mb-6 flex items-center justify-between'>
         <Link href='/admin/users'>
@@ -108,8 +108,8 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
             一覧に戻る
           </Button>
         </Link>
-        <Badge variant={user.is_verified ? 'outline' : 'default'} className='text-sm'>
-          {user.is_verified ? '認証済み' : '未認証'}
+        <Badge variant={customer.is_email_verified ? 'outline' : 'default'} className='text-sm'>
+          {customer.is_email_verified ? '認証済み' : '未認証'}
         </Badge>
       </div>
 
@@ -128,7 +128,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                   <User className='mt-0.5 h-4 w-4 text-muted-foreground' />
                   <div>
                     <span className='text-sm text-muted-foreground'>氏名</span>
-                    <p className='font-medium'>{user.name || '-'}</p>
+                    <p className='font-medium'>{customer.name || '-'}</p>
                   </div>
                 </div>
                 <div className='flex items-start gap-3'>
@@ -137,7 +137,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                     <span className='text-sm text-muted-foreground'>
                       メールアドレス
                     </span>
-                    <p className='font-medium'>{user.email}</p>
+                    <p className='font-medium'>{customer.email}</p>
                   </div>
                 </div>
                 <div className='flex items-start gap-3'>
@@ -146,7 +146,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                     <span className='text-sm text-muted-foreground'>
                       電話番号
                     </span>
-                    <p className='font-medium'>{user.phone || '-'}</p>
+                    <p className='font-medium'>{customer.phone || '-'}</p>
                   </div>
                 </div>
               </div>
@@ -161,7 +161,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                 <CardTitle>注文履歴</CardTitle>
               </div>
               <Button variant='outline' size='sm' asChild>
-                <Link href={`/admin/orders?user=${user.id}`}>すべて見る</Link>
+                <Link href={`/admin/orders?user=${customer.id}`}>すべて見る</Link>
               </Button>
             </CardHeader>
             <CardContent>
@@ -224,19 +224,19 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
             <CardContent className='space-y-4'>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>総注文数</span>
-                <span className='text-2xl font-bold'>{user.order_count}</span>
+                <span className='text-2xl font-bold'>{customer.order_count}</span>
               </div>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>累計購入額</span>
                 <span className='text-2xl font-bold'>
-                  {formatCurrency(user.total_spent)}
+                  {formatCurrency(customer.total_spent)}
                 </span>
               </div>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>平均注文額</span>
                 <span className='font-medium'>
-                  {user.order_count > 0
-                    ? formatCurrency(user.total_spent / user.order_count)
+                  {customer.order_count > 0
+                    ? formatCurrency(customer.total_spent / customer.order_count)
                     : '-'}
                 </span>
               </div>
@@ -252,16 +252,16 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>登録日</span>
                 <span>
-                  {user.created_at
-                    ? new Date(user.created_at).toLocaleDateString('ja-JP')
+                  {customer.created_at
+                    ? new Date(customer.created_at).toLocaleDateString('ja-JP')
                     : '-'}
                 </span>
               </div>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>最終更新</span>
                 <span>
-                  {user.updated_at
-                    ? new Date(user.updated_at).toLocaleDateString('ja-JP')
+                  {customer.updated_at
+                    ? new Date(customer.updated_at).toLocaleDateString('ja-JP')
                     : '-'}
                 </span>
               </div>
@@ -279,7 +279,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                 variant='outline'
                 className='w-full'
                 onClick={() =>
-                  alert(`パスワードリセットメール送信: ${user.email}（未実装）`)
+                  alert(`パスワードリセットメール送信: ${customer.email}（未実装）`)
                 }
               >
                 パスワードリセット
@@ -287,7 +287,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
               <Button
                 variant='outline'
                 className='w-full'
-                onClick={() => alert(`メール送信: ${user.email}（未実装）`)}
+                onClick={() => alert(`メール送信: ${customer.email}（未実装）`)}
               >
                 メール送信
               </Button>

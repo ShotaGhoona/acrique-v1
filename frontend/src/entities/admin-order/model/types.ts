@@ -1,4 +1,7 @@
-import type { OrderStatus, PaymentMethod } from '@/entities/order/model/types';
+import type {
+  OrderStatus,
+  PaymentMethod,
+} from '@/shared/domain/order/model/types';
 
 // Re-export for convenience
 export type { OrderStatus, PaymentMethod };
@@ -15,7 +18,7 @@ export interface AdminOrderItem {
   subtotal: number;
 }
 
-// === 管理者用注文 ===
+// === 管理者用注文（一覧用） ===
 export interface AdminOrder {
   id: number;
   user_id: number;
@@ -32,14 +35,17 @@ export interface AdminOrder {
   delivered_at: string | null;
   cancelled_at: string | null;
   notes: string | null;
-  admin_notes: string | null;
-  created_at: string | null;
+  created_at: string;
 }
 
 // === 管理者用注文詳細 ===
 export interface AdminOrderDetail extends AdminOrder {
   shipping_address_id: number | null;
+  stripe_payment_intent_id: string | null;
+  confirmed_at: string | null;
   cancel_reason: string | null;
+  admin_notes: string | null;
+  updated_at: string | null;
   items: AdminOrderItem[];
 }
 
@@ -86,7 +92,7 @@ export interface UpdateOrderStatusRequest {
 
 // === ステータス更新レスポンス ===
 export interface UpdateOrderStatusResponse {
-  order: AdminOrder;
+  order: AdminOrderDetail;
   message: string;
 }
 
@@ -98,6 +104,6 @@ export interface ShipOrderRequest {
 
 // === 発送処理レスポンス ===
 export interface ShipOrderResponse {
-  order: AdminOrder;
+  order: AdminOrderDetail;
   message: string;
 }

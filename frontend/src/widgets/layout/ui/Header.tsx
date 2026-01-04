@@ -17,7 +17,7 @@ import {
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import { useProducts } from '@/features/product/get-products';
-import { CartBadge } from '@/widgets/cart/ui/CartBadge';
+import { CartBadge } from './CartBadge';
 
 const subNavItems = [
   { label: 'About', href: '/about' },

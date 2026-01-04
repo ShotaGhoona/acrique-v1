@@ -85,7 +85,7 @@ export function StickyCartBar({
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 3000);
         },
-      }
+      },
     );
   };
 
@@ -94,7 +94,7 @@ export function StickyCartBar({
     return product.options
       .map((option) => {
         const selectedValue = option.values.find(
-          (v) => v.id === selectedOptions[option.id]
+          (v) => v.id === selectedOptions[option.id],
         );
         return selectedValue?.label;
       })
@@ -105,18 +105,18 @@ export function StickyCartBar({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden">
-      <div className="mx-auto max-w-7xl px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
+    <div className='fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden'>
+      <div className='mx-auto max-w-7xl px-4 py-3'>
+        <div className='flex items-center justify-between gap-4'>
           {/* Product Info */}
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">{product.name_ja}</p>
-            <div className="mt-0.5 flex items-center gap-2">
-              <span className="text-lg font-light">
+          <div className='min-w-0 flex-1'>
+            <p className='truncate text-sm font-medium'>{product.name_ja}</p>
+            <div className='mt-0.5 flex items-center gap-2'>
+              <span className='text-lg font-light'>
                 {formatPrice(calculateTotalPrice())}
               </span>
               {product.options.length > 0 && (
-                <span className="truncate text-xs text-muted-foreground">
+                <span className='truncate text-xs text-muted-foreground'>
                   {getSelectedOptionsLabel()}
                 </span>
               )}
@@ -125,23 +125,23 @@ export function StickyCartBar({
 
           {/* Add to Cart Button */}
           {addedToCart ? (
-            <Link href="/cart">
-              <Button size="sm" variant="outline">
-                <Check className="mr-1.5 h-4 w-4" />
+            <Link href='/cart'>
+              <Button size='sm' variant='outline'>
+                <Check className='mr-1.5 h-4 w-4' />
                 カートを見る
               </Button>
             </Link>
           ) : (
             <Button
-              size="sm"
+              size='sm'
               onClick={handleAddToCart}
               disabled={addToCartMutation.isPending}
-              className="shrink-0"
+              className='shrink-0'
             >
               {addToCartMutation.isPending ? (
-                <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                <Loader2 className='mr-1.5 h-4 w-4 animate-spin' />
               ) : (
-                <ShoppingBag className="mr-1.5 h-4 w-4" />
+                <ShoppingBag className='mr-1.5 h-4 w-4' />
               )}
               カートに追加
             </Button>

@@ -4,7 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, ImagePlus } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/shadcn/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
@@ -18,7 +23,10 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
-import { categories, getCategoryIds } from '@/shared/domain/category/data/categories';
+import {
+  categories,
+  getCategoryIds,
+} from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 
 export function ProductNewContainer() {
@@ -50,77 +58,90 @@ export function ProductNewContainer() {
   };
 
   return (
-    <AdminLayout title="商品追加">
+    <AdminLayout title='商品追加'>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <Link href="/admin/products">
-          <Button variant="outline" size="sm">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+      <div className='mb-6 flex items-center justify-between'>
+        <Link href='/admin/products'>
+          <Button variant='outline' size='sm'>
+            <ArrowLeft className='mr-2 h-4 w-4' />
             一覧に戻る
           </Button>
         </Link>
         <Button onClick={handleSubmit}>
-          <Save className="mr-2 h-4 w-4" />
+          <Save className='mr-2 h-4 w-4' />
           保存
         </Button>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className='grid gap-6 lg:grid-cols-3'>
           {/* Main Content */}
-          <div className="space-y-6 lg:col-span-2">
+          <div className='space-y-6 lg:col-span-2'>
             {/* Basic Info */}
             <Card>
               <CardHeader>
                 <CardTitle>基本情報</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">商品名（英語）</Label>
+              <CardContent className='space-y-4'>
+                <div className='grid gap-4 sm:grid-cols-2'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='name'>商品名（英語）</Label>
                     <Input
-                      id="name"
+                      id='name'
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="QR Code Cube"
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      placeholder='QR Code Cube'
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="name_ja">商品名（日本語）</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='name_ja'>商品名（日本語）</Label>
                     <Input
-                      id="name_ja"
+                      id='name_ja'
                       value={formData.name_ja}
-                      onChange={(e) => setFormData({ ...formData, name_ja: e.target.value })}
-                      placeholder="QRコードキューブ"
+                      onChange={(e) =>
+                        setFormData({ ...formData, name_ja: e.target.value })
+                      }
+                      placeholder='QRコードキューブ'
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tagline">キャッチコピー</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='tagline'>キャッチコピー</Label>
                   <Input
-                    id="tagline"
+                    id='tagline'
                     value={formData.tagline}
-                    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                    placeholder="あなたのQRを、アートに。"
+                    onChange={(e) =>
+                      setFormData({ ...formData, tagline: e.target.value })
+                    }
+                    placeholder='あなたのQRを、アートに。'
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">商品説明（短）</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='description'>商品説明（短）</Label>
                   <Textarea
-                    id="description"
+                    id='description'
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="商品の簡単な説明..."
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
+                    placeholder='商品の簡単な説明...'
                     rows={3}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="long_description">商品説明（詳細）</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='long_description'>商品説明（詳細）</Label>
                   <Textarea
-                    id="long_description"
+                    id='long_description'
                     value={formData.long_description}
-                    onChange={(e) => setFormData({ ...formData, long_description: e.target.value })}
-                    placeholder="商品の詳細な説明..."
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        long_description: e.target.value,
+                      })
+                    }
+                    placeholder='商品の詳細な説明...'
                     rows={6}
                   />
                 </div>
@@ -133,14 +154,14 @@ export function ProductNewContainer() {
                 <CardTitle>商品画像</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
                   <button
-                    type="button"
-                    className="flex aspect-square flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-muted-foreground/50"
+                    type='button'
+                    className='flex aspect-square flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-muted-foreground/50'
                     onClick={() => alert('画像アップロードは未実装です')}
                   >
-                    <ImagePlus className="h-8 w-8" />
-                    <span className="mt-2 text-xs">画像を追加</span>
+                    <ImagePlus className='h-8 w-8' />
+                    <span className='mt-2 text-xs'>画像を追加</span>
                   </button>
                 </div>
               </CardContent>
@@ -151,11 +172,11 @@ export function ProductNewContainer() {
               <CardHeader>
                 <CardTitle>入稿設定</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
+              <CardContent className='space-y-4'>
+                <div className='flex items-center justify-between'>
                   <div>
                     <Label>入稿データ必要</Label>
-                    <p className="text-xs text-muted-foreground">
+                    <p className='text-xs text-muted-foreground'>
                       お客様からデータ入稿が必要な商品
                     </p>
                   </div>
@@ -168,30 +189,37 @@ export function ProductNewContainer() {
                 </div>
                 {formData.requires_upload && (
                   <>
-                    <div className="space-y-2">
-                      <Label htmlFor="upload_type">入稿タイプ</Label>
+                    <div className='space-y-2'>
+                      <Label htmlFor='upload_type'>入稿タイプ</Label>
                       <Select
                         value={formData.upload_type}
-                        onValueChange={(value) => setFormData({ ...formData, upload_type: value })}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, upload_type: value })
+                        }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="選択してください" />
+                          <SelectValue placeholder='選択してください' />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="logo">ロゴ</SelectItem>
-                          <SelectItem value="qr">QRコード</SelectItem>
-                          <SelectItem value="photo">写真</SelectItem>
-                          <SelectItem value="text">テキスト</SelectItem>
+                          <SelectItem value='logo'>ロゴ</SelectItem>
+                          <SelectItem value='qr'>QRコード</SelectItem>
+                          <SelectItem value='photo'>写真</SelectItem>
+                          <SelectItem value='text'>テキスト</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="upload_note">入稿に関する注意事項</Label>
+                    <div className='space-y-2'>
+                      <Label htmlFor='upload_note'>入稿に関する注意事項</Label>
                       <Textarea
-                        id="upload_note"
+                        id='upload_note'
                         value={formData.upload_note}
-                        onChange={(e) => setFormData({ ...formData, upload_note: e.target.value })}
-                        placeholder="入稿データの形式など..."
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            upload_note: e.target.value,
+                          })
+                        }
+                        placeholder='入稿データの形式など...'
                         rows={2}
                       />
                     </div>
@@ -202,23 +230,26 @@ export function ProductNewContainer() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className='space-y-6'>
             {/* Category & Featured */}
             <Card>
               <CardHeader>
                 <CardTitle>分類</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
                   <Label>カテゴリ</Label>
                   <Select
                     value={formData.category_id}
                     onValueChange={(value) =>
-                      setFormData({ ...formData, category_id: value as CategoryId })
+                      setFormData({
+                        ...formData,
+                        category_id: value as CategoryId,
+                      })
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="選択してください" />
+                      <SelectValue placeholder='選択してください' />
                     </SelectTrigger>
                     <SelectContent>
                       {categoryIds.map((id) => (
@@ -229,10 +260,12 @@ export function ProductNewContainer() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className='flex items-center justify-between'>
                   <div>
                     <Label>おすすめ商品</Label>
-                    <p className="text-xs text-muted-foreground">トップページに表示</p>
+                    <p className='text-xs text-muted-foreground'>
+                      トップページに表示
+                    </p>
                   </div>
                   <Switch
                     checked={formData.is_featured}
@@ -249,30 +282,34 @@ export function ProductNewContainer() {
               <CardHeader>
                 <CardTitle>価格設定</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="base_price">基本価格（税抜）</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='base_price'>基本価格（税抜）</Label>
+                  <div className='relative'>
+                    <span className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
                       ¥
                     </span>
                     <Input
-                      id="base_price"
-                      type="number"
+                      id='base_price'
+                      type='number'
                       value={formData.base_price}
-                      onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
-                      className="pl-8"
-                      placeholder="0"
+                      onChange={(e) =>
+                        setFormData({ ...formData, base_price: e.target.value })
+                      }
+                      className='pl-8'
+                      placeholder='0'
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="price_note">価格備考</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='price_note'>価格備考</Label>
                   <Input
-                    id="price_note"
+                    id='price_note'
                     value={formData.price_note}
-                    onChange={(e) => setFormData({ ...formData, price_note: e.target.value })}
-                    placeholder="サイズ・オプションにより変動"
+                    onChange={(e) =>
+                      setFormData({ ...formData, price_note: e.target.value })
+                    }
+                    placeholder='サイズ・オプションにより変動'
                   />
                 </div>
               </CardContent>
@@ -283,24 +320,34 @@ export function ProductNewContainer() {
               <CardHeader>
                 <CardTitle>納期</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="lead_time_days">納期日数</Label>
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='lead_time_days'>納期日数</Label>
                   <Input
-                    id="lead_time_days"
-                    type="number"
+                    id='lead_time_days'
+                    type='number'
                     value={formData.lead_time_days}
-                    onChange={(e) => setFormData({ ...formData, lead_time_days: e.target.value })}
-                    placeholder="5"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        lead_time_days: e.target.value,
+                      })
+                    }
+                    placeholder='5'
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lead_time_note">納期備考</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='lead_time_note'>納期備考</Label>
                   <Input
-                    id="lead_time_note"
+                    id='lead_time_note'
                     value={formData.lead_time_note}
-                    onChange={(e) => setFormData({ ...formData, lead_time_note: e.target.value })}
-                    placeholder="5営業日〜"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        lead_time_note: e.target.value,
+                      })
+                    }
+                    placeholder='5営業日〜'
                   />
                 </div>
               </CardContent>

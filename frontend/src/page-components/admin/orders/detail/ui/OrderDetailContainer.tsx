@@ -2,7 +2,12 @@
 
 import Link from 'next/link';
 import { ArrowLeft, Package, Truck, CreditCard, User } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/shadcn/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import {
@@ -44,12 +49,12 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
 
   if (!order) {
     return (
-      <AdminLayout title="注文詳細">
-        <div className="flex flex-col items-center justify-center py-12">
-          <p className="text-muted-foreground">注文が見つかりません</p>
-          <Link href="/admin/orders" className="mt-4">
-            <Button variant="outline">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+      <AdminLayout title='注文詳細'>
+        <div className='flex flex-col items-center justify-center py-12'>
+          <p className='text-muted-foreground'>注文が見つかりません</p>
+          <Link href='/admin/orders' className='mt-4'>
+            <Button variant='outline'>
+              <ArrowLeft className='mr-2 h-4 w-4' />
               一覧に戻る
             </Button>
           </Link>
@@ -61,21 +66,23 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
   return (
     <AdminLayout title={`注文詳細: ${order.id}`}>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <Link href="/admin/orders">
-          <Button variant="outline" size="sm">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+      <div className='mb-6 flex items-center justify-between'>
+        <Link href='/admin/orders'>
+          <Button variant='outline' size='sm'>
+            <ArrowLeft className='mr-2 h-4 w-4' />
             一覧に戻る
           </Button>
         </Link>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Select
             defaultValue={order.status}
             onValueChange={(value) =>
-              alert(`ステータスを「${orderStatusLabels[value as OrderStatus]}」に変更（未実装）`)
+              alert(
+                `ステータスを「${orderStatusLabels[value as OrderStatus]}」に変更（未実装）`,
+              )
             }
           >
-            <SelectTrigger className="w-40">
+            <SelectTrigger className='w-40'>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -90,13 +97,13 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className='grid gap-6 lg:grid-cols-3'>
         {/* Main Content */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className='space-y-6 lg:col-span-2'>
           {/* Order Items */}
           <Card>
-            <CardHeader className="flex flex-row items-center gap-2">
-              <Package className="h-5 w-5" />
+            <CardHeader className='flex flex-row items-center gap-2'>
+              <Package className='h-5 w-5' />
               <CardTitle>注文商品</CardTitle>
             </CardHeader>
             <CardContent>
@@ -104,25 +111,33 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>商品名</TableHead>
-                    <TableHead className="text-right">数量</TableHead>
-                    <TableHead className="text-right">単価</TableHead>
-                    <TableHead className="text-right">小計</TableHead>
+                    <TableHead className='text-right'>数量</TableHead>
+                    <TableHead className='text-right'>単価</TableHead>
+                    <TableHead className='text-right'>小計</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {order.items.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="font-medium">{item.productName}</TableCell>
-                      <TableCell className="text-right">{item.quantity}</TableCell>
-                      <TableCell className="text-right">{formatCurrency(item.unitPrice)}</TableCell>
-                      <TableCell className="text-right">{formatCurrency(item.subtotal)}</TableCell>
+                      <TableCell className='font-medium'>
+                        {item.productName}
+                      </TableCell>
+                      <TableCell className='text-right'>
+                        {item.quantity}
+                      </TableCell>
+                      <TableCell className='text-right'>
+                        {formatCurrency(item.unitPrice)}
+                      </TableCell>
+                      <TableCell className='text-right'>
+                        {formatCurrency(item.subtotal)}
+                      </TableCell>
                     </TableRow>
                   ))}
                   <TableRow>
-                    <TableCell colSpan={3} className="text-right font-medium">
+                    <TableCell colSpan={3} className='text-right font-medium'>
                       合計
                     </TableCell>
-                    <TableCell className="text-right text-lg font-bold">
+                    <TableCell className='text-right text-lg font-bold'>
                       {formatCurrency(order.totalAmount)}
                     </TableCell>
                   </TableRow>
@@ -133,19 +148,23 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
 
           {/* Shipping Info */}
           <Card>
-            <CardHeader className="flex flex-row items-center gap-2">
-              <Truck className="h-5 w-5" />
+            <CardHeader className='flex flex-row items-center gap-2'>
+              <Truck className='h-5 w-5' />
               <CardTitle>配送情報</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 <div>
-                  <span className="text-sm text-muted-foreground">配送先住所</span>
-                  <p className="font-medium">{order.shippingAddress}</p>
+                  <span className='text-sm text-muted-foreground'>
+                    配送先住所
+                  </span>
+                  <p className='font-medium'>{order.shippingAddress}</p>
                 </div>
                 <div>
-                  <span className="text-sm text-muted-foreground">配送ステータス</span>
-                  <div className="mt-1">
+                  <span className='text-sm text-muted-foreground'>
+                    配送ステータス
+                  </span>
+                  <div className='mt-1'>
                     <Badge variant={orderStatusColors[order.status]}>
                       {orderStatusLabels[order.status]}
                     </Badge>
@@ -157,35 +176,37 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className='space-y-6'>
           {/* Customer Info */}
           <Card>
-            <CardHeader className="flex flex-row items-center gap-2">
-              <User className="h-5 w-5" />
+            <CardHeader className='flex flex-row items-center gap-2'>
+              <User className='h-5 w-5' />
               <CardTitle>顧客情報</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className='space-y-2'>
               <div>
-                <span className="text-sm text-muted-foreground">氏名</span>
-                <p className="font-medium">{order.customerName}</p>
+                <span className='text-sm text-muted-foreground'>氏名</span>
+                <p className='font-medium'>{order.customerName}</p>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">メールアドレス</span>
-                <p className="font-medium">{order.customerEmail}</p>
+                <span className='text-sm text-muted-foreground'>
+                  メールアドレス
+                </span>
+                <p className='font-medium'>{order.customerEmail}</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Payment Info */}
           <Card>
-            <CardHeader className="flex flex-row items-center gap-2">
-              <CreditCard className="h-5 w-5" />
+            <CardHeader className='flex flex-row items-center gap-2'>
+              <CreditCard className='h-5 w-5' />
               <CardTitle>決済情報</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className='space-y-2'>
               <div>
-                <span className="text-sm text-muted-foreground">決済状況</span>
-                <div className="mt-1">
+                <span className='text-sm text-muted-foreground'>決済状況</span>
+                <div className='mt-1'>
                   <Badge
                     variant={
                       order.paymentStatus === 'paid'
@@ -204,8 +225,10 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                 </div>
               </div>
               <div>
-                <span className="text-sm text-muted-foreground">合計金額</span>
-                <p className="text-lg font-bold">{formatCurrency(order.totalAmount)}</p>
+                <span className='text-sm text-muted-foreground'>合計金額</span>
+                <p className='text-lg font-bold'>
+                  {formatCurrency(order.totalAmount)}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -216,19 +239,19 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               <CardTitle>履歴</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex gap-3 text-sm">
-                  <div className="h-2 w-2 mt-1.5 rounded-full bg-primary" />
+              <div className='space-y-3'>
+                <div className='flex gap-3 text-sm'>
+                  <div className='mt-1.5 h-2 w-2 rounded-full bg-primary' />
                   <div>
-                    <p className="font-medium">注文作成</p>
-                    <p className="text-muted-foreground">{order.createdAt}</p>
+                    <p className='font-medium'>注文作成</p>
+                    <p className='text-muted-foreground'>{order.createdAt}</p>
                   </div>
                 </div>
-                <div className="flex gap-3 text-sm">
-                  <div className="h-2 w-2 mt-1.5 rounded-full bg-muted" />
+                <div className='flex gap-3 text-sm'>
+                  <div className='mt-1.5 h-2 w-2 rounded-full bg-muted' />
                   <div>
-                    <p className="font-medium">最終更新</p>
-                    <p className="text-muted-foreground">{order.updatedAt}</p>
+                    <p className='font-medium'>最終更新</p>
+                    <p className='text-muted-foreground'>{order.updatedAt}</p>
                   </div>
                 </div>
               </div>

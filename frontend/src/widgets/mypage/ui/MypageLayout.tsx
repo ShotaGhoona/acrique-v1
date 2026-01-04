@@ -37,7 +37,11 @@ const menuItems = [
   },
 ];
 
-export function MypageLayout({ children, title, description }: MypageLayoutProps) {
+export function MypageLayout({
+  children,
+  title,
+  description,
+}: MypageLayoutProps) {
   const pathname = usePathname();
   const logoutMutation = useLogout();
 
@@ -53,28 +57,28 @@ export function MypageLayout({ children, title, description }: MypageLayoutProps
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className='min-h-screen bg-background'>
       {/* Hero Header */}
-      <section className="border-b border-border bg-secondary/30 py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+      <section className='border-b border-border bg-secondary/30 py-16 lg:py-20'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+          <p className='text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground'>
             My Page
           </p>
-          <h1 className="mt-4 text-3xl font-light tracking-tight md:text-4xl">
+          <h1 className='mt-4 text-3xl font-light tracking-tight md:text-4xl'>
             {title}
           </h1>
           {description && (
-            <p className="mt-3 text-muted-foreground">{description}</p>
+            <p className='mt-3 text-muted-foreground'>{description}</p>
           )}
         </div>
       </section>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-12 lg:py-16">
-        <div className="grid gap-12 lg:grid-cols-4 lg:gap-16">
+      <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12 lg:py-16'>
+        <div className='grid gap-12 lg:grid-cols-4 lg:gap-16'>
           {/* Sidebar Navigation */}
-          <aside className="lg:col-span-1">
-            <nav className="sticky top-24 space-y-1">
+          <aside className='lg:col-span-1'>
+            <nav className='sticky top-24 space-y-1'>
               {menuItems.map((item) => {
                 const active = isActive(item.href, item.exact);
                 return (
@@ -85,25 +89,25 @@ export function MypageLayout({ children, title, description }: MypageLayoutProps
                       'flex items-center gap-3 rounded-sm px-4 py-3 text-sm transition-colors',
                       active
                         ? 'bg-foreground text-background'
-                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
                     )}
                   >
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className='h-4 w-4' />
                     <span>{item.label}</span>
-                    {active && <ChevronRight className="ml-auto h-4 w-4" />}
+                    {active && <ChevronRight className='ml-auto h-4 w-4' />}
                   </Link>
                 );
               })}
 
               {/* Logout */}
-              <div className="pt-6">
+              <div className='pt-6'>
                 <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                  variant='ghost'
+                  className='w-full justify-start gap-3 text-muted-foreground hover:text-foreground'
                   onClick={handleLogout}
                   disabled={logoutMutation.isPending}
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className='h-4 w-4' />
                   {logoutMutation.isPending ? 'ログアウト中...' : 'ログアウト'}
                 </Button>
               </div>
@@ -111,7 +115,7 @@ export function MypageLayout({ children, title, description }: MypageLayoutProps
           </aside>
 
           {/* Page Content */}
-          <main className="lg:col-span-3">{children}</main>
+          <main className='lg:col-span-3'>{children}</main>
         </div>
       </div>
     </div>

@@ -1,1 +1,5 @@
-export { useProduct, useProductOptions, useRelatedProducts } from './lib/use-product';
+export {
+  useProduct,
+  useProductOptions,
+  useRelatedProducts,
+} from './lib/use-product';

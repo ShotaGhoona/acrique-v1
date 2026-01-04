@@ -167,4 +167,6 @@ export const getAddressById = (id: number): Address | undefined => {
 
 // 現在ログイン中のユーザー（デモ用）
 export const currentUser: User = users[0];
-export const currentUserAddresses: Address[] = getAddressesByUserId(currentUser.id);
+export const currentUserAddresses: Address[] = getAddressesByUserId(
+  currentUser.id,
+);

@@ -14,7 +14,9 @@ interface ProductPageProps {
 
 export function ProductPage({ product }: ProductPageProps) {
   const [quantity, setQuantity] = useState(1);
-  const [selectedOptions, setSelectedOptions] = useState<Record<number, number>>(() => {
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<number, number>
+  >(() => {
     const initial: Record<number, number> = {};
     product.options.forEach((option) => {
       if (option.values.length > 0) {

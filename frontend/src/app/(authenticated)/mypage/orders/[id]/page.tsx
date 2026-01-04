@@ -10,8 +10,8 @@ export default async function OrderDetailRoute({ params }: PageProps) {
 
   if (isNaN(orderId)) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-muted-foreground">無効な注文IDです</p>
+      <div className='flex min-h-[60vh] items-center justify-center'>
+        <p className='text-muted-foreground'>無効な注文IDです</p>
       </div>
     );
   }

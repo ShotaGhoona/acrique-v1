@@ -9,7 +9,12 @@ import {
   TrendingUp,
   TrendingDown,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/shadcn/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import {
   Table,
@@ -34,7 +39,10 @@ const statusLabels: Record<RecentOrder['status'], string> = {
   cancelled: 'キャンセル',
 };
 
-const statusVariants: Record<RecentOrder['status'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
+const statusVariants: Record<
+  RecentOrder['status'],
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
   pending: 'default',
   processing: 'secondary',
   completed: 'outline',
@@ -50,71 +58,77 @@ export function DashboardContainer() {
   };
 
   return (
-    <AdminLayout title="ダッシュボード">
+    <AdminLayout title='ダッシュボード'>
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">総注文数</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>総注文数</CardTitle>
+            <ShoppingCart className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dummyStats.totalOrders.toLocaleString()}</div>
-            <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 text-green-500" />
+            <div className='text-2xl font-bold'>
+              {dummyStats.totalOrders.toLocaleString()}
+            </div>
+            <p className='flex items-center gap-1 text-xs text-muted-foreground'>
+              <TrendingUp className='h-3 w-3 text-green-500' />
               前月比 +12%
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">総売上</CardTitle>
-            <Banknote className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>総売上</CardTitle>
+            <Banknote className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(dummyStats.totalRevenue)}</div>
-            <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 text-green-500" />
+            <div className='text-2xl font-bold'>
+              {formatCurrency(dummyStats.totalRevenue)}
+            </div>
+            <p className='flex items-center gap-1 text-xs text-muted-foreground'>
+              <TrendingUp className='h-3 w-3 text-green-500' />
               前月比 +8%
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">未処理注文</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>未処理注文</CardTitle>
+            <Clock className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dummyStats.pendingOrders}</div>
-            <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <TrendingDown className="h-3 w-3 text-red-500" />
+            <div className='text-2xl font-bold'>{dummyStats.pendingOrders}</div>
+            <p className='flex items-center gap-1 text-xs text-muted-foreground'>
+              <TrendingDown className='h-3 w-3 text-red-500' />
               昨日より +3
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">入稿待ち</CardTitle>
-            <Upload className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>入稿待ち</CardTitle>
+            <Upload className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dummyStats.pendingUploads}</div>
-            <p className="text-xs text-muted-foreground">確認が必要</p>
+            <div className='text-2xl font-bold'>
+              {dummyStats.pendingUploads}
+            </div>
+            <p className='text-xs text-muted-foreground'>確認が必要</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">新規会員</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>新規会員</CardTitle>
+            <Users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dummyStats.newUsers}</div>
-            <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <TrendingUp className="h-3 w-3 text-green-500" />
+            <div className='text-2xl font-bold'>{dummyStats.newUsers}</div>
+            <p className='flex items-center gap-1 text-xs text-muted-foreground'>
+              <TrendingUp className='h-3 w-3 text-green-500' />
               今月
             </p>
           </CardContent>
@@ -122,24 +136,31 @@ export function DashboardContainer() {
       </div>
 
       {/* Charts & Tables */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className='mt-6 grid gap-6 lg:grid-cols-2'>
         {/* Revenue Chart */}
         <Card>
           <CardHeader>
             <CardTitle>月別売上推移</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex h-64 items-end gap-2">
+            <div className='flex h-64 items-end gap-2'>
               {dummyRevenueData.map((data, index) => {
-                const maxRevenue = Math.max(...dummyRevenueData.map((d) => d.revenue));
+                const maxRevenue = Math.max(
+                  ...dummyRevenueData.map((d) => d.revenue),
+                );
                 const height = (data.revenue / maxRevenue) * 100;
                 return (
-                  <div key={index} className="flex flex-1 flex-col items-center gap-2">
+                  <div
+                    key={index}
+                    className='flex flex-1 flex-col items-center gap-2'
+                  >
                     <div
-                      className="w-full rounded-t bg-primary transition-all hover:bg-primary/80"
+                      className='w-full rounded-t bg-primary transition-all hover:bg-primary/80'
                       style={{ height: `${height}%` }}
                     />
-                    <span className="text-xs text-muted-foreground">{data.month}</span>
+                    <span className='text-xs text-muted-foreground'>
+                      {data.month}
+                    </span>
                   </div>
                 );
               })}
@@ -165,7 +186,7 @@ export function DashboardContainer() {
               <TableBody>
                 {dummyRecentOrders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
+                    <TableCell className='font-medium'>{order.id}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>{formatCurrency(order.amount)}</TableCell>
                     <TableCell>

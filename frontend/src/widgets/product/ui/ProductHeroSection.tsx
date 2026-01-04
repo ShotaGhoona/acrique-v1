@@ -112,46 +112,46 @@ export function ProductHeroSection({
           setAddedToCart(true);
           setTimeout(() => setAddedToCart(false), 3000);
         },
-      }
+      },
     );
   };
 
   const hasOptions = product.options.length > 0;
 
   return (
-    <section className="py-12 lg:py-20">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
+    <section className='py-12 lg:py-20'>
+      <div className='mx-auto max-w-7xl px-6 lg:px-12'>
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-xs text-muted-foreground">
-          <Link href="/" className="transition-colors hover:text-foreground">
+        <nav className='mb-8 flex items-center gap-2 text-xs text-muted-foreground'>
+          <Link href='/' className='transition-colors hover:text-foreground'>
             Home
           </Link>
-          <ChevronRight className="h-3 w-3" />
+          <ChevronRight className='h-3 w-3' />
           <Link
             href={`/${product.category_id}`}
-            className="transition-colors hover:text-foreground"
+            className='transition-colors hover:text-foreground'
           >
             {category?.name}
           </Link>
-          <ChevronRight className="h-3 w-3" />
-          <span className="text-foreground">{product.name}</span>
+          <ChevronRight className='h-3 w-3' />
+          <span className='text-foreground'>{product.name}</span>
         </nav>
 
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className='grid gap-12 lg:grid-cols-2 lg:gap-16'>
           {/* Left: Image Gallery */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className='lg:sticky lg:top-24 lg:self-start'>
             {/* Main Image */}
-            <div className="relative overflow-hidden rounded-sm bg-secondary/30">
+            <div className='relative overflow-hidden rounded-sm bg-secondary/30'>
               <ImagePlaceholder
-                aspect="1/1"
-                variant="light"
+                aspect='1/1'
+                variant='light'
                 label={galleryImages[selectedImage].label}
-                className="w-full"
+                className='w-full'
               />
             </div>
 
             {/* Thumbnails */}
-            <div className="mt-4 grid grid-cols-4 gap-3">
+            <div className='mt-4 grid grid-cols-4 gap-3'>
               {galleryImages.map((image, index) => (
                 <button
                   key={image.id}
@@ -162,7 +162,11 @@ export function ProductHeroSection({
                       : 'opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <ImagePlaceholder aspect="1/1" variant="light" className="w-full" />
+                  <ImagePlaceholder
+                    aspect='1/1'
+                    variant='light'
+                    className='w-full'
+                  />
                 </button>
               ))}
             </div>
@@ -171,44 +175,49 @@ export function ProductHeroSection({
           {/* Right: Product Info & Purchase */}
           <div>
             {/* Category Tag */}
-            <div className="mb-4">
-              <span className="inline-block rounded-sm bg-secondary px-3 py-1 text-xs font-medium uppercase tracking-wider">
+            <div className='mb-4'>
+              <span className='inline-block rounded-sm bg-secondary px-3 py-1 text-xs font-medium uppercase tracking-wider'>
                 {category?.name}
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl font-light tracking-tight md:text-4xl">
+            <h1 className='text-3xl font-light tracking-tight md:text-4xl'>
               {product.name}
             </h1>
-            <p className="mt-2 text-lg text-muted-foreground">{product.name_ja}</p>
+            <p className='mt-2 text-lg text-muted-foreground'>
+              {product.name_ja}
+            </p>
 
             {/* Tagline */}
-            <p className="mt-4 text-lg italic text-accent">{product.tagline}</p>
+            <p className='mt-4 text-lg italic text-accent'>{product.tagline}</p>
 
             {/* Description */}
-            <p className="mt-6 leading-relaxed text-muted-foreground">
+            <p className='mt-6 leading-relaxed text-muted-foreground'>
               {product.description}
             </p>
 
             {/* Options Selection */}
             {hasOptions && (
-              <div className="mt-8 space-y-6 border-t border-border pt-8">
-                <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
+              <div className='mt-8 space-y-6 border-t border-border pt-8'>
+                <h2 className='text-sm font-medium uppercase tracking-wider text-muted-foreground'>
                   オプションを選択
                 </h2>
                 {product.options.map((option) => (
                   <div key={option.id}>
-                    <label className="mb-3 block text-sm font-medium">
+                    <label className='mb-3 block text-sm font-medium'>
                       {option.name}
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className='flex flex-wrap gap-2'>
                       {option.values.map((value) => {
-                        const isSelected = selectedOptions[option.id] === value.id;
+                        const isSelected =
+                          selectedOptions[option.id] === value.id;
                         return (
                           <button
                             key={value.id}
-                            onClick={() => handleOptionChange(option.id, value.id)}
+                            onClick={() =>
+                              handleOptionChange(option.id, value.id)
+                            }
                             className={`rounded-sm border px-4 py-2 text-sm transition-all ${
                               isSelected
                                 ? 'border-foreground bg-foreground text-background'
@@ -217,7 +226,7 @@ export function ProductHeroSection({
                           >
                             {value.label}
                             {value.price_diff !== 0 && (
-                              <span className="ml-1 text-xs opacity-70">
+                              <span className='ml-1 text-xs opacity-70'>
                                 {value.price_diff > 0 ? '+' : ''}
                                 {formatPrice(value.price_diff)}
                               </span>
@@ -232,39 +241,45 @@ export function ProductHeroSection({
             )}
 
             {/* Purchase Section */}
-            <div className="mt-8 rounded-sm border border-border bg-background p-6">
+            <div className='mt-8 rounded-sm border border-border bg-background p-6'>
               {/* Price */}
-              <div className="flex items-baseline justify-between">
+              <div className='flex items-baseline justify-between'>
                 <div>
-                  <span className="text-sm text-muted-foreground">価格（税込）</span>
-                  <div className="mt-1 text-3xl font-light">
+                  <span className='text-sm text-muted-foreground'>
+                    価格（税込）
+                  </span>
+                  <div className='mt-1 text-3xl font-light'>
                     {formatPrice(calculateTotalPrice())}
                   </div>
                 </div>
                 {/* Quantity */}
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">数量</span>
-                  <div className="flex items-center gap-2">
+                <div className='flex items-center gap-3'>
+                  <span className='text-sm text-muted-foreground'>数量</span>
+                  <div className='flex items-center gap-2'>
                     <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
+                      variant='outline'
+                      size='icon'
+                      className='h-8 w-8'
+                      onClick={() =>
+                        onQuantityChange(Math.max(1, quantity - 1))
+                      }
                       disabled={quantity <= 1}
                     >
-                      <Minus className="h-3 w-3" />
+                      <Minus className='h-3 w-3' />
                     </Button>
-                    <span className="w-8 text-center text-sm font-medium tabular-nums">
+                    <span className='w-8 text-center text-sm font-medium tabular-nums'>
                       {quantity}
                     </span>
                     <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => onQuantityChange(Math.min(99, quantity + 1))}
+                      variant='outline'
+                      size='icon'
+                      className='h-8 w-8'
+                      onClick={() =>
+                        onQuantityChange(Math.min(99, quantity + 1))
+                      }
                       disabled={quantity >= 99}
                     >
-                      <Plus className="h-3 w-3" />
+                      <Plus className='h-3 w-3' />
                     </Button>
                   </div>
                 </div>
@@ -272,24 +287,24 @@ export function ProductHeroSection({
 
               {/* Add to Cart Button */}
               <Button
-                className="mt-6 w-full"
-                size="lg"
+                className='mt-6 w-full'
+                size='lg'
                 onClick={handleAddToCart}
                 disabled={addToCartMutation.isPending}
               >
                 {addToCartMutation.isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                     追加中...
                   </>
                 ) : addedToCart ? (
                   <>
-                    <Check className="mr-2 h-4 w-4" />
+                    <Check className='mr-2 h-4 w-4' />
                     カートに追加しました
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    <ShoppingBag className='mr-2 h-4 w-4' />
                     カートに追加
                   </>
                 )}
@@ -297,10 +312,10 @@ export function ProductHeroSection({
 
               {/* Cart Link */}
               {addedToCart && (
-                <div className="mt-3 text-center">
+                <div className='mt-3 text-center'>
                   <Link
-                    href="/cart"
-                    className="text-sm text-accent transition-colors hover:underline"
+                    href='/cart'
+                    className='text-sm text-accent transition-colors hover:underline'
                   >
                     カートを見る →
                   </Link>
@@ -308,11 +323,13 @@ export function ProductHeroSection({
               )}
 
               {/* Lead Time */}
-              <div className="mt-6 flex items-center gap-3 rounded-sm bg-secondary/30 px-4 py-3">
-                <Truck className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <div className='mt-6 flex items-center gap-3 rounded-sm bg-secondary/30 px-4 py-3'>
+                <Truck className='h-5 w-5 shrink-0 text-muted-foreground' />
                 <div>
-                  <p className="text-sm font-medium">納期：{product.lead_time_note}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className='text-sm font-medium'>
+                    納期：{product.lead_time_note}
+                  </p>
+                  <p className='text-xs text-muted-foreground'>
                     オプションにより変動する場合があります
                   </p>
                 </div>
@@ -320,12 +337,14 @@ export function ProductHeroSection({
             </div>
 
             {/* Trust Badges */}
-            <div className="mt-8 grid grid-cols-3 gap-4">
+            <div className='mt-8 grid grid-cols-3 gap-4'>
               {trustBadges.map((badge) => (
-                <div key={badge.label} className="text-center">
-                  <badge.icon className="mx-auto h-5 w-5 text-muted-foreground" />
-                  <p className="mt-2 text-xs font-medium">{badge.label}</p>
-                  <p className="text-[10px] text-muted-foreground">{badge.note}</p>
+                <div key={badge.label} className='text-center'>
+                  <badge.icon className='mx-auto h-5 w-5 text-muted-foreground' />
+                  <p className='mt-2 text-xs font-medium'>{badge.label}</p>
+                  <p className='text-[10px] text-muted-foreground'>
+                    {badge.note}
+                  </p>
                 </div>
               ))}
             </div>

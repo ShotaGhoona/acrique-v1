@@ -19,7 +19,10 @@ export const adminRoleLabels: Record<AdminRole, string> = {
   operator: 'オペレーター',
 };
 
-export const adminRoleColors: Record<AdminRole, 'default' | 'secondary' | 'outline'> = {
+export const adminRoleColors: Record<
+  AdminRole,
+  'default' | 'secondary' | 'outline'
+> = {
   super_admin: 'default',
   admin: 'secondary',
   operator: 'outline',

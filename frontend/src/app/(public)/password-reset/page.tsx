@@ -21,7 +21,7 @@ export default function PasswordResetPage() {
         onSuccess: () => {
           setSubmitted(true);
         },
-      }
+      },
     );
   };
 

@@ -35,41 +35,39 @@ export function Header() {
   // メガメニュー用の商品を取得（各カテゴリ上位3件）
   const getMenuProducts = (categoryId: CategoryId) => {
     const allProducts = productsData?.products ?? [];
-    return allProducts
-      .filter((p) => p.category_id === categoryId)
-      .slice(0, 3);
+    return allProducts.filter((p) => p.category_id === categoryId).slice(0, 3);
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto w-full max-w-7xl px-6 lg:px-12">
-        <div className="flex h-16 items-center justify-between">
+    <header className='sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+      <div className='mx-auto w-full max-w-7xl px-6 lg:px-12'>
+        <div className='flex h-16 items-center justify-between'>
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href='/' className='flex items-center'>
             <Image
-              src="/SVG/logo.svg"
-              alt="ACRIQUE"
+              src='/SVG/logo.svg'
+              alt='ACRIQUE'
               width={140}
               height={38}
-              className="h-8 w-auto"
+              className='h-8 w-auto'
               priority
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className='hidden items-center gap-8 lg:flex'>
             {categoryIds.map((categoryId) => {
               const category = categories[categoryId];
               return (
                 <div
                   key={categoryId}
-                  className="relative py-5"
+                  className='relative py-5'
                   onMouseEnter={() => setActiveMenu(categoryId)}
                   onMouseLeave={() => setActiveMenu(null)}
                 >
                   <Link
                     href={category.href}
-                    className="group flex items-center gap-1 text-sm font-medium tracking-wide text-foreground/80 transition-colors hover:text-foreground"
+                    className='group flex items-center gap-1 text-sm font-medium tracking-wide text-foreground/80 transition-colors hover:text-foreground'
                   >
                     {category.name}
                     <ChevronDown
@@ -84,23 +82,23 @@ export function Header() {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className='hidden items-center gap-2 lg:flex'>
             {subNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-foreground/60 transition-colors hover:text-foreground"
+                className='px-3 py-2 text-xs font-medium uppercase tracking-wider text-foreground/60 transition-colors hover:text-foreground'
               >
                 {item.label}
               </Link>
             ))}
-            <div className="ml-4 flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Search className="h-4 w-4" />
+            <div className='ml-4 flex items-center gap-1'>
+              <Button variant='ghost' size='icon' className='h-9 w-9'>
+                <Search className='h-4 w-4' />
               </Button>
-              <Link href="/login">
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <User className="h-4 w-4" />
+              <Link href='/login'>
+                <Button variant='ghost' size='icon' className='h-9 w-9'>
+                  <User className='h-4 w-4' />
                 </Button>
               </Link>
               <CartBadge />
@@ -108,52 +106,55 @@ export function Header() {
           </div>
 
           {/* Mobile Menu */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className='flex items-center gap-2 lg:hidden'>
             <CartBadge />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Menu className="h-5 w-5" />
+                <Button variant='ghost' size='icon' className='h-9 w-9'>
+                  <Menu className='h-5 w-5' />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full overflow-y-auto sm:w-96">
-                <SheetTitle className="sr-only">メニュー</SheetTitle>
-                <div className="flex flex-col gap-6 pt-8">
+              <SheetContent
+                side='right'
+                className='w-full overflow-y-auto sm:w-96'
+              >
+                <SheetTitle className='sr-only'>メニュー</SheetTitle>
+                <div className='flex flex-col gap-6 pt-8'>
                   {/* Mobile Logo */}
                   <Image
-                    src="/SVG/logo.svg"
-                    alt="ACRIQUE"
+                    src='/SVG/logo.svg'
+                    alt='ACRIQUE'
                     width={120}
                     height={32}
-                    className="h-7 w-auto"
+                    className='h-7 w-auto'
                   />
 
                   {/* Mobile Main Nav with Categories */}
-                  <nav className="flex flex-col gap-8">
+                  <nav className='flex flex-col gap-8'>
                     {categoryIds.map((categoryId) => {
                       const category = categories[categoryId];
                       const menuProducts = getMenuProducts(categoryId);
                       return (
-                        <div key={categoryId} className="space-y-3">
+                        <div key={categoryId} className='space-y-3'>
                           <Link
                             href={category.href}
                             onClick={() => setIsOpen(false)}
-                            className="block"
+                            className='block'
                           >
-                            <span className="text-lg font-medium tracking-wide">
+                            <span className='text-lg font-medium tracking-wide'>
                               {category.name}
                             </span>
-                            <span className="mt-0.5 block text-xs text-muted-foreground">
+                            <span className='mt-0.5 block text-xs text-muted-foreground'>
                               {category.tagline}
                             </span>
                           </Link>
-                          <div className="ml-3 space-y-2 border-l border-border pl-3">
+                          <div className='ml-3 space-y-2 border-l border-border pl-3'>
                             {menuProducts.map((product) => (
                               <Link
                                 key={product.id}
                                 href={`/${categoryId}/${product.id}`}
                                 onClick={() => setIsOpen(false)}
-                                className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                className='block text-sm text-muted-foreground transition-colors hover:text-foreground'
                               >
                                 {product.name_ja}
                               </Link>
@@ -161,7 +162,7 @@ export function Header() {
                             <Link
                               href={category.href}
                               onClick={() => setIsOpen(false)}
-                              className="block text-xs text-accent transition-colors hover:text-accent/80"
+                              className='block text-xs text-accent transition-colors hover:text-accent/80'
                             >
                               すべて見る →
                             </Link>
@@ -172,14 +173,14 @@ export function Header() {
                   </nav>
 
                   {/* Mobile Sub Nav */}
-                  <div className="border-t pt-6">
-                    <nav className="flex flex-col gap-4">
+                  <div className='border-t pt-6'>
+                    <nav className='flex flex-col gap-4'>
                       {subNavItems.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={() => setIsOpen(false)}
-                          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                          className='text-sm text-muted-foreground transition-colors hover:text-foreground'
                         >
                           {item.label}
                         </Link>
@@ -188,14 +189,20 @@ export function Header() {
                   </div>
 
                   {/* Mobile Actions */}
-                  <div className="mt-auto flex flex-col gap-3 border-t pt-6">
-                    <Button variant="outline" className="w-full justify-start gap-3">
-                      <Search className="h-4 w-4" />
+                  <div className='mt-auto flex flex-col gap-3 border-t pt-6'>
+                    <Button
+                      variant='outline'
+                      className='w-full justify-start gap-3'
+                    >
+                      <Search className='h-4 w-4' />
                       検索
                     </Button>
-                    <Link href="/login" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full justify-start gap-3">
-                        <User className="h-4 w-4" />
+                    <Link href='/login' onClick={() => setIsOpen(false)}>
+                      <Button
+                        variant='outline'
+                        className='w-full justify-start gap-3'
+                      >
+                        <User className='h-4 w-4' />
                         ログイン
                       </Button>
                     </Link>
@@ -218,52 +225,55 @@ export function Header() {
         onMouseLeave={() => setActiveMenu(null)}
       >
         {activeMenu && (
-          <div className="mx-auto w-full max-w-7xl px-6 py-8 lg:px-12">
-            <div className="grid grid-cols-12 gap-8">
+          <div className='mx-auto w-full max-w-7xl px-6 py-8 lg:px-12'>
+            <div className='grid grid-cols-12 gap-8'>
               {/* Left: Category Info */}
-              <div className="col-span-3 border-r border-border pr-8">
-                <Link href={categories[activeMenu].href} className="group block">
-                  <h3 className="text-2xl font-light tracking-tight">
+              <div className='col-span-3 border-r border-border pr-8'>
+                <Link
+                  href={categories[activeMenu].href}
+                  className='group block'
+                >
+                  <h3 className='text-2xl font-light tracking-tight'>
                     {categories[activeMenu].name}
                   </h3>
-                  <p className="mt-2 text-sm italic text-accent">
+                  <p className='mt-2 text-sm italic text-accent'>
                     {categories[activeMenu].tagline}
                   </p>
-                  <p className="mt-4 text-sm text-muted-foreground">
+                  <p className='mt-4 text-sm text-muted-foreground'>
                     {categories[activeMenu].description}
                   </p>
-                  <span className="mt-4 inline-flex items-center text-xs font-medium uppercase tracking-wider text-foreground/60 transition-colors group-hover:text-foreground">
+                  <span className='mt-4 inline-flex items-center text-xs font-medium uppercase tracking-wider text-foreground/60 transition-colors group-hover:text-foreground'>
                     すべて見る →
                   </span>
                 </Link>
               </div>
 
               {/* Right: Products Grid */}
-              <div className="col-span-9">
-                <div className="grid grid-cols-3 gap-6">
+              <div className='col-span-9'>
+                <div className='grid grid-cols-3 gap-6'>
                   {getMenuProducts(activeMenu).map((product) => (
                     <Link
                       key={product.id}
                       href={`/${activeMenu}/${product.id}`}
-                      className="group block"
+                      className='group block'
                     >
                       {/* Placeholder Image */}
-                      <div className="aspect-[4/3] overflow-hidden rounded-sm bg-secondary/50">
-                        <div className="flex h-full w-full items-center justify-center text-muted-foreground/30">
-                          <div className="text-center">
-                            <div className="mx-auto h-12 w-12 rounded border-2 border-dashed border-current" />
-                            <span className="mt-2 block text-xs">Image</span>
+                      <div className='aspect-[4/3] overflow-hidden rounded-sm bg-secondary/50'>
+                        <div className='flex h-full w-full items-center justify-center text-muted-foreground/30'>
+                          <div className='text-center'>
+                            <div className='mx-auto h-12 w-12 rounded border-2 border-dashed border-current' />
+                            <span className='mt-2 block text-xs'>Image</span>
                           </div>
                         </div>
                       </div>
-                      <div className="mt-3">
-                        <h4 className="text-sm font-medium tracking-wide transition-colors group-hover:text-accent">
+                      <div className='mt-3'>
+                        <h4 className='text-sm font-medium tracking-wide transition-colors group-hover:text-accent'>
                           {product.name}
                         </h4>
-                        <p className="mt-0.5 text-xs text-muted-foreground">
+                        <p className='mt-0.5 text-xs text-muted-foreground'>
                           {product.name_ja}
                         </p>
-                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground/70">
+                        <p className='mt-1 line-clamp-2 text-xs text-muted-foreground/70'>
                           {product.tagline}
                         </p>
                       </div>

@@ -107,7 +107,8 @@ export const uploads: Upload[] = [
     file_type: '',
     file_size: 0,
     upload_type: 'text',
-    text_content: '受賞者：山田太郎\n受賞日：2024年6月15日\n表彰理由：2024年度 最優秀営業賞',
+    text_content:
+      '受賞者：山田太郎\n受賞日：2024年6月15日\n表彰理由：2024年度 最優秀営業賞',
     status: 'submitted',
     admin_notes: '',
     reviewed_by: null,
@@ -163,7 +164,12 @@ export const getUploadsByOrderId = (orderId: number): Upload[] => {
 };
 
 export const getUploadsByUserId = (userId: number): Upload[] => {
-  return uploads.filter((u) => u.user_id === userId).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return uploads
+    .filter((u) => u.user_id === userId)
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
 };
 
 export const getUploadsByOrderItemId = (orderItemId: number): Upload[] => {
@@ -173,7 +179,9 @@ export const getUploadsByOrderItemId = (orderItemId: number): Upload[] => {
 // 入稿が必要な注文アイテムがあるかチェック
 export const hasPendingUploads = (orderId: number): boolean => {
   const orderUploads = getUploadsByOrderId(orderId);
-  return orderUploads.some((u) => u.status === 'submitted' || u.status === 'reviewing');
+  return orderUploads.some(
+    (u) => u.status === 'submitted' || u.status === 'reviewing',
+  );
 };
 
 // ファイルサイズをフォーマット

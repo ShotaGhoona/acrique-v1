@@ -291,7 +291,12 @@ export const getOrderByNumber = (orderNumber: string): Order | undefined => {
 };
 
 export const getOrdersByUserId = (userId: number): Order[] => {
-  return orders.filter((o) => o.user_id === userId).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return orders
+    .filter((o) => o.user_id === userId)
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
 };
 
 export const getOrderItems = (orderId: number): OrderItem[] => {

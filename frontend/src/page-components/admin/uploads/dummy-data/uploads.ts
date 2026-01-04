@@ -1,6 +1,11 @@
 // 入稿データ管理用ダミーデータ
 
-export type UploadStatus = 'pending' | 'reviewing' | 'approved' | 'rejected' | 'revision_requested';
+export type UploadStatus =
+  | 'pending'
+  | 'reviewing'
+  | 'approved'
+  | 'rejected'
+  | 'revision_requested';
 
 export interface UploadData {
   id: string;
@@ -24,7 +29,10 @@ export const uploadStatusLabels: Record<UploadStatus, string> = {
   revision_requested: '修正依頼',
 };
 
-export const uploadStatusColors: Record<UploadStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+export const uploadStatusColors: Record<
+  UploadStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
   pending: 'default',
   reviewing: 'secondary',
   approved: 'outline',

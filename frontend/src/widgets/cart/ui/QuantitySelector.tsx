@@ -31,29 +31,29 @@ export function QuantitySelector({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className='flex items-center gap-2'>
       <Button
-        variant="outline"
-        size="icon"
-        className="h-8 w-8"
+        variant='outline'
+        size='icon'
+        className='h-8 w-8'
         onClick={handleDecrement}
         disabled={disabled || quantity <= min}
-        aria-label="数量を減らす"
+        aria-label='数量を減らす'
       >
-        <Minus className="h-3 w-3" />
+        <Minus className='h-3 w-3' />
       </Button>
-      <span className="w-10 text-center text-sm font-medium tabular-nums">
+      <span className='w-10 text-center text-sm font-medium tabular-nums'>
         {quantity}
       </span>
       <Button
-        variant="outline"
-        size="icon"
-        className="h-8 w-8"
+        variant='outline'
+        size='icon'
+        className='h-8 w-8'
         onClick={handleIncrement}
         disabled={disabled || quantity >= max}
-        aria-label="数量を増やす"
+        aria-label='数量を増やす'
       >
-        <Plus className="h-3 w-3" />
+        <Plus className='h-3 w-3' />
       </Button>
     </div>
   );

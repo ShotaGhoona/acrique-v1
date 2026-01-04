@@ -28,7 +28,7 @@ export function CartPage() {
       { itemId, data: { quantity } },
       {
         onSettled: () => setUpdatingItemId(null),
-      }
+      },
     );
   };
 
@@ -48,24 +48,24 @@ export function CartPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
-        <div className="animate-pulse">
-          <div className="h-8 w-48 rounded bg-secondary" />
-          <div className="mt-8 grid gap-8 lg:grid-cols-3">
-            <div className="space-y-6 lg:col-span-2">
+      <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
+        <div className='animate-pulse'>
+          <div className='h-8 w-48 rounded bg-secondary' />
+          <div className='mt-8 grid gap-8 lg:grid-cols-3'>
+            <div className='space-y-6 lg:col-span-2'>
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex gap-4 border-b border-border py-6">
-                  <div className="h-24 w-24 rounded bg-secondary" />
-                  <div className="flex-1 space-y-3">
-                    <div className="h-4 w-3/4 rounded bg-secondary" />
-                    <div className="h-3 w-1/2 rounded bg-secondary" />
-                    <div className="h-3 w-1/4 rounded bg-secondary" />
+                <div key={i} className='flex gap-4 border-b border-border py-6'>
+                  <div className='h-24 w-24 rounded bg-secondary' />
+                  <div className='flex-1 space-y-3'>
+                    <div className='h-4 w-3/4 rounded bg-secondary' />
+                    <div className='h-3 w-1/2 rounded bg-secondary' />
+                    <div className='h-3 w-1/4 rounded bg-secondary' />
                   </div>
-                  <div className="h-4 w-16 rounded bg-secondary" />
+                  <div className='h-4 w-16 rounded bg-secondary' />
                 </div>
               ))}
             </div>
-            <div className="h-72 rounded-sm bg-secondary" />
+            <div className='h-72 rounded-sm bg-secondary' />
           </div>
         </div>
       </div>
@@ -75,17 +75,17 @@ export function CartPage() {
   // Error state
   if (error) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-lg text-destructive">
+      <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
+        <div className='flex flex-col items-center justify-center py-20 text-center'>
+          <p className='text-lg text-destructive'>
             カート情報の取得に失敗しました
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className='mt-2 text-sm text-muted-foreground'>
             ページを再読み込みしてください
           </p>
           <Button
-            variant="outline"
-            className="mt-6"
+            variant='outline'
+            className='mt-6'
             onClick={() => window.location.reload()}
           >
             再読み込み
@@ -99,30 +99,30 @@ export function CartPage() {
   const isEmpty = items.length === 0;
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
+    <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
       {/* Breadcrumb */}
-      <nav className="mb-8 flex items-center gap-2 text-xs text-muted-foreground">
-        <Link href="/" className="transition-colors hover:text-foreground">
+      <nav className='mb-8 flex items-center gap-2 text-xs text-muted-foreground'>
+        <Link href='/' className='transition-colors hover:text-foreground'>
           Home
         </Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground">カート</span>
+        <ChevronRight className='h-3 w-3' />
+        <span className='text-foreground'>カート</span>
       </nav>
 
       {/* Page Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-light tracking-tight md:text-3xl">
+      <div className='mb-8 flex items-center justify-between'>
+        <h1 className='text-2xl font-light tracking-tight md:text-3xl'>
           ショッピングカート
         </h1>
         {!isEmpty && (
           <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-destructive"
+            variant='ghost'
+            size='sm'
+            className='text-muted-foreground hover:text-destructive'
             onClick={handleClearCart}
             disabled={clearCartMutation.isPending}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className='mr-2 h-4 w-4' />
             すべて削除
           </Button>
         )}
@@ -131,11 +131,11 @@ export function CartPage() {
       {isEmpty ? (
         <EmptyCart />
       ) : (
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className='grid gap-8 lg:grid-cols-3'>
           {/* Cart Items */}
-          <div className="lg:col-span-2">
-            <div className="rounded-sm border border-border bg-background">
-              <div className="px-6">
+          <div className='lg:col-span-2'>
+            <div className='rounded-sm border border-border bg-background'>
+              <div className='px-6'>
                 {items.map((item) => (
                   <CartItemCard
                     key={item.id}
@@ -150,10 +150,10 @@ export function CartPage() {
             </div>
 
             {/* Continue Shopping Link */}
-            <div className="mt-6">
+            <div className='mt-6'>
               <Link
-                href="/shop"
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                href='/shop'
+                className='text-sm text-muted-foreground transition-colors hover:text-foreground'
               >
                 ← 買い物を続ける
               </Link>
@@ -161,7 +161,7 @@ export function CartPage() {
           </div>
 
           {/* Cart Summary */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className='lg:sticky lg:top-24 lg:self-start'>
             <CartSummary
               subtotal={cart?.subtotal ?? 0}
               tax={cart?.tax ?? 0}

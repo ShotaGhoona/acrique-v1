@@ -23,7 +23,8 @@ export function useProductsByCategory(
 ) {
   return useQuery({
     queryKey: ['products', 'category', categoryId, params],
-    queryFn: () => productApi.getProducts({ ...params, category_id: categoryId }),
+    queryFn: () =>
+      productApi.getProducts({ ...params, category_id: categoryId }),
     staleTime: 1000 * 60 * 5, // 5分キャッシュ
   });
 }

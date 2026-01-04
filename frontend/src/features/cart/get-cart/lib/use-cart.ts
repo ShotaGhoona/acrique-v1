@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { cartApi } from '@/entities/cart';
+import { cartApi } from '@/entities/cart/api/cart-api';
 
 export const CART_QUERY_KEY = ['cart'];
 

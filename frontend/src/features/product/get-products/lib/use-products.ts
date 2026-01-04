@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { productApi } from '@/entities/product';
-import type { ProductListParams } from '@/entities/product';
+import { productApi } from '@/entities/product/api/product-api';
+import type { ProductListParams } from '@/entities/product/model/types';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 
 /**

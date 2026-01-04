@@ -25,13 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   getOrderById,
   orderStatusLabels,
   orderStatusColors,
   type OrderStatus,
-} from '../../dummy-data/orders';
+} from '../../home/dummy-data/orders';
 
 interface OrderDetailContainerProps {
   orderId: string;

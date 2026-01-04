@@ -33,13 +33,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   dummyUploads,
   uploadStatusLabels,
   uploadStatusColors,
   type UploadStatus,
-} from '../../dummy-data/uploads';
+} from '../dummy-data/uploads';
 
 export function UploadsHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

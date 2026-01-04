@@ -2,8 +2,8 @@
 
 import { notFound } from 'next/navigation';
 import { use } from 'react';
-import { ProductPage } from '@/page-components/product/ProductPage';
-import { useProduct } from '@/features/product/get-product';
+import { ProductPage } from '@/page-components/public/product/ui/ProductDetailContainer';
+import { useProduct } from '@/features/product/get-product/lib/use-product';
 
 interface ProductPageParams {
   params: Promise<{ productId: string }>;

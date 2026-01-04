@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { productApi } from '@/entities/product';
+import { productApi } from '@/entities/product/api/product-api';
 
 /**
  * おすすめ商品を取得するHook

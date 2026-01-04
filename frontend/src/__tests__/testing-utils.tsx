@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@/store/slices/authSlice';
-import type { RootState } from '@/store';
+import type { RootState } from '@/store/store';
 
 export function createTestQueryClient() {
   return new QueryClient({

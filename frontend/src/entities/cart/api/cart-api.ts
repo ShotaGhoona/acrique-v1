@@ -1,4 +1,4 @@
-import { httpClient } from '@/shared/api';
+import httpClient from '@/shared/api/client/http-client';
 import {
   AddToCartRequest,
   AddToCartResponse,

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { userApi } from '@/entities/user';
+import { userApi } from '@/entities/user/api/user-api';
 import type { ChangePasswordFormData } from '../model/types';
 
 export function useChangePassword() {

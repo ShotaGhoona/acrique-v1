@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { orderApi, CreateOrderRequest } from '@/entities/order';
-import { ORDERS_QUERY_KEY } from '../../get-orders';
+import { orderApi } from '@/entities/order/api/order-api';
+import type { CreateOrderRequest } from '@/entities/order/model/types';
+import { ORDERS_QUERY_KEY } from '../../get-orders/lib/use-orders';
 
 export function useCreateOrder() {
   const queryClient = useQueryClient();

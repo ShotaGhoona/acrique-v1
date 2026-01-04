@@ -22,8 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
-import { useProduct } from '@/features/product/get-product';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
+import { useProduct } from '@/features/product/get-product/lib/use-product';
+import { ProductEditSkeleton } from './skeleton/ProductEditSkeleton';
 import {
   categories,
   getCategoryIds,
@@ -95,9 +96,7 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
   if (isLoading) {
     return (
       <AdminLayout title='商品編集'>
-        <div className='flex min-h-[400px] items-center justify-center'>
-          <p className='text-muted-foreground'>読み込み中...</p>
-        </div>
+        <ProductEditSkeleton />
       </AdminLayout>
     );
   }

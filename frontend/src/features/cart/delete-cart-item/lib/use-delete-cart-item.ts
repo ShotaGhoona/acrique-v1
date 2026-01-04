@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { cartApi } from '@/entities/cart';
-import { CART_QUERY_KEY } from '../../get-cart';
+import { cartApi } from '@/entities/cart/api/cart-api';
+import { CART_QUERY_KEY } from '../../get-cart/lib/use-cart';
 
 export function useDeleteCartItem() {
   const queryClient = useQueryClient();

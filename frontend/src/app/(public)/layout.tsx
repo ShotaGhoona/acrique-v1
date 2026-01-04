@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { generatePublicMetadata } from '@/shared/lib';
-import { Header } from '@/widgets/layout/ui/Header';
-import { Footer } from '@/widgets/layout/ui/Footer';
+import { generatePublicMetadata } from '@/shared/lib/global-metadata';
+import { Header } from '@/widgets/layout/app-layout/ui/Header';
+import { Footer } from '@/widgets/layout/app-layout/ui/Footer';
 
 export const metadata: Metadata = generatePublicMetadata();
 

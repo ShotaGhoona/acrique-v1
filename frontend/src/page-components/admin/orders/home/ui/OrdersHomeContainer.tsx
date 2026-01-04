@@ -33,13 +33,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   dummyOrders,
   orderStatusLabels,
   orderStatusColors,
   type OrderStatus,
-} from '../../dummy-data/orders';
+} from '../dummy-data/orders';
 
 export function OrdersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

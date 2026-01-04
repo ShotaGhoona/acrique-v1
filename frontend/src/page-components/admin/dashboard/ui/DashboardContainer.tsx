@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/ui/shadcn/ui/table';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   dummyStats,
   dummyRecentOrders,

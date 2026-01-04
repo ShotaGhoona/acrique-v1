@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { userApi } from '@/entities/user';
+import { userApi } from '@/entities/user/api/user-api';
 
 export const USER_QUERY_KEY = ['user', 'me'] as const;
 

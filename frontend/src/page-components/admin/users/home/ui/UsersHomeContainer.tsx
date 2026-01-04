@@ -33,13 +33,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
-import { AdminLayout } from '@/widgets/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import {
   dummyUsers,
   userStatusLabels,
   userStatusColors,
   type UserStatus,
-} from '../../dummy-data/users';
+} from '../dummy-data/users';
 
 export function UsersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

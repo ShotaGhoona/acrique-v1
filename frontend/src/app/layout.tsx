@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
-import { notoSansJP, generateMetadata } from '@/shared/lib';
+import { notoSansJP } from '@/shared/lib/global-fonts';
+import { generateMetadata } from '@/shared/lib/global-metadata';
 
 export const metadata: Metadata = generateMetadata();
 

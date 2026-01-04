@@ -1,8 +1,10 @@
+"""配送先依存性注入設定"""
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.application.use_cases.address_usecase import AddressUsecase
-from app.di.auth import get_db
+from app.di import get_db
 from app.infrastructure.db.repositories.address_repository_impl import (
     AddressRepositoryImpl,
 )

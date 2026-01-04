@@ -1,5 +1,3 @@
-from fastapi import HTTPException, status
-
 from app.application.interfaces.security_service import ISecurityService
 from app.application.schemas.user_schemas import (
     ChangePasswordInputDTO,
@@ -8,6 +6,8 @@ from app.application.schemas.user_schemas import (
     UpdateMeInputDTO,
     UpdateMeOutputDTO,
 )
+from app.domain.exceptions.common import OperationFailedError
+from app.domain.exceptions.user import InvalidPasswordError, UserNotFoundError
 from app.domain.repositories.user_repository import IUserRepository
 
 
@@ -26,10 +26,7 @@ class UserUsecase:
         """自分の情報を取得"""
         user = self.user_repository.get_by_id(user_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='ユーザーが見つかりません',
-            )
+            raise UserNotFoundError()
 
         return GetMeOutputDTO(
             id=user.id,
@@ -46,10 +43,7 @@ class UserUsecase:
         """自分の情報を更新"""
         user = self.user_repository.get_by_id(user_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='ユーザーが見つかりません',
-            )
+            raise UserNotFoundError()
 
         # 更新する値を設定（Noneでない場合のみ更新）
         if input_dto.name is not None:
@@ -79,28 +73,19 @@ class UserUsecase:
         """パスワードを変更"""
         user = self.user_repository.get_by_id(user_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='ユーザーが見つかりません',
-            )
+            raise UserNotFoundError()
 
         # 現在のパスワードを検証
         if not self.security_service.verify_password(
             input_dto.current_password, user.password_hash
         ):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='現在のパスワードが正しくありません',
-            )
+            raise InvalidPasswordError()
 
         # 新しいパスワードをハッシュ化して更新
         new_password_hash = self.security_service.hash_password(input_dto.new_password)
         success = self.user_repository.update_password(user_id, new_password_hash)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail='パスワードの更新に失敗しました',
-            )
+            raise OperationFailedError('パスワードの更新')
 
         return ChangePasswordOutputDTO(message='パスワードを変更しました')

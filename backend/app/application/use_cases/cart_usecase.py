@@ -1,7 +1,5 @@
 """カートユースケース"""
 
-from fastapi import HTTPException, status
-
 from app.application.schemas.cart_schemas import (
     AddToCartInputDTO,
     AddToCartOutputDTO,
@@ -13,6 +11,9 @@ from app.application.schemas.cart_schemas import (
     UpdateCartItemOutputDTO,
 )
 from app.domain.entities.cart_item import CartItem
+from app.domain.exceptions.cart import CartItemNotFoundError
+from app.domain.exceptions.common import OperationFailedError, PermissionDeniedError
+from app.domain.exceptions.product import ProductNotActiveError, ProductNotFoundError
 from app.domain.repositories.cart_item_repository import ICartItemRepository
 from app.domain.repositories.product_repository import IProductRepository
 
@@ -91,17 +92,11 @@ class CartUsecase:
         product = self.product_repository.get_by_id(input_dto.product_id)
 
         if product is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='商品が見つかりません',
-            )
+            raise ProductNotFoundError()
 
         # 非公開商品はカートに追加できない
         if not product.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='この商品は現在購入できません',
-            )
+            raise ProductNotActiveError()
 
         # 既存のカートアイテムを確認
         existing_item = self.cart_item_repository.get_by_user_and_product(
@@ -169,17 +164,11 @@ class CartUsecase:
         cart_item = self.cart_item_repository.get_by_id(item_id)
 
         if cart_item is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='カートアイテムが見つかりません',
-            )
+            raise CartItemNotFoundError()
 
         # 他人のカートアイテムへのアクセスを防止
         if cart_item.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='このカートアイテムを更新する権限がありません',
-            )
+            raise PermissionDeniedError('このカートアイテムを更新する')
 
         # 商品情報を取得
         product = self.product_repository.get_by_id(cart_item.product_id)
@@ -187,9 +176,8 @@ class CartUsecase:
         if product is None:
             # 商品が削除されている場合
             self.cart_item_repository.delete(item_id)
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='商品が見つかりません。カートから削除されました。',
+            raise ProductNotFoundError(
+                message='商品が見つかりません。カートから削除されました。'
             )
 
         # 更新処理
@@ -223,25 +211,16 @@ class CartUsecase:
         cart_item = self.cart_item_repository.get_by_id(item_id)
 
         if cart_item is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='カートアイテムが見つかりません',
-            )
+            raise CartItemNotFoundError()
 
         # 他人のカートアイテムへのアクセスを防止
         if cart_item.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='このカートアイテムを削除する権限がありません',
-            )
+            raise PermissionDeniedError('このカートアイテムを削除する')
 
         success = self.cart_item_repository.delete(item_id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail='カートアイテムの削除に失敗しました',
-            )
+            raise OperationFailedError('カートアイテムの削除')
 
         return DeleteCartItemOutputDTO(message='カートから削除しました')
 

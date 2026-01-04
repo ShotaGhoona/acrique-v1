@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.application.use_cases.order_usecase import OrderUsecase
-from app.di.auth import get_db
+from app.di import get_db
 from app.infrastructure.db.repositories.address_repository_impl import (
     AddressRepositoryImpl,
 )

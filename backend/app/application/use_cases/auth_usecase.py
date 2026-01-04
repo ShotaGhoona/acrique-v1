@@ -2,8 +2,6 @@ import logging
 import secrets
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException, status
-
 from app.application.interfaces.email_service import IEmailService
 from app.application.interfaces.security_service import ISecurityService
 from app.application.schemas.auth_schemas import (
@@ -25,6 +23,14 @@ from app.application.schemas.auth_schemas import (
 from app.config import get_settings
 from app.domain.entities.user import User
 from app.domain.entities.verification_token import TokenType, VerificationToken
+from app.domain.exceptions.auth import (
+    EmailAlreadyExistsError,
+    EmailAlreadyVerifiedError,
+    EmailNotVerifiedError,
+    InvalidCredentialsError,
+    InvalidTokenError,
+)
+from app.domain.exceptions.user import UserNotFoundError
 from app.domain.repositories.user_repository import IUserRepository
 from app.domain.repositories.verification_token_repository import (
     IVerificationTokenRepository,
@@ -54,10 +60,7 @@ class AuthUsecase:
         # メールアドレスの重複チェック
         existing_user = self.user_repository.get_by_email(input_dto.email)
         if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='このメールアドレスは既に登録されています',
-            )
+            raise EmailAlreadyExistsError()
 
         # パスワードをハッシュ化
         password_hash = self.security_service.hash_password(input_dto.password)
@@ -103,26 +106,17 @@ class AuthUsecase:
         # ユーザー取得
         user = self.user_repository.get_by_email(input_dto.email)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='メールアドレスまたはパスワードが正しくありません',
-            )
+            raise InvalidCredentialsError()
 
         # パスワード検証
         if not self.security_service.verify_password(
             input_dto.password, user.password_hash
         ):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='メールアドレスまたはパスワードが正しくありません',
-            )
+            raise InvalidCredentialsError()
 
         # メール認証済みかチェック
         if not user.is_email_verified:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='メールアドレスが認証されていません。認証メールをご確認ください。',
-            )
+            raise EmailNotVerifiedError()
 
         # アクセストークン生成
         access_token = self.security_service.create_access_token(user_id=user.id)
@@ -139,10 +133,7 @@ class AuthUsecase:
         """認証状態を取得"""
         user = self.user_repository.get_by_id(user_id)
         if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='ユーザーが見つかりません',
-            )
+            raise UserNotFoundError()
 
         return StatusOutputDTO(
             is_authenticated=True,
@@ -159,10 +150,7 @@ class AuthUsecase:
             input_dto.token, TokenType.EMAIL_VERIFICATION
         )
         if token_entity is None or not token_entity.is_valid:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='無効または期限切れのトークンです',
-            )
+            raise InvalidTokenError()
 
         # メール認証完了
         verified_at = datetime.utcnow()
@@ -228,10 +216,7 @@ class AuthUsecase:
             input_dto.token, TokenType.PASSWORD_RESET
         )
         if token_entity is None or not token_entity.is_valid:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='無効または期限切れのトークンです',
-            )
+            raise InvalidTokenError()
 
         # パスワード更新
         password_hash = self.security_service.hash_password(input_dto.new_password)
@@ -259,10 +244,7 @@ class AuthUsecase:
 
         # 既に認証済みの場合
         if user.is_email_verified:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='このメールアドレスは既に認証済みです',
-            )
+            raise EmailAlreadyVerifiedError()
 
         # 既存のトークンを削除
         self.token_repository.delete_by_user_and_type(

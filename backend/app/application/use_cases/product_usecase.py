@@ -1,7 +1,5 @@
 """商品ユースケース"""
 
-from fastapi import HTTPException, status
-
 from app.application.schemas.product_schemas import (
     ProductDetailDTO,
     ProductFaqDTO,
@@ -27,6 +25,7 @@ from app.domain.entities.product import (
     ProductOption,
     ProductSpec,
 )
+from app.domain.exceptions.product import ProductNotActiveError, ProductNotFoundError
 from app.domain.repositories.product_repository import IProductRepository
 
 
@@ -63,16 +62,10 @@ class ProductUsecase:
         product = self.product_repository.get_by_id(product_id, include_relations=True)
 
         if product is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='商品が見つかりません',
-            )
+            raise ProductNotFoundError()
 
         if not product.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='この商品は現在公開されていません',
-            )
+            raise ProductNotActiveError()
 
         return self._to_detail_dto(product)
 
@@ -81,16 +74,10 @@ class ProductUsecase:
         product = self.product_repository.get_by_slug(slug, include_relations=True)
 
         if product is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='商品が見つかりません',
-            )
+            raise ProductNotFoundError()
 
         if not product.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='この商品は現在公開されていません',
-            )
+            raise ProductNotActiveError()
 
         return self._to_detail_dto(product)
 
@@ -99,10 +86,7 @@ class ProductUsecase:
         product = self.product_repository.get_by_id(product_id, include_relations=False)
 
         if product is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='商品が見つかりません',
-            )
+            raise ProductNotFoundError()
 
         options = self.product_repository.get_options(product_id)
 
@@ -116,10 +100,7 @@ class ProductUsecase:
         product = self.product_repository.get_by_id(product_id, include_relations=False)
 
         if product is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='商品が見つかりません',
-            )
+            raise ProductNotFoundError()
 
         related = self.product_repository.get_related_products(product_id)
 

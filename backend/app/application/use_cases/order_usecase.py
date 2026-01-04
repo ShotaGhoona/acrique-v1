@@ -3,8 +3,6 @@
 from datetime import datetime
 from typing import Any
 
-from fastapi import HTTPException, status
-
 from app.application.schemas.order_schemas import (
     CancelOrderInputDTO,
     CancelOrderOutputDTO,
@@ -19,6 +17,11 @@ from app.application.schemas.order_schemas import (
     OrderItemDTO,
 )
 from app.domain.entities.order import Order, OrderItem, OrderStatus
+from app.domain.exceptions.address import AddressNotFoundError
+from app.domain.exceptions.cart import CartEmptyError, NoAvailableProductsError
+from app.domain.exceptions.common import PermissionDeniedError
+from app.domain.exceptions.order import OrderCannotCancelError, OrderNotFoundError
+from app.domain.exceptions.product import ProductNotActiveError, ProductNotFoundError
 from app.domain.repositories.address_repository import IAddressRepository
 from app.domain.repositories.cart_item_repository import ICartItemRepository
 from app.domain.repositories.order_repository import IOrderRepository
@@ -71,17 +74,11 @@ class OrderUsecase:
         order = self.order_repository.get_by_id(order_id)
 
         if order is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='注文が見つかりません',
-            )
+            raise OrderNotFoundError()
 
         # 他人の注文へのアクセスを防止
         if order.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この注文を閲覧する権限がありません',
-            )
+            raise PermissionDeniedError('この注文を閲覧する')
 
         return GetOrderOutputDTO(order=self._to_order_detail_dto(order))
 
@@ -134,15 +131,9 @@ class OrderUsecase:
         """配送先を検証"""
         address = self.address_repository.get_by_id(address_id)
         if address is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='配送先が見つかりません',
-            )
+            raise AddressNotFoundError()
         if address.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この配送先を使用する権限がありません',
-            )
+            raise PermissionDeniedError('この配送先を使用する')
 
     def _build_order_items_from_input(
         self, items: list[CreateOrderItemInputDTO]
@@ -152,15 +143,9 @@ class OrderUsecase:
         for item_input in items:
             product = self.product_repository.get_by_id(item_input.product_id)
             if product is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f'商品が見つかりません: {item_input.product_id}',
-                )
+                raise ProductNotFoundError(item_input.product_id)
             if not product.is_active:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f'この商品は現在購入できません: {product.name_ja}',
-                )
+                raise ProductNotActiveError(product.name_ja)
             unit_price = self._calculate_unit_price(
                 product.base_price, item_input.options
             )
@@ -181,10 +166,7 @@ class OrderUsecase:
         """カートから注文明細を作成"""
         cart_items = self.cart_item_repository.get_by_user_id(user_id)
         if not cart_items:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='カートが空です',
-            )
+            raise CartEmptyError()
 
         order_items: list[OrderItem] = []
         for cart_item in cart_items:
@@ -193,10 +175,7 @@ class OrderUsecase:
                 self.cart_item_repository.delete(cart_item.id)
                 continue
             if not product.is_active:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f'この商品は現在購入できません: {product.name_ja}',
-                )
+                raise ProductNotActiveError(product.name_ja)
             unit_price = self._calculate_unit_price(product.base_price, cart_item.options)
             order_items.append(
                 OrderItem(
@@ -211,10 +190,7 @@ class OrderUsecase:
             )
 
         if not order_items:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='購入可能な商品がありません',
-            )
+            raise NoAvailableProductsError()
         return order_items
 
     def _calculate_unit_price(
@@ -235,24 +211,15 @@ class OrderUsecase:
         order = self.order_repository.get_by_id(order_id)
 
         if order is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='注文が見つかりません',
-            )
+            raise OrderNotFoundError()
 
         # 他人の注文へのアクセスを防止
         if order.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この注文をキャンセルする権限がありません',
-            )
+            raise PermissionDeniedError('この注文をキャンセルする')
 
         # キャンセル可能かチェック
         if not order.can_cancel():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='この注文はキャンセルできません',
-            )
+            raise OrderCannotCancelError()
 
         # キャンセル処理
         order.status = OrderStatus.CANCELLED

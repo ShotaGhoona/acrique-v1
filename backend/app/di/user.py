@@ -1,8 +1,10 @@
+"""ユーザー依存性注入設定"""
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.application.use_cases.user_usecase import UserUsecase
-from app.di.auth import get_db
+from app.di import get_db
 from app.infrastructure.db.repositories.user_repository_impl import UserRepositoryImpl
 from app.infrastructure.security.security_service_impl import SecurityServiceImpl
 

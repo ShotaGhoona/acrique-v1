@@ -1,9 +1,7 @@
+"""ユーザーAPIエンドポイント"""
+
 from fastapi import APIRouter, Depends, status
 
-from app.application.schemas.user_schemas import (
-    ChangePasswordInputDTO,
-    UpdateMeInputDTO,
-)
 from app.application.use_cases.user_usecase import UserUsecase
 from app.di.user import get_user_usecase
 from app.infrastructure.security.security_service_impl import (
@@ -28,17 +26,7 @@ def get_me(
 ) -> GetMeResponse:
     """自分の情報取得エンドポイント"""
     output_dto = user_usecase.get_me(current_user.id)
-
-    return GetMeResponse(
-        id=output_dto.id,
-        email=output_dto.email,
-        name=output_dto.name,
-        name_kana=output_dto.name_kana,
-        phone=output_dto.phone,
-        company=output_dto.company,
-        is_email_verified=output_dto.is_email_verified,
-        created_at=output_dto.created_at,
-    )
+    return GetMeResponse.from_dto(output_dto)
 
 
 @router.put('/me', response_model=UpdateMeResponse, status_code=status.HTTP_200_OK)
@@ -48,23 +36,8 @@ def update_me(
     user_usecase: UserUsecase = Depends(get_user_usecase),
 ) -> UpdateMeResponse:
     """自分の情報更新エンドポイント"""
-    input_dto = UpdateMeInputDTO(
-        name=request.name,
-        name_kana=request.name_kana,
-        phone=request.phone,
-        company=request.company,
-    )
-    output_dto = user_usecase.update_me(current_user.id, input_dto)
-
-    return UpdateMeResponse(
-        id=output_dto.id,
-        email=output_dto.email,
-        name=output_dto.name,
-        name_kana=output_dto.name_kana,
-        phone=output_dto.phone,
-        company=output_dto.company,
-        message=output_dto.message,
-    )
+    output_dto = user_usecase.update_me(current_user.id, request.to_dto())
+    return UpdateMeResponse.from_dto(output_dto)
 
 
 @router.put(
@@ -76,10 +49,5 @@ def change_password(
     user_usecase: UserUsecase = Depends(get_user_usecase),
 ) -> ChangePasswordResponse:
     """パスワード変更エンドポイント"""
-    input_dto = ChangePasswordInputDTO(
-        current_password=request.current_password,
-        new_password=request.new_password,
-    )
-    output_dto = user_usecase.change_password(current_user.id, input_dto)
-
-    return ChangePasswordResponse(message=output_dto.message)
+    output_dto = user_usecase.change_password(current_user.id, request.to_dto())
+    return ChangePasswordResponse.from_dto(output_dto)

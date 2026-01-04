@@ -1,5 +1,3 @@
-from fastapi import HTTPException, status
-
 from app.application.schemas.address_schemas import (
     AddressDTO,
     CreateAddressInputDTO,
@@ -12,6 +10,8 @@ from app.application.schemas.address_schemas import (
     UpdateAddressOutputDTO,
 )
 from app.domain.entities.address import Address
+from app.domain.exceptions.address import AddressNotFoundError
+from app.domain.exceptions.common import OperationFailedError, PermissionDeniedError
 from app.domain.repositories.address_repository import IAddressRepository
 
 
@@ -37,17 +37,11 @@ class AddressUsecase:
         address = self.address_repository.get_by_id(address_id)
 
         if address is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='配送先が見つかりません',
-            )
+            raise AddressNotFoundError()
 
         # 他人の配送先へのアクセスを防止
         if address.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この配送先にアクセスする権限がありません',
-            )
+            raise PermissionDeniedError('この配送先にアクセスする')
 
         return GetAddressOutputDTO(address=self._to_dto(address))
 
@@ -86,17 +80,11 @@ class AddressUsecase:
         address = self.address_repository.get_by_id(address_id)
 
         if address is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='配送先が見つかりません',
-            )
+            raise AddressNotFoundError()
 
         # 他人の配送先へのアクセスを防止
         if address.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この配送先を更新する権限がありません',
-            )
+            raise PermissionDeniedError('この配送先を更新する')
 
         # 更新する値を設定（Noneでない場合のみ更新）
         self._apply_address_updates(address, input_dto)
@@ -132,25 +120,16 @@ class AddressUsecase:
         address = self.address_repository.get_by_id(address_id)
 
         if address is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='配送先が見つかりません',
-            )
+            raise AddressNotFoundError()
 
         # 他人の配送先へのアクセスを防止
         if address.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この配送先を削除する権限がありません',
-            )
+            raise PermissionDeniedError('この配送先を削除する')
 
         success = self.address_repository.delete(address_id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail='配送先の削除に失敗しました',
-            )
+            raise OperationFailedError('配送先の削除')
 
         return DeleteAddressOutputDTO(message='配送先を削除しました')
 
@@ -161,25 +140,16 @@ class AddressUsecase:
         address = self.address_repository.get_by_id(address_id)
 
         if address is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='配送先が見つかりません',
-            )
+            raise AddressNotFoundError()
 
         # 他人の配送先へのアクセスを防止
         if address.user_id != user_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='この配送先をデフォルトに設定する権限がありません',
-            )
+            raise PermissionDeniedError('この配送先をデフォルトに設定する')
 
         success = self.address_repository.set_default(user_id, address_id)
 
         if not success:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail='デフォルト配送先の設定に失敗しました',
-            )
+            raise OperationFailedError('デフォルト配送先の設定')
 
         # 更新された配送先を取得
         updated_address = self.address_repository.get_by_id(address_id)

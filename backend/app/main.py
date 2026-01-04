@@ -12,6 +12,7 @@ from app.presentation.api.cart_api import router as cart_router
 from app.presentation.api.order_api import router as order_router
 from app.presentation.api.product_api import router as product_router
 from app.presentation.api.user_api import router as user_router
+from app.presentation.exception_handlers import register_exception_handlers
 
 # ロギングの設定を初期化
 setup_logging()
@@ -53,6 +54,9 @@ app.add_middleware(
         'X-Custom-Header',
     ],  # 例: クライアントに公開したいヘッダー
 )
+
+# ドメイン例外ハンドラーを登録
+register_exception_handlers(app)
 
 # API ルーターをアプリケーションに含める
 app.include_router(auth_router, prefix='/api')

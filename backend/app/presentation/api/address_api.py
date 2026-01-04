@@ -1,9 +1,7 @@
+"""配送先APIエンドポイント"""
+
 from fastapi import APIRouter, Depends, status
 
-from app.application.schemas.address_schemas import (
-    CreateAddressInputDTO,
-    UpdateAddressInputDTO,
-)
 from app.application.use_cases.address_usecase import AddressUsecase
 from app.di.address import get_address_usecase
 from app.infrastructure.security.security_service_impl import (
@@ -11,7 +9,6 @@ from app.infrastructure.security.security_service_impl import (
     get_current_user_from_cookie,
 )
 from app.presentation.schemas.address_schemas import (
-    AddressResponse,
     CreateAddressRequest,
     CreateAddressResponse,
     DeleteAddressResponse,
@@ -32,26 +29,7 @@ def get_address_list(
 ) -> GetAddressListResponse:
     """配送先一覧取得エンドポイント"""
     output_dto = address_usecase.get_address_list(current_user.id)
-
-    return GetAddressListResponse(
-        addresses=[
-            AddressResponse(
-                id=addr.id,
-                label=addr.label,
-                name=addr.name,
-                postal_code=addr.postal_code,
-                prefecture=addr.prefecture,
-                city=addr.city,
-                address1=addr.address1,
-                address2=addr.address2,
-                phone=addr.phone,
-                is_default=addr.is_default,
-                created_at=addr.created_at,
-            )
-            for addr in output_dto.addresses
-        ],
-        total=output_dto.total,
-    )
+    return GetAddressListResponse.from_dto(output_dto)
 
 
 @router.post(
@@ -63,35 +41,8 @@ def create_address(
     address_usecase: AddressUsecase = Depends(get_address_usecase),
 ) -> CreateAddressResponse:
     """配送先追加エンドポイント"""
-    input_dto = CreateAddressInputDTO(
-        label=request.label,
-        name=request.name,
-        postal_code=request.postal_code,
-        prefecture=request.prefecture,
-        city=request.city,
-        address1=request.address1,
-        address2=request.address2,
-        phone=request.phone,
-        is_default=request.is_default,
-    )
-    output_dto = address_usecase.create_address(current_user.id, input_dto)
-
-    return CreateAddressResponse(
-        address=AddressResponse(
-            id=output_dto.address.id,
-            label=output_dto.address.label,
-            name=output_dto.address.name,
-            postal_code=output_dto.address.postal_code,
-            prefecture=output_dto.address.prefecture,
-            city=output_dto.address.city,
-            address1=output_dto.address.address1,
-            address2=output_dto.address.address2,
-            phone=output_dto.address.phone,
-            is_default=output_dto.address.is_default,
-            created_at=output_dto.address.created_at,
-        ),
-        message=output_dto.message,
-    )
+    output_dto = address_usecase.create_address(current_user.id, request.to_dto())
+    return CreateAddressResponse.from_dto(output_dto)
 
 
 @router.get(
@@ -104,22 +55,7 @@ def get_address(
 ) -> GetAddressResponse:
     """配送先詳細取得エンドポイント"""
     output_dto = address_usecase.get_address(current_user.id, address_id)
-
-    return GetAddressResponse(
-        address=AddressResponse(
-            id=output_dto.address.id,
-            label=output_dto.address.label,
-            name=output_dto.address.name,
-            postal_code=output_dto.address.postal_code,
-            prefecture=output_dto.address.prefecture,
-            city=output_dto.address.city,
-            address1=output_dto.address.address1,
-            address2=output_dto.address.address2,
-            phone=output_dto.address.phone,
-            is_default=output_dto.address.is_default,
-            created_at=output_dto.address.created_at,
-        )
-    )
+    return GetAddressResponse.from_dto(output_dto)
 
 
 @router.put(
@@ -132,34 +68,10 @@ def update_address(
     address_usecase: AddressUsecase = Depends(get_address_usecase),
 ) -> UpdateAddressResponse:
     """配送先更新エンドポイント"""
-    input_dto = UpdateAddressInputDTO(
-        label=request.label,
-        name=request.name,
-        postal_code=request.postal_code,
-        prefecture=request.prefecture,
-        city=request.city,
-        address1=request.address1,
-        address2=request.address2,
-        phone=request.phone,
+    output_dto = address_usecase.update_address(
+        current_user.id, address_id, request.to_dto()
     )
-    output_dto = address_usecase.update_address(current_user.id, address_id, input_dto)
-
-    return UpdateAddressResponse(
-        address=AddressResponse(
-            id=output_dto.address.id,
-            label=output_dto.address.label,
-            name=output_dto.address.name,
-            postal_code=output_dto.address.postal_code,
-            prefecture=output_dto.address.prefecture,
-            city=output_dto.address.city,
-            address1=output_dto.address.address1,
-            address2=output_dto.address.address2,
-            phone=output_dto.address.phone,
-            is_default=output_dto.address.is_default,
-            created_at=output_dto.address.created_at,
-        ),
-        message=output_dto.message,
-    )
+    return UpdateAddressResponse.from_dto(output_dto)
 
 
 @router.delete(
@@ -172,8 +84,7 @@ def delete_address(
 ) -> DeleteAddressResponse:
     """配送先削除エンドポイント"""
     output_dto = address_usecase.delete_address(current_user.id, address_id)
-
-    return DeleteAddressResponse(message=output_dto.message)
+    return DeleteAddressResponse.from_dto(output_dto)
 
 
 @router.put(
@@ -188,20 +99,4 @@ def set_default_address(
 ) -> SetDefaultAddressResponse:
     """デフォルト配送先設定エンドポイント"""
     output_dto = address_usecase.set_default_address(current_user.id, address_id)
-
-    return SetDefaultAddressResponse(
-        address=AddressResponse(
-            id=output_dto.address.id,
-            label=output_dto.address.label,
-            name=output_dto.address.name,
-            postal_code=output_dto.address.postal_code,
-            prefecture=output_dto.address.prefecture,
-            city=output_dto.address.city,
-            address1=output_dto.address.address1,
-            address2=output_dto.address.address2,
-            phone=output_dto.address.phone,
-            is_default=output_dto.address.is_default,
-            created_at=output_dto.address.created_at,
-        ),
-        message=output_dto.message,
-    )
+    return SetDefaultAddressResponse.from_dto(output_dto)

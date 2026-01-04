@@ -222,6 +222,30 @@ resend==2.5.0
 
 ---
 
+## リファクタリング履歴
+
+### 2026-01-04: ドメイン例外の導入
+
+オニオンアーキテクチャの原則に従い、Application層から`fastapi.HTTPException`への依存を除去。
+
+**変更内容:**
+- `app/domain/exceptions/` ディレクトリを新設
+- 認証関連のドメイン例外を定義（`auth.py`）:
+  - `EmailAlreadyExistsError` - メールアドレス重複
+  - `InvalidCredentialsError` - 認証失敗
+  - `EmailNotVerifiedError` - メール未認証
+  - `InvalidTokenError` - トークン無効
+  - `EmailAlreadyVerifiedError` - 既に認証済み
+- `UserNotFoundError`（`user.py`）
+- `app/presentation/exception_handlers.py` で例外→HTTPレスポンス変換
+
+**効果:**
+- Application層がPresentation層の詳細（FastAPI）に依存しなくなった
+- エラーコードの一元管理が可能に
+- テスト時にHTTP層をモックする必要がなくなった
+
+---
+
 ## 次のステップ
 
 1. **マイグレーション実行**

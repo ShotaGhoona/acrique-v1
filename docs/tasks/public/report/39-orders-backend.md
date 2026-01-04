@@ -315,6 +315,34 @@ docker exec acrique-v1-backend-1 alembic upgrade head
 
 ---
 
+## リファクタリング履歴
+
+### 2026-01-04: ドメイン例外の導入
+
+オニオンアーキテクチャの原則に従い、Application層から`fastapi.HTTPException`への依存を除去。
+
+**変更内容:**
+- `app/domain/exceptions/order.py` を新設:
+  - `OrderNotFoundError` - 注文が見つからない
+  - `OrderCannotCancelError` - 注文をキャンセルできない
+- `app/domain/exceptions/cart.py` を使用:
+  - `CartEmptyError` - カートが空
+  - `NoAvailableProductsError` - 購入可能な商品がない
+- `app/domain/exceptions/address.py` を使用:
+  - `AddressNotFoundError` - 配送先が見つからない
+- `app/domain/exceptions/product.py` を使用:
+  - `ProductNotFoundError` - 商品が見つからない
+  - `ProductNotActiveError` - 商品が非公開
+- `app/domain/exceptions/common.py` を使用:
+  - `PermissionDeniedError` - 権限がない
+- `app/presentation/exception_handlers.py` で例外→HTTPレスポンス変換
+
+**効果:**
+- Application層がPresentation層の詳細（FastAPI）に依存しなくなった
+- エラーコードの一元管理が可能に
+
+---
+
 ## 次のステップ
 
 1. **フロントエンド連携** - マイページ/注文履歴/チェックアウト画面との接続

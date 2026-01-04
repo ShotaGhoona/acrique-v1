@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.infrastructure.logging.logging import setup_logging
+from app.presentation.exception_handlers import register_exception_handlers
 from app.presentation.api.address_api import router as address_router
 from app.presentation.api.auth_api import router as auth_router
 from app.presentation.api.cart_api import router as cart_router
@@ -53,6 +54,9 @@ app.add_middleware(
         'X-Custom-Header',
     ],  # 例: クライアントに公開したいヘッダー
 )
+
+# ドメイン例外ハンドラーを登録
+register_exception_handlers(app)
 
 # API ルーターをアプリケーションに含める
 app.include_router(auth_router, prefix='/api')

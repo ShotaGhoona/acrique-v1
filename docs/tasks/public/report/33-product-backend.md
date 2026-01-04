@@ -331,6 +331,24 @@ docker exec acrique-v1-backend-1 alembic upgrade head
 
 ---
 
+## リファクタリング履歴
+
+### 2026-01-04: ドメイン例外の導入
+
+オニオンアーキテクチャの原則に従い、Application層から`fastapi.HTTPException`への依存を除去。
+
+**変更内容:**
+- `app/domain/exceptions/product.py` を新設:
+  - `ProductNotFoundError` - 商品が見つからない
+  - `ProductNotActiveError` - 商品が非公開
+- `app/presentation/exception_handlers.py` で例外→HTTPレスポンス変換
+
+**効果:**
+- Application層がPresentation層の詳細（FastAPI）に依存しなくなった
+- エラーコードの一元管理が可能に
+
+---
+
 ## 次のステップ
 
 1. **Admin API実装** - 商品の登録・編集・削除機能

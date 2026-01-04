@@ -19,9 +19,7 @@ class ICartItemRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_user_and_product(
-        self, user_id: int, product_id: str
-    ) -> CartItem | None:
+    def get_by_user_and_product(self, user_id: int, product_id: str) -> CartItem | None:
         """ユーザーIDと商品IDでカートアイテムを取得（重複チェック用）"""
         pass
 

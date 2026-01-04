@@ -1,7 +1,5 @@
 """カートユースケース"""
 
-from typing import Any
-
 from fastapi import HTTPException, status
 
 from app.application.schemas.cart_schemas import (
@@ -17,7 +15,6 @@ from app.application.schemas.cart_schemas import (
 from app.domain.entities.cart_item import CartItem
 from app.domain.repositories.cart_item_repository import ICartItemRepository
 from app.domain.repositories.product_repository import IProductRepository
-
 
 # 消費税率
 TAX_RATE = 0.10

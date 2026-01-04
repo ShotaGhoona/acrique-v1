@@ -22,7 +22,6 @@ from app.domain.repositories.cart_item_repository import ICartItemRepository
 from app.domain.repositories.order_repository import IOrderRepository
 from app.domain.repositories.product_repository import IProductRepository
 
-
 # 消費税率
 TAX_RATE = 0.10
 

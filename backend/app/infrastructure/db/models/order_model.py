@@ -38,7 +38,9 @@ class OrderModel(Base):
     )
 
     # リレーション
-    items = relationship('OrderItemModel', back_populates='order', cascade='all, delete-orphan')
+    items = relationship(
+        'OrderItemModel', back_populates='order', cascade='all, delete-orphan'
+    )
     user = relationship('UserModel', backref='orders')
     shipping_address = relationship('AddressModel', backref='orders')
 
@@ -50,7 +52,9 @@ class OrderItemModel(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=False, index=True)
-    product_id = Column(String(100), ForeignKey('products.id'), nullable=False, index=True)
+    product_id = Column(
+        String(100), ForeignKey('products.id'), nullable=False, index=True
+    )
     product_name = Column(String(200), nullable=False)
     product_name_ja = Column(String(200), nullable=True)
     quantity = Column(Integer, nullable=False)

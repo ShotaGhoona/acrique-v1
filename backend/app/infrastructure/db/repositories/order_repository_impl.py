@@ -5,7 +5,10 @@ from datetime import datetime
 from sqlalchemy.orm import Session, joinedload
 
 from app.domain.entities.order import Order, OrderItem, OrderStatus, PaymentMethod
-from app.domain.repositories.order_repository import IOrderItemRepository, IOrderRepository
+from app.domain.repositories.order_repository import (
+    IOrderItemRepository,
+    IOrderRepository,
+)
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
 
 
@@ -57,10 +60,7 @@ class OrderRepositoryImpl(IOrderRepository):
             query = query.filter(OrderModel.status == status.value)
 
         order_models = (
-            query.order_by(OrderModel.created_at.desc())
-            .limit(limit)
-            .offset(offset)
-            .all()
+            query.order_by(OrderModel.created_at.desc()).limit(limit).offset(offset).all()
         )
 
         return [self._to_entity(model) for model in order_models]

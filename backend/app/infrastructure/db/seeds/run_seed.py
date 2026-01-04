@@ -136,7 +136,9 @@ def seed_users(session: Session) -> None:
     seed_emails = [user['email'] for user in USERS]
 
     # 先に関連するカート、注文、配送先を削除（外部キー制約対応）
-    existing_users = session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    existing_users = (
+        session.query(UserModel).filter(UserModel.email.in_(seed_emails)).all()
+    )
     existing_user_ids = [u.id for u in existing_users]
     if existing_user_ids:
         # 注文明細を削除
@@ -266,7 +268,9 @@ def seed_orders(session: Session) -> None:
 
     # ユーザーごとの配送先を取得
     user_ids = list(email_to_user_id.values())
-    addresses = session.query(AddressModel).filter(AddressModel.user_id.in_(user_ids)).all()
+    addresses = (
+        session.query(AddressModel).filter(AddressModel.user_id.in_(user_ids)).all()
+    )
     user_addresses: dict[int, list[AddressModel]] = {}
     for addr in addresses:
         if addr.user_id not in user_addresses:

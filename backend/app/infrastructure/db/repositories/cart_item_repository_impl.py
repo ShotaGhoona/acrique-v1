@@ -16,9 +16,7 @@ class CartItemRepositoryImpl(ICartItemRepository):
     def get_by_id(self, item_id: int) -> CartItem | None:
         """IDでカートアイテムを取得"""
         cart_item_model = (
-            self.session.query(CartItemModel)
-            .filter(CartItemModel.id == item_id)
-            .first()
+            self.session.query(CartItemModel).filter(CartItemModel.id == item_id).first()
         )
         if cart_item_model is None:
             return None
@@ -34,9 +32,7 @@ class CartItemRepositoryImpl(ICartItemRepository):
         )
         return [self._to_entity(model) for model in cart_item_models]
 
-    def get_by_user_and_product(
-        self, user_id: int, product_id: str
-    ) -> CartItem | None:
+    def get_by_user_and_product(self, user_id: int, product_id: str) -> CartItem | None:
         """ユーザーIDと商品IDでカートアイテムを取得"""
         cart_item_model = (
             self.session.query(CartItemModel)
@@ -81,9 +77,7 @@ class CartItemRepositoryImpl(ICartItemRepository):
     def delete(self, item_id: int) -> bool:
         """カートアイテムを削除"""
         cart_item_model = (
-            self.session.query(CartItemModel)
-            .filter(CartItemModel.id == item_id)
-            .first()
+            self.session.query(CartItemModel).filter(CartItemModel.id == item_id).first()
         )
         if cart_item_model is None:
             return False

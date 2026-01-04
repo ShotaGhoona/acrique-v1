@@ -65,7 +65,9 @@ class Order(BaseModel):
     tax: int = Field(0, ge=0, description='消費税')
     total: int = Field(0, ge=0, description='合計')
     payment_method: PaymentMethod | None = Field(None, description='決済方法')
-    stripe_payment_intent_id: str | None = Field(None, description='Stripe PaymentIntent ID')
+    stripe_payment_intent_id: str | None = Field(
+        None, description='Stripe PaymentIntent ID'
+    )
     paid_at: datetime | None = Field(None, description='支払日時')
     confirmed_at: datetime | None = Field(None, description='確定日時')
     shipped_at: datetime | None = Field(None, description='発送日時')

@@ -29,7 +29,11 @@ ORDERS = [
                 'unit_price': 5000,
                 'options': {
                     'size': {'value': 'medium', 'label': 'M（60mm）', 'price_diff': 0},
-                    'finish': {'value': 'mirror', 'label': 'ミラー仕上げ', 'price_diff': 1000},
+                    'finish': {
+                        'value': 'mirror',
+                        'label': 'ミラー仕上げ',
+                        'price_diff': 1000,
+                    },
                 },
                 'subtotal': 10000,
             },

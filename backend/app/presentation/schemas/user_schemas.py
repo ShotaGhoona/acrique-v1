@@ -44,7 +44,9 @@ class ChangePasswordRequest(BaseModel):
     """パスワード変更リクエスト"""
 
     current_password: str = Field(..., description='現在のパスワード')
-    new_password: str = Field(..., min_length=8, description='新しいパスワード（8文字以上）')
+    new_password: str = Field(
+        ..., min_length=8, description='新しいパスワード（8文字以上）'
+    )
 
 
 class ChangePasswordResponse(BaseModel):

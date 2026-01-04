@@ -59,7 +59,9 @@ def get_cart(
     )
 
 
-@router.post('/items', response_model=AddToCartResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    '/items', response_model=AddToCartResponse, status_code=status.HTTP_201_CREATED
+)
 def add_to_cart(
     request: AddToCartRequest,
     current_user: User = Depends(get_current_user_from_cookie),

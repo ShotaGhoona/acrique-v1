@@ -177,9 +177,7 @@ class PasswordResetConfirmResponse(BaseModel):
     message: str = Field(..., description='メッセージ')
 
     @classmethod
-    def from_dto(
-        cls, dto: PasswordResetConfirmOutputDTO
-    ) -> PasswordResetConfirmResponse:
+    def from_dto(cls, dto: PasswordResetConfirmOutputDTO) -> PasswordResetConfirmResponse:
         """DTO → Response 変換"""
         return cls(**dto.model_dump())
 

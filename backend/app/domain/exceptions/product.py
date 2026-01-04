@@ -6,9 +6,7 @@ from app.domain.exceptions.base import DomainException
 class ProductNotFoundError(DomainException):
     """商品が見つからない"""
 
-    def __init__(
-        self, product_id: str | int | None = None, message: str | None = None
-    ):
+    def __init__(self, product_id: str | int | None = None, message: str | None = None):
         if message:
             error_message = message
         elif product_id:

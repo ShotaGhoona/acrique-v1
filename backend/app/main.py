@@ -6,13 +6,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.infrastructure.logging.logging import setup_logging
-from app.presentation.exception_handlers import register_exception_handlers
 from app.presentation.api.address_api import router as address_router
 from app.presentation.api.auth_api import router as auth_router
 from app.presentation.api.cart_api import router as cart_router
 from app.presentation.api.order_api import router as order_router
 from app.presentation.api.product_api import router as product_router
 from app.presentation.api.user_api import router as user_router
+from app.presentation.exception_handlers import register_exception_handlers
 
 # ロギングの設定を初期化
 setup_logging()

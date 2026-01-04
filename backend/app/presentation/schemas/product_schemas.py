@@ -23,7 +23,6 @@ from app.application.schemas.product_schemas import (
     RelatedProductDTO,
 )
 
-
 # ===================
 # Response Schemas
 # ===================

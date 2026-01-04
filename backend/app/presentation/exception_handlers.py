@@ -8,13 +8,7 @@ import logging
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.domain.exceptions.base import DomainException
-from app.domain.exceptions.common import (
-    NotFoundError,
-    OperationFailedError,
-    PermissionDeniedError,
-    ValidationError,
-)
+from app.domain.exceptions.address import AddressNotFoundError
 from app.domain.exceptions.auth import (
     EmailAlreadyExistsError,
     EmailAlreadyVerifiedError,
@@ -22,15 +16,21 @@ from app.domain.exceptions.auth import (
     InvalidCredentialsError,
     InvalidTokenError,
 )
-from app.domain.exceptions.user import InvalidPasswordError, UserNotFoundError
-from app.domain.exceptions.product import ProductNotActiveError, ProductNotFoundError
+from app.domain.exceptions.base import DomainException
 from app.domain.exceptions.cart import (
     CartEmptyError,
     CartItemNotFoundError,
     NoAvailableProductsError,
 )
+from app.domain.exceptions.common import (
+    NotFoundError,
+    OperationFailedError,
+    PermissionDeniedError,
+    ValidationError,
+)
 from app.domain.exceptions.order import OrderCannotCancelError, OrderNotFoundError
-from app.domain.exceptions.address import AddressNotFoundError
+from app.domain.exceptions.product import ProductNotActiveError, ProductNotFoundError
+from app.domain.exceptions.user import InvalidPasswordError, UserNotFoundError
 
 logger = logging.getLogger(__name__)
 

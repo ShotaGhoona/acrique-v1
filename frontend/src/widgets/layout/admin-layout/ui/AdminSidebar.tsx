@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -12,10 +13,19 @@ import {
   ScrollText,
   Settings,
   LogOut,
+  PanelLeftClose,
+  PanelLeft,
 } from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { ScrollArea } from '@/shared/ui/shadcn/ui/scroll-area';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/shared/ui/shadcn/ui/tooltip';
+import { useAdminLogout } from '@/features/admin-auth/logout/lib/use-admin-logout';
 
 const menuItems = [
   {
@@ -60,8 +70,15 @@ const menuItems = [
   },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const logoutMutation = useAdminLogout();
 
   const isActive = (href: string) => {
     if (href === '/admin') {
@@ -70,52 +87,126 @@ export function AdminSidebar() {
     return pathname.startsWith(href);
   };
 
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.push('/admin/login');
+      },
+    });
+  };
+
   return (
-    <aside className='flex h-screen w-64 flex-col border-r bg-card'>
-      {/* Logo */}
-      <div className='flex h-16 items-center border-b px-6'>
-        <Link href='/admin' className='flex items-center gap-2'>
-          <div className='flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground'>
-            <Shield className='h-5 w-5' />
-          </div>
-          <span className='text-lg font-semibold tracking-tight'>ACRIQUE</span>
-          <span className='rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground'>
-            Admin
-          </span>
-        </Link>
-      </div>
-
-      {/* Navigation */}
-      <ScrollArea className='flex-1 px-3 py-4'>
-        <nav className='flex flex-col gap-1'>
-          {menuItems.map((item) => (
-            <Link key={item.href} href={item.href}>
+    <TooltipProvider delayDuration={0}>
+      <aside
+        className={cn(
+          'flex h-screen flex-col border-r bg-card transition-all duration-300',
+          collapsed ? 'w-16' : 'w-64',
+        )}
+      >
+        {/* Logo & Toggle */}
+        <div className='flex h-14 items-center justify-between border-b px-3'>
+          {collapsed ? (
+            <Button
+              variant='ghost'
+              size='icon'
+              onClick={onToggle}
+              className='mx-auto h-8 w-8'
+            >
+              <PanelLeft className='h-4 w-4' />
+            </Button>
+          ) : (
+            <>
+              <Link href='/admin' className='flex items-center'>
+                <Image
+                  src='/SVG/logo.svg'
+                  alt='ACRIQUE'
+                  width={100}
+                  height={26}
+                  className='h-6 w-auto'
+                />
+              </Link>
               <Button
-                variant={isActive(item.href) ? 'secondary' : 'ghost'}
-                className={cn(
-                  'w-full justify-start gap-3',
-                  isActive(item.href) && 'bg-secondary',
-                )}
+                variant='ghost'
+                size='icon'
+                onClick={onToggle}
+                className='h-8 w-8 shrink-0'
               >
-                <item.icon className='h-4 w-4' />
-                {item.label}
+                <PanelLeftClose className='h-4 w-4' />
               </Button>
-            </Link>
-          ))}
-        </nav>
-      </ScrollArea>
+            </>
+          )}
+        </div>
 
-      {/* Footer */}
-      <div className='border-t p-3'>
-        <Button
-          variant='ghost'
-          className='w-full justify-start gap-3 text-muted-foreground hover:text-foreground'
-          onClick={() => alert('ログアウト（未実装）')}
-        >
-          <LogOut className='h-4 w-4' />
-          ログアウト
-        </Button>
-      </div>
-    </aside>
+        {/* Navigation */}
+        <ScrollArea className='flex-1 px-2 py-4'>
+          <nav className='flex flex-col gap-1'>
+            {menuItems.map((item) => {
+              const button = (
+                <Button
+                  variant={isActive(item.href) ? 'secondary' : 'ghost'}
+                  className={cn(
+                    'w-full gap-3',
+                    collapsed ? 'justify-center px-2' : 'justify-start',
+                    isActive(item.href) && 'bg-secondary',
+                  )}
+                >
+                  <item.icon className='h-4 w-4 shrink-0' />
+                  {!collapsed && <span>{item.label}</span>}
+                </Button>
+              );
+
+              if (collapsed) {
+                return (
+                  <Tooltip key={item.href}>
+                    <TooltipTrigger asChild>
+                      <Link href={item.href}>{button}</Link>
+                    </TooltipTrigger>
+                    <TooltipContent side='right'>
+                      {item.label}
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+
+              return (
+                <Link key={item.href} href={item.href}>
+                  {button}
+                </Link>
+              );
+            })}
+          </nav>
+        </ScrollArea>
+
+        {/* Footer */}
+        <div className='border-t p-2'>
+          {collapsed ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='w-full text-muted-foreground hover:text-foreground'
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                >
+                  <LogOut className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side='right'>ログアウト</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button
+              variant='ghost'
+              className='w-full justify-start gap-3 text-muted-foreground hover:text-foreground'
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
+            >
+              <LogOut className='h-4 w-4' />
+              {logoutMutation.isPending ? 'ログアウト中...' : 'ログアウト'}
+            </Button>
+          )}
+        </div>
+      </aside>
+    </TooltipProvider>
   );
 }

@@ -1,10 +1,6 @@
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import type {
   AdminProductDetail,
-  AdminProductOption,
-  AdminProductSpec,
-  AdminProductFeature,
-  AdminProductFaq,
 } from '@/entities/admin-product/model/types';
 
 // 基本情報フォームの型

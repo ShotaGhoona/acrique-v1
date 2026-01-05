@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Trash2, Eye } from 'lucide-react';
+import { ArrowLeft, Trash2, Eye, FileText, Image, Settings } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import {
   Tabs,
@@ -13,7 +13,6 @@ import {
 } from '@/shared/ui/shadcn/ui/tabs';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useAdminProduct } from '@/features/admin-product/get-product/lib/use-admin-product';
-import { useUpdateProduct } from '@/features/admin-product/update-product/lib/use-update-product';
 import { useDeleteProduct } from '@/features/admin-product/delete-product/lib/use-delete-product';
 import { ProductEditSkeleton } from './skeleton/ProductEditSkeleton';
 import { BasicInfoTab } from './tab-components/BasicInfoTab';
@@ -31,7 +30,6 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
   const router = useRouter();
   const { data: productData, isLoading, error } = useAdminProduct(productId);
   const product = productData?.product;
-  const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();
 
   const [activeTab, setActiveTab] = useState('basic');
@@ -76,40 +74,6 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
     }
   }, [product]);
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!formData.category_id) return;
-
-    updateProductMutation.mutate(
-      {
-        productId,
-        data: {
-          name: formData.name,
-          name_ja: formData.name_ja,
-          category_id: formData.category_id,
-          tagline: formData.tagline || undefined,
-          description: formData.description || undefined,
-          long_description: formData.long_description || undefined,
-          base_price: parseInt(formData.base_price, 10),
-          price_note: formData.price_note || undefined,
-          lead_time_days: formData.lead_time_days
-            ? parseInt(formData.lead_time_days, 10)
-            : undefined,
-          lead_time_note: formData.lead_time_note || undefined,
-          is_featured: formData.is_featured,
-          requires_upload: formData.requires_upload,
-          upload_type: formData.upload_type || undefined,
-          upload_note: formData.upload_note || undefined,
-        },
-      },
-      {
-        onSuccess: () => {
-          alert('商品を更新しました');
-        },
-      },
-    );
-  };
-
   const handleDelete = () => {
     if (confirm('本当に削除しますか？この操作は取り消せません。')) {
       deleteProductMutation.mutate(productId, {
@@ -146,47 +110,50 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
 
   return (
     <AdminLayout title={`商品編集: ${product.name_ja}`}>
-      {/* Header */}
-      <div className='mb-6 flex items-center justify-between'>
-        <Link href='/admin/products'>
-          <Button variant='outline' size='sm'>
-            <ArrowLeft className='mr-2 h-4 w-4' />
-            一覧に戻る
-          </Button>
-        </Link>
-        <div className='flex gap-2'>
-          <Button
-            variant='outline'
-            onClick={() => setPreviewOpen(true)}
-          >
-            <Eye className='mr-2 h-4 w-4' />
-            プレビュー
-          </Button>
-          <Button
-            variant='destructive'
-            onClick={handleDelete}
-            disabled={deleteProductMutation.isPending}
-          >
-            <Trash2 className='mr-2 h-4 w-4' />
-            {deleteProductMutation.isPending ? '削除中...' : '削除'}
-          </Button>
-          <Button
-            onClick={() => handleSubmit()}
-            disabled={updateProductMutation.isPending}
-          >
-            <Save className='mr-2 h-4 w-4' />
-            {updateProductMutation.isPending ? '保存中...' : '基本情報を保存'}
-          </Button>
-        </div>
-      </div>
-
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className='mb-6'>
-          <TabsTrigger value='basic'>基本情報</TabsTrigger>
-          <TabsTrigger value='media'>メディア</TabsTrigger>
-          <TabsTrigger value='details'>詳細設定</TabsTrigger>
-        </TabsList>
+        {/* Header with Tabs */}
+        <div className='mb-6 flex items-center justify-between'>
+          <Link href='/admin/products'>
+            <Button variant='ghost' size='sm'>
+              <ArrowLeft className='mr-2 h-4 w-4' />
+              戻る
+            </Button>
+          </Link>
+          <TabsList>
+            <TabsTrigger value='basic'>
+              <FileText className='mr-1.5 h-4 w-4' />
+              基本情報
+            </TabsTrigger>
+            <TabsTrigger value='media'>
+              <Image className='mr-1.5 h-4 w-4' />
+              メディア
+            </TabsTrigger>
+            <TabsTrigger value='details'>
+              <Settings className='mr-1.5 h-4 w-4' />
+              詳細設定
+            </TabsTrigger>
+          </TabsList>
+          <div className='flex gap-2'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => setPreviewOpen(true)}
+            >
+              <Eye className='mr-2 h-4 w-4' />
+              プレビュー
+            </Button>
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={handleDelete}
+              disabled={deleteProductMutation.isPending}
+              className='text-destructive hover:text-destructive'
+            >
+              <Trash2 className='h-4 w-4' />
+            </Button>
+          </div>
+        </div>
 
         <TabsContent value='basic'>
           <BasicInfoTab

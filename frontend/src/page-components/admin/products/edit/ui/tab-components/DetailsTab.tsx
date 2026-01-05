@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import {
   Plus,
   Trash2,
-  ChevronDown,
-  ChevronUp,
   GripVertical,
   HelpCircle,
   Settings2,
@@ -18,28 +16,18 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
 import { Switch } from '@/shared/ui/shadcn/ui/switch';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/shared/ui/shadcn/ui/collapsible';
+import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { useUpdateProductOptions } from '@/features/admin-product/update-options/lib/use-update-product-options';
 import { useUpdateProductSpecs } from '@/features/admin-product/update-specs/lib/use-update-product-specs';
 import { useUpdateProductFeatures } from '@/features/admin-product/update-features/lib/use-update-product-features';
 import { useUpdateProductFaqs } from '@/features/admin-product/update-faqs/lib/use-update-product-faqs';
-import type {
-  AdminProductOption,
-  AdminProductOptionValue,
-  AdminProductSpec,
-  AdminProductFeature,
-  AdminProductFaq,
-} from '@/entities/admin-product/model/types';
 import type { DetailsTabProps } from '../../model/types';
 
 // フォーム用の型
@@ -83,7 +71,6 @@ interface FaqFormItem {
 export function DetailsTab({ productId, product }: DetailsTabProps) {
   // オプション
   const [options, setOptions] = useState<OptionFormItem[]>(product.options);
-  const [expandedOptions, setExpandedOptions] = useState<Set<number>>(new Set());
   const updateOptionsMutation = useUpdateProductOptions();
 
   // スペック
@@ -107,18 +94,6 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
   }, [product]);
 
   // === オプション操作 ===
-  const toggleExpanded = (index: number) => {
-    setExpandedOptions((prev) => {
-      const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
-      } else {
-        next.add(index);
-      }
-      return next;
-    });
-  };
-
   const addOption = () => {
     setOptions([
       ...options,
@@ -130,7 +105,6 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
         values: [],
       },
     ]);
-    setExpandedOptions((prev) => new Set([...prev, options.length]));
   };
 
   const removeOption = (index: number) => {
@@ -256,317 +230,326 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
   };
 
   return (
-    <div className='space-y-6'>
-      {/* オプション設定 */}
-      <Card>
-        <CardHeader className='flex flex-row items-center justify-between'>
-          <CardTitle className='flex items-center gap-2'>
-            <Settings2 className='h-5 w-5' />
-            オプション設定
-          </CardTitle>
-          <Button
-            size='sm'
-            onClick={handleSaveOptions}
-            disabled={updateOptionsMutation.isPending}
-          >
-            <Save className='mr-1 h-4 w-4' />
-            {updateOptionsMutation.isPending ? '保存中...' : '保存'}
-          </Button>
-        </CardHeader>
-        <CardContent className='space-y-4'>
-          {options.length === 0 ? (
-            <div className='py-6 text-center text-muted-foreground'>
-              オプションがありません
+    <div className='grid gap-6 lg:grid-cols-2'>
+      {/* 左カラム: オプション + スペック */}
+      <div className='space-y-6'>
+        {/* オプション設定 */}
+        <Card>
+          <CardHeader className='pb-3'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-2'>
+                <Settings2 className='h-5 w-5 text-muted-foreground' />
+                <CardTitle className='text-base'>オプション設定</CardTitle>
+                <Badge variant='secondary'>{options.length}</Badge>
+              </div>
+              <Button
+                size='sm'
+                onClick={handleSaveOptions}
+                disabled={updateOptionsMutation.isPending}
+              >
+                <Save className='mr-1 h-4 w-4' />
+                {updateOptionsMutation.isPending ? '保存中...' : '保存'}
+              </Button>
             </div>
-          ) : (
-            options.map((option, optionIndex) => (
-              <Card key={optionIndex} className='bg-muted/30'>
-                <Collapsible
-                  open={expandedOptions.has(optionIndex)}
-                  onOpenChange={() => toggleExpanded(optionIndex)}
-                >
-                  <CardHeader className='p-3'>
-                    <div className='flex items-center gap-2'>
-                      <GripVertical className='h-4 w-4 text-muted-foreground' />
-                      <CollapsibleTrigger asChild>
-                        <Button variant='ghost' size='sm' className='p-1'>
-                          {expandedOptions.has(optionIndex) ? (
-                            <ChevronUp className='h-4 w-4' />
-                          ) : (
-                            <ChevronDown className='h-4 w-4' />
-                          )}
-                        </Button>
-                      </CollapsibleTrigger>
+            <CardDescription>
+              サイズや色などの選択肢を設定します
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            {options.map((option, optionIndex) => (
+              <div
+                key={optionIndex}
+                className='rounded-lg border bg-muted/30 p-4'
+              >
+                <div className='mb-3 flex items-center gap-2'>
+                  <GripVertical className='h-4 w-4 text-muted-foreground' />
+                  <Input
+                    value={option.name}
+                    onChange={(e) =>
+                      updateOption(optionIndex, { name: e.target.value })
+                    }
+                    placeholder='オプション名（例: サイズ）'
+                    className='flex-1 bg-background'
+                  />
+                  <div className='flex items-center gap-1.5'>
+                    <Label className='whitespace-nowrap text-xs'>必須</Label>
+                    <Switch
+                      checked={option.is_required}
+                      onCheckedChange={(checked) =>
+                        updateOption(optionIndex, { is_required: checked })
+                      }
+                    />
+                  </div>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='icon'
+                    onClick={() => removeOption(optionIndex)}
+                    className='h-8 w-8 text-destructive hover:text-destructive'
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </Button>
+                </div>
+
+                <div className='space-y-2 pl-6'>
+                  <div className='text-xs font-medium text-muted-foreground'>
+                    選択肢
+                  </div>
+                  {option.values.map((value, valueIndex) => (
+                    <div
+                      key={valueIndex}
+                      className='flex items-center gap-2 rounded-md bg-background p-2'
+                    >
                       <Input
-                        value={option.name}
+                        value={value.label}
                         onChange={(e) =>
-                          updateOption(optionIndex, { name: e.target.value })
+                          updateOptionValue(optionIndex, valueIndex, {
+                            label: e.target.value,
+                          })
                         }
-                        placeholder='オプション名（例: サイズ）'
+                        placeholder='選択肢名'
                         className='flex-1'
                       />
-                      <div className='flex items-center gap-2'>
-                        <Label className='whitespace-nowrap text-xs'>必須</Label>
-                        <Switch
-                          checked={option.is_required}
-                          onCheckedChange={(checked) =>
-                            updateOption(optionIndex, { is_required: checked })
+                      <div className='flex items-center gap-1'>
+                        <span className='text-xs text-muted-foreground'>
+                          価格差:
+                        </span>
+                        <Input
+                          type='number'
+                          value={value.price_diff}
+                          onChange={(e) =>
+                            updateOptionValue(optionIndex, valueIndex, {
+                              price_diff: parseInt(e.target.value, 10) || 0,
+                            })
                           }
+                          className='w-20'
                         />
+                        <span className='text-xs text-muted-foreground'>円</span>
                       </div>
                       <Button
                         type='button'
                         variant='ghost'
                         size='icon'
-                        onClick={() => removeOption(optionIndex)}
-                        className='text-destructive'
+                        onClick={() => removeOptionValue(optionIndex, valueIndex)}
+                        className='h-7 w-7 text-destructive hover:text-destructive'
                       >
-                        <Trash2 className='h-4 w-4' />
+                        <Trash2 className='h-3 w-3' />
                       </Button>
                     </div>
-                  </CardHeader>
-                  <CollapsibleContent>
-                    <CardContent className='border-t p-3'>
-                      <div className='space-y-2'>
-                        <div className='text-xs font-medium text-muted-foreground'>
-                          選択肢
-                        </div>
-                        {option.values.map((value, valueIndex) => (
-                          <div
-                            key={valueIndex}
-                            className='flex items-center gap-2 rounded-md bg-background p-2'
-                          >
-                            <Input
-                              value={value.label}
-                              onChange={(e) =>
-                                updateOptionValue(optionIndex, valueIndex, {
-                                  label: e.target.value,
-                                })
-                              }
-                              placeholder='選択肢名'
-                              className='flex-1'
-                            />
-                            <div className='flex items-center gap-1'>
-                              <span className='text-xs text-muted-foreground'>
-                                価格差:
-                              </span>
-                              <Input
-                                type='number'
-                                value={value.price_diff}
-                                onChange={(e) =>
-                                  updateOptionValue(optionIndex, valueIndex, {
-                                    price_diff: parseInt(e.target.value, 10) || 0,
-                                  })
-                                }
-                                className='w-24'
-                              />
-                              <span className='text-xs text-muted-foreground'>円</span>
-                            </div>
-                            <Button
-                              type='button'
-                              variant='ghost'
-                              size='icon'
-                              onClick={() => removeOptionValue(optionIndex, valueIndex)}
-                              className='h-8 w-8 text-destructive'
-                            >
-                              <Trash2 className='h-3 w-3' />
-                            </Button>
-                          </div>
-                        ))}
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          onClick={() => addOptionValue(optionIndex)}
-                          className='w-full'
-                        >
-                          <Plus className='mr-1 h-3 w-3' />
-                          選択肢を追加
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </CollapsibleContent>
-                </Collapsible>
-              </Card>
-            ))
-          )}
-          <Button type='button' variant='outline' onClick={addOption} className='w-full'>
-            <Plus className='mr-2 h-4 w-4' />
-            オプションを追加
-          </Button>
-        </CardContent>
-      </Card>
+                  ))}
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    onClick={() => addOptionValue(optionIndex)}
+                    className='w-full'
+                  >
+                    <Plus className='mr-1 h-3 w-3' />
+                    選択肢を追加
+                  </Button>
+                </div>
+              </div>
+            ))}
+            <Button
+              type='button'
+              variant='outline'
+              onClick={addOption}
+              className='w-full'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              オプションを追加
+            </Button>
+          </CardContent>
+        </Card>
 
-      {/* スペック */}
-      <Card>
-        <CardHeader className='flex flex-row items-center justify-between'>
-          <CardTitle className='flex items-center gap-2'>
-            <List className='h-5 w-5' />
-            仕様・スペック
-          </CardTitle>
-          <Button
-            size='sm'
-            onClick={handleSaveSpecs}
-            disabled={updateSpecsMutation.isPending}
-          >
-            <Save className='mr-1 h-4 w-4' />
-            {updateSpecsMutation.isPending ? '保存中...' : '保存'}
-          </Button>
-        </CardHeader>
-        <CardContent className='space-y-2'>
-          <div className='grid grid-cols-[auto_1fr_1fr_auto] gap-2 text-xs font-medium text-muted-foreground'>
-            <div className='w-6'></div>
-            <div>項目名</div>
-            <div>値</div>
-            <div className='w-8'></div>
-          </div>
-          {specs.length === 0 ? (
-            <div className='py-6 text-center text-muted-foreground'>
-              スペックがありません
+        {/* スペック */}
+        <Card>
+          <CardHeader className='pb-3'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-2'>
+                <List className='h-5 w-5 text-muted-foreground' />
+                <CardTitle className='text-base'>仕様・スペック</CardTitle>
+                <Badge variant='secondary'>{specs.length}</Badge>
+              </div>
+              <Button
+                size='sm'
+                onClick={handleSaveSpecs}
+                disabled={updateSpecsMutation.isPending}
+              >
+                <Save className='mr-1 h-4 w-4' />
+                {updateSpecsMutation.isPending ? '保存中...' : '保存'}
+              </Button>
             </div>
-          ) : (
-            specs.map((spec, index) => (
+            <CardDescription>
+              サイズや素材などの製品仕様を設定します
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-2'>
+            {specs.map((spec, index) => (
               <div
                 key={index}
-                className='grid grid-cols-[auto_1fr_1fr_auto] items-center gap-2'
+                className='flex items-center gap-2 rounded-md border bg-muted/30 p-2'
               >
                 <GripVertical className='h-4 w-4 text-muted-foreground' />
                 <Input
                   value={spec.label}
                   onChange={(e) => updateSpec(index, { label: e.target.value })}
-                  placeholder='例: サイズ'
+                  placeholder='項目名'
+                  className='flex-1 bg-background'
                 />
                 <Input
                   value={spec.value}
                   onChange={(e) => updateSpec(index, { value: e.target.value })}
-                  placeholder='例: 50mm × 50mm × 50mm'
+                  placeholder='値'
+                  className='flex-1 bg-background'
                 />
                 <Button
                   type='button'
                   variant='ghost'
                   size='icon'
                   onClick={() => removeSpec(index)}
-                  className='h-8 w-8 text-destructive'
+                  className='h-8 w-8 text-destructive hover:text-destructive'
                 >
                   <Trash2 className='h-4 w-4' />
                 </Button>
               </div>
-            ))
-          )}
-          <Button type='button' variant='outline' onClick={addSpec} className='w-full'>
-            <Plus className='mr-2 h-4 w-4' />
-            スペックを追加
-          </Button>
-        </CardContent>
-      </Card>
+            ))}
+            <Button
+              type='button'
+              variant='outline'
+              onClick={addSpec}
+              className='w-full'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              スペックを追加
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* 特長 */}
-      <Card>
-        <CardHeader className='flex flex-row items-center justify-between'>
-          <CardTitle className='flex items-center gap-2'>
-            <Star className='h-5 w-5' />
-            商品の特長
-          </CardTitle>
-          <Button
-            size='sm'
-            onClick={handleSaveFeatures}
-            disabled={updateFeaturesMutation.isPending}
-          >
-            <Save className='mr-1 h-4 w-4' />
-            {updateFeaturesMutation.isPending ? '保存中...' : '保存'}
-          </Button>
-        </CardHeader>
-        <CardContent className='space-y-3'>
-          {features.length === 0 ? (
-            <div className='py-6 text-center text-muted-foreground'>
-              特長がありません
+      {/* 右カラム: 特長 + FAQ */}
+      <div className='space-y-6'>
+        {/* 特長 */}
+        <Card>
+          <CardHeader className='pb-3'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-2'>
+                <Star className='h-5 w-5 text-muted-foreground' />
+                <CardTitle className='text-base'>商品の特長</CardTitle>
+                <Badge variant='secondary'>{features.length}</Badge>
+              </div>
+              <Button
+                size='sm'
+                onClick={handleSaveFeatures}
+                disabled={updateFeaturesMutation.isPending}
+              >
+                <Save className='mr-1 h-4 w-4' />
+                {updateFeaturesMutation.isPending ? '保存中...' : '保存'}
+              </Button>
             </div>
-          ) : (
-            features.map((feature, index) => (
-              <Card key={index} className='bg-muted/30'>
-                <CardContent className='p-3'>
-                  <div className='flex items-start gap-2'>
-                    <GripVertical className='mt-2 h-4 w-4 flex-shrink-0 text-muted-foreground' />
-                    <div className='flex-1 space-y-2'>
-                      <Input
-                        value={feature.title}
-                        onChange={(e) =>
-                          updateFeature(index, { title: e.target.value })
-                        }
-                        placeholder='特長タイトル（例: 高品質なアクリル素材）'
-                      />
-                      <Textarea
-                        value={feature.description ?? ''}
-                        onChange={(e) =>
-                          updateFeature(index, { description: e.target.value })
-                        }
-                        placeholder='詳細説明（任意）'
-                        rows={2}
-                      />
-                    </div>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='icon'
-                      onClick={() => removeFeature(index)}
-                      className='mt-1 h-8 w-8 flex-shrink-0 text-destructive'
-                    >
-                      <Trash2 className='h-4 w-4' />
-                    </Button>
+            <CardDescription>
+              商品のアピールポイントを設定します
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-3'>
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className='rounded-lg border bg-muted/30 p-3'
+              >
+                <div className='flex items-start gap-2'>
+                  <GripVertical className='mt-2 h-4 w-4 flex-shrink-0 text-muted-foreground' />
+                  <div className='flex-1 space-y-2'>
+                    <Input
+                      value={feature.title}
+                      onChange={(e) =>
+                        updateFeature(index, { title: e.target.value })
+                      }
+                      placeholder='特長タイトル'
+                      className='bg-background'
+                    />
+                    <Textarea
+                      value={feature.description ?? ''}
+                      onChange={(e) =>
+                        updateFeature(index, { description: e.target.value })
+                      }
+                      placeholder='詳細説明（任意）'
+                      rows={2}
+                      className='bg-background'
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-          <Button type='button' variant='outline' onClick={addFeature} className='w-full'>
-            <Plus className='mr-2 h-4 w-4' />
-            特長を追加
-          </Button>
-        </CardContent>
-      </Card>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='icon'
+                    onClick={() => removeFeature(index)}
+                    className='h-8 w-8 flex-shrink-0 text-destructive hover:text-destructive'
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </Button>
+                </div>
+              </div>
+            ))}
+            <Button
+              type='button'
+              variant='outline'
+              onClick={addFeature}
+              className='w-full'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              特長を追加
+            </Button>
+          </CardContent>
+        </Card>
 
-      {/* FAQ */}
-      <Card>
-        <CardHeader className='flex flex-row items-center justify-between'>
-          <CardTitle className='flex items-center gap-2'>
-            <HelpCircle className='h-5 w-5' />
-            よくある質問（FAQ）
-          </CardTitle>
-          <Button
-            size='sm'
-            onClick={handleSaveFaqs}
-            disabled={updateFaqsMutation.isPending}
-          >
-            <Save className='mr-1 h-4 w-4' />
-            {updateFaqsMutation.isPending ? '保存中...' : '保存'}
-          </Button>
-        </CardHeader>
-        <CardContent className='space-y-3'>
-          {faqs.length === 0 ? (
-            <div className='py-6 text-center text-muted-foreground'>
-              FAQがありません
+        {/* FAQ */}
+        <Card>
+          <CardHeader className='pb-3'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-2'>
+                <HelpCircle className='h-5 w-5 text-muted-foreground' />
+                <CardTitle className='text-base'>よくある質問</CardTitle>
+                <Badge variant='secondary'>{faqs.length}</Badge>
+              </div>
+              <Button
+                size='sm'
+                onClick={handleSaveFaqs}
+                disabled={updateFaqsMutation.isPending}
+              >
+                <Save className='mr-1 h-4 w-4' />
+                {updateFaqsMutation.isPending ? '保存中...' : '保存'}
+              </Button>
             </div>
-          ) : (
-            faqs.map((faq, index) => (
-              <Card key={index} className='bg-muted/30'>
-                <CardContent className='p-3'>
-                  <div className='flex items-start gap-2'>
-                    <GripVertical className='mt-2 h-4 w-4 flex-shrink-0 text-muted-foreground' />
-                    <div className='flex-1 space-y-2'>
-                      <div className='flex items-center gap-2'>
-                        <HelpCircle className='h-4 w-4 text-primary' />
-                        <span className='text-xs font-medium'>質問</span>
-                      </div>
+            <CardDescription>
+              お客様からのよくある質問と回答を設定します
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-3'>
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className='rounded-lg border bg-muted/30 p-3'
+              >
+                <div className='flex items-start gap-2'>
+                  <GripVertical className='mt-2 h-4 w-4 flex-shrink-0 text-muted-foreground' />
+                  <div className='flex-1 space-y-2'>
+                    <div>
+                      <Label className='mb-1 text-xs text-muted-foreground'>
+                        質問
+                      </Label>
                       <Input
                         value={faq.question}
                         onChange={(e) =>
                           updateFaq(index, { question: e.target.value })
                         }
                         placeholder='例: 納期はどのくらいですか？'
+                        className='bg-background'
                       />
-                      <div className='text-xs font-medium text-muted-foreground'>
+                    </div>
+                    <div>
+                      <Label className='mb-1 text-xs text-muted-foreground'>
                         回答
-                      </div>
+                      </Label>
                       <Textarea
                         value={faq.answer}
                         onChange={(e) =>
@@ -574,28 +557,34 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
                         }
                         placeholder='例: 通常5営業日以内に発送いたします。'
                         rows={2}
+                        className='bg-background'
                       />
                     </div>
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='icon'
-                      onClick={() => removeFaq(index)}
-                      className='mt-1 h-8 w-8 flex-shrink-0 text-destructive'
-                    >
-                      <Trash2 className='h-4 w-4' />
-                    </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-          <Button type='button' variant='outline' onClick={addFaq} className='w-full'>
-            <Plus className='mr-2 h-4 w-4' />
-            FAQを追加
-          </Button>
-        </CardContent>
-      </Card>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='icon'
+                    onClick={() => removeFaq(index)}
+                    className='h-8 w-8 flex-shrink-0 text-destructive hover:text-destructive'
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </Button>
+                </div>
+              </div>
+            ))}
+            <Button
+              type='button'
+              variant='outline'
+              onClick={addFaq}
+              className='w-full'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              FAQを追加
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

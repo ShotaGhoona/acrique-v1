@@ -13,6 +13,16 @@ class ISecurityService(ABC):
         pass
 
     @abstractmethod
+    def create_admin_access_token(
+        self,
+        admin_id: int,
+        role: str,
+        expires_delta: timedelta | None = None,
+    ) -> str:
+        """管理者用アクセストークンを生成"""
+        pass
+
+    @abstractmethod
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """パスワードを検証"""
         pass

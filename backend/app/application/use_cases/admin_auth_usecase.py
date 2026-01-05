@@ -17,7 +17,6 @@ from app.domain.exceptions.admin import (
     AdminNotFoundError,
 )
 from app.domain.repositories.admin_repository import IAdminLogRepository, IAdminRepository
-from app.infrastructure.security.admin_security import create_admin_access_token
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +79,9 @@ class AdminAuthUsecase:
         )
 
         # アクセストークンを生成
-        access_token = create_admin_access_token(admin.id, admin.role.value)
+        access_token = self.security_service.create_admin_access_token(
+            admin.id, admin.role.value
+        )
 
         logger.info(f'Admin logged in: {admin.email}')
 

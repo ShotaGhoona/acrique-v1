@@ -9,6 +9,14 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from app.domain.exceptions.address import AddressNotFoundError
+from app.domain.exceptions.admin import (
+    AdminEmailAlreadyExistsError,
+    AdminInactiveError,
+    AdminInvalidCredentialsError,
+    AdminNotFoundError,
+    AdminPermissionDeniedError,
+    CannotDeleteSelfError,
+)
 from app.domain.exceptions.auth import (
     EmailAlreadyExistsError,
     EmailAlreadyVerifiedError,
@@ -46,11 +54,16 @@ EXCEPTION_STATUS_MAP: dict[type[DomainException], int] = {
     NoAvailableProductsError: 400,
     OrderCannotCancelError: 400,
     ValidationError: 400,
+    AdminEmailAlreadyExistsError: 400,
+    CannotDeleteSelfError: 400,
     # 401 Unauthorized - 認証失敗
     InvalidCredentialsError: 401,
+    AdminInvalidCredentialsError: 401,
     # 403 Forbidden - 権限なし
     EmailNotVerifiedError: 403,
     PermissionDeniedError: 403,
+    AdminInactiveError: 403,
+    AdminPermissionDeniedError: 403,
     # 404 Not Found - リソースが見つからない
     NotFoundError: 404,
     UserNotFoundError: 404,
@@ -58,6 +71,7 @@ EXCEPTION_STATUS_MAP: dict[type[DomainException], int] = {
     CartItemNotFoundError: 404,
     OrderNotFoundError: 404,
     AddressNotFoundError: 404,
+    AdminNotFoundError: 404,
     # 500 Internal Server Error - 操作失敗
     OperationFailedError: 500,
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Bell, Search, User } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
@@ -11,12 +12,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
+import { useAdminLogout } from '@/features/admin-auth/logout/lib/use-admin-logout';
 
 interface AdminHeaderProps {
   title: string;
 }
 
 export function AdminHeader({ title }: AdminHeaderProps) {
+  const router = useRouter();
+  const logoutMutation = useAdminLogout();
+
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.push('/admin/login');
+      },
+    });
+  };
+
   return (
     <header className='flex h-16 items-center justify-between border-b bg-card px-6'>
       {/* Page Title */}
@@ -63,10 +76,11 @@ export function AdminHeader({ title }: AdminHeaderProps) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => alert('ログアウト（未実装）')}
+              onClick={handleLogout}
+              disabled={logoutMutation.isPending}
               className='text-destructive'
             >
-              ログアウト
+              {logoutMutation.isPending ? 'ログアウト中...' : 'ログアウト'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

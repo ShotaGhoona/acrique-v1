@@ -41,3 +41,23 @@ class IUserRepository(ABC):
     def delete(self, user_id: int) -> bool:
         """ユーザーを削除"""
         pass
+
+    @abstractmethod
+    def get_all(
+        self,
+        search: str | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[User]:
+        """ユーザー一覧を取得（検索・ページネーション対応）"""
+        pass
+
+    @abstractmethod
+    def count_all(self, search: str | None = None) -> int:
+        """ユーザー数を取得"""
+        pass
+
+    @abstractmethod
+    def count_new_this_month(self) -> int:
+        """今月の新規ユーザー数を取得"""
+        pass

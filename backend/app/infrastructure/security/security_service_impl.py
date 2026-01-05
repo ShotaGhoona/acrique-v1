@@ -44,6 +44,27 @@ class SecurityServiceImpl(ISecurityService):
             return encoded_jwt.decode('utf-8')
         return encoded_jwt
 
+    def create_admin_access_token(
+        self,
+        admin_id: int,
+        role: str,
+        expires_delta: timedelta | None = None,
+    ) -> str:
+        """管理者用アクセストークンを生成"""
+        settings = get_settings()
+        expire = datetime.utcnow() + (expires_delta or timedelta(hours=8))
+        to_encode = {
+            'admin_id': admin_id,
+            'role': role,
+            'exp': expire,
+            'type': 'admin',
+        }
+        private_key, _ = _load_rsa_keys()
+        encoded_jwt = jwt.encode(to_encode, private_key, algorithm=settings.jwt_algorithm)
+        if isinstance(encoded_jwt, bytes):
+            return encoded_jwt.decode('utf-8')
+        return encoded_jwt
+
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """パスワードを検証"""
         return pwd_context.verify(plain_password, hashed_password)

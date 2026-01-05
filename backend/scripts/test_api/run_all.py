@@ -2,7 +2,7 @@
 """全APIテスト実行スクリプト"""
 
 import sys
-from typing import Callable
+from collections.abc import Callable
 
 from .client import APIClient, TestRunner
 from .config import TEST_USER
@@ -16,9 +16,9 @@ from .test_users import run_user_tests
 
 def main():
     """全テストを実行"""
-    print("\n" + "=" * 60)
-    print("🚀 API テスト開始")
-    print("=" * 60)
+    print('\n' + '=' * 60)
+    print('🚀 API テスト開始')
+    print('=' * 60)
 
     all_passed = True
     total_passed = 0
@@ -32,13 +32,13 @@ def main():
 
     # テスト定義：(名前, テスト関数)
     test_suites: list[tuple[str, Callable[[TestRunner], bool]]] = [
-        ("認証API", run_auth_tests),
-        ("ユーザーAPI", run_user_tests),
-        ("配送先API", run_address_tests),
-        ("商品API", run_product_tests),
-        ("カートAPI", run_cart_tests),
-        ("注文API", run_order_tests),
-        ("カート全削除", run_cart_clear_test),
+        ('認証API', run_auth_tests),
+        ('ユーザーAPI', run_user_tests),
+        ('配送先API', run_address_tests),
+        ('商品API', run_product_tests),
+        ('カートAPI', run_cart_tests),
+        ('注文API', run_order_tests),
+        ('カート全削除', run_cart_clear_test),
     ]
 
     for name, test_func in test_suites:
@@ -52,7 +52,7 @@ def main():
         try:
             passed = test_func(runner)
         except Exception as e:
-            print(f"\n❌ {name} でエラーが発生: {e}")
+            print(f'\n❌ {name} でエラーが発生: {e}')
             passed = False
 
         # 結果を集計
@@ -67,23 +67,23 @@ def main():
         shared_context.update(runner.context)
 
     # 最終結果
-    print("\n" + "=" * 60)
-    print("📊 最終結果")
-    print("=" * 60)
-    print(f"合計: {total_passed}/{total_tests} passed")
+    print('\n' + '=' * 60)
+    print('📊 最終結果')
+    print('=' * 60)
+    print(f'合計: {total_passed}/{total_tests} passed')
 
     if all_passed:
-        print("\n✅ すべてのテストが成功しました！")
+        print('\n✅ すべてのテストが成功しました！')
     else:
-        print("\n❌ 一部のテストが失敗しました")
+        print('\n❌ 一部のテストが失敗しました')
 
     # クリーンアップ
-    print("\n🧹 テストデータをクリーンアップ中...")
-    cleanup_test_user(TEST_USER["email"])
-    print("クリーンアップ完了")
+    print('\n🧹 テストデータをクリーンアップ中...')
+    cleanup_test_user(TEST_USER['email'])
+    print('クリーンアップ完了')
 
     return 0 if all_passed else 1
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

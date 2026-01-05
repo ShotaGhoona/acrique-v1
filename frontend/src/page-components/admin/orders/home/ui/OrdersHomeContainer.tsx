@@ -12,6 +12,7 @@ import {
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
+import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -34,16 +35,47 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import {
-  dummyOrders,
-  orderStatusLabels,
-  orderStatusColors,
-  type OrderStatus,
-} from '../dummy-data/orders';
+import { useAdminOrders } from '@/features/admin-order/get-orders/lib/use-admin-orders';
+import type { OrderStatus } from '@/entities/admin-order/model/types';
+
+const orderStatusLabels: Record<OrderStatus, string> = {
+  pending: '未処理',
+  awaiting_payment: '支払待ち',
+  paid: '支払済み',
+  awaiting_data: '入稿待ち',
+  data_reviewing: '入稿確認中',
+  confirmed: '確定',
+  processing: '製作中',
+  shipped: '発送済み',
+  delivered: '配達完了',
+  cancelled: 'キャンセル',
+};
+
+const orderStatusColors: Record<
+  OrderStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
+  pending: 'default',
+  awaiting_payment: 'default',
+  paid: 'secondary',
+  awaiting_data: 'secondary',
+  data_reviewing: 'secondary',
+  confirmed: 'secondary',
+  processing: 'secondary',
+  shipped: 'outline',
+  delivered: 'outline',
+  cancelled: 'destructive',
+};
 
 export function OrdersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
+
+  const { data, isLoading } = useAdminOrders({
+    search: searchQuery || undefined,
+    status: statusFilter !== 'all' ? [statusFilter] : undefined,
+    limit: 50,
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -51,17 +83,6 @@ export function OrdersHomeContainer() {
       currency: 'JPY',
     }).format(amount);
   };
-
-  // 今後消す==========================================
-  const filteredOrders = dummyOrders.filter((order) => {
-    const matchesSearch =
-      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customerName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === 'all' || order.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-  // =================================================
 
   return (
     <AdminLayout title='注文管理'>
@@ -73,7 +94,7 @@ export function OrdersHomeContainer() {
               <div className='relative'>
                 <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                 <Input
-                  placeholder='注文ID、顧客名で検索...'
+                  placeholder='注文番号で検索...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className='w-full pl-9 sm:w-64'
@@ -102,91 +123,89 @@ export function OrdersHomeContainer() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>注文ID</TableHead>
-                <TableHead>顧客名</TableHead>
-                <TableHead>商品数</TableHead>
-                <TableHead>合計金額</TableHead>
-                <TableHead>ステータス</TableHead>
-                <TableHead>決済状況</TableHead>
-                <TableHead>注文日時</TableHead>
-                <TableHead className='w-12'></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredOrders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className='font-medium'>{order.id}</TableCell>
-                  <TableCell>
-                    <div>
-                      <div>{order.customerName}</div>
-                      <div className='text-xs text-muted-foreground'>
-                        {order.customerEmail}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{order.items.length}点</TableCell>
-                  <TableCell>{formatCurrency(order.totalAmount)}</TableCell>
-                  <TableCell>
-                    <Badge variant={orderStatusColors[order.status]}>
-                      {orderStatusLabels[order.status]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        order.paymentStatus === 'paid'
-                          ? 'outline'
-                          : order.paymentStatus === 'refunded'
-                            ? 'destructive'
-                            : 'default'
-                      }
-                    >
-                      {order.paymentStatus === 'paid'
-                        ? '支払済'
-                        : order.paymentStatus === 'refunded'
-                          ? '返金済'
-                          : '未払い'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {order.createdAt}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon'>
-                          <MoreHorizontal className='h-4 w-4' />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align='end'>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/admin/orders/${order.id}`}>
-                            <Eye className='mr-2 h-4 w-4' />
-                            詳細を見る
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            alert(`ステータス変更: ${order.id}（未実装）`)
-                          }
-                        >
-                          ステータス変更
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
+          {isLoading ? (
+            <div className='space-y-3'>
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className='h-16 w-full' />
               ))}
-            </TableBody>
-          </Table>
-
-          {filteredOrders.length === 0 && (
-            <div className='py-12 text-center text-muted-foreground'>
-              該当する注文がありません
             </div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>注文番号</TableHead>
+                    <TableHead>合計金額</TableHead>
+                    <TableHead>ステータス</TableHead>
+                    <TableHead>決済</TableHead>
+                    <TableHead>注文日時</TableHead>
+                    <TableHead className='w-12'></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data?.orders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell className='font-medium'>
+                        {order.order_number}
+                      </TableCell>
+                      <TableCell>{formatCurrency(order.total)}</TableCell>
+                      <TableCell>
+                        <Badge variant={orderStatusColors[order.status]}>
+                          {orderStatusLabels[order.status]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={order.paid_at ? 'outline' : 'default'}
+                        >
+                          {order.paid_at ? '支払済' : '未払い'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className='text-muted-foreground'>
+                        {order.created_at
+                          ? new Date(order.created_at).toLocaleString('ja-JP', {
+                              year: 'numeric',
+                              month: 'numeric',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : '-'}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant='ghost' size='icon'>
+                              <MoreHorizontal className='h-4 w-4' />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/admin/orders/${order.id}`}>
+                                <Eye className='mr-2 h-4 w-4' />
+                                詳細を見る
+                              </Link>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              {data?.orders.length === 0 && (
+                <div className='py-12 text-center text-muted-foreground'>
+                  該当する注文がありません
+                </div>
+              )}
+
+              {data && data.total > data.orders.length && (
+                <div className='mt-4 text-center text-sm text-muted-foreground'>
+                  {data.total}件中 {data.orders.length}件を表示
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

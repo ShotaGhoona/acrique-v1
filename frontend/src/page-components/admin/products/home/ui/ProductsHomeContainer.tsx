@@ -8,6 +8,7 @@ import {
   Plus,
   Eye,
   Edit,
+  Trash2,
   MoreHorizontal,
   Star,
 } from 'lucide-react';
@@ -39,10 +40,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useProducts } from '@/features/product/get-products/lib/use-products';
+import { useDeleteProduct } from '@/features/admin-product/delete-product/lib/use-delete-product';
 import { ProductsTableSkeleton } from './skeleton/ProductsTableSkeleton';
 import {
   categories,
@@ -57,8 +60,15 @@ export function ProductsHomeContainer() {
   );
 
   const { data, isLoading, error } = useProducts();
+  const deleteProductMutation = useDeleteProduct();
   const products = data?.products ?? [];
   const categoryIds = getCategoryIds();
+
+  const handleDelete = (productId: string, productName: string) => {
+    if (confirm(`「${productName}」を削除しますか？この操作は取り消せません。`)) {
+      deleteProductMutation.mutate(productId);
+    }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -199,6 +209,15 @@ export function ProductsHomeContainer() {
                             <Edit className='mr-2 h-4 w-4' />
                             編集
                           </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className='text-destructive'
+                          onClick={() => handleDelete(product.id, product.name_ja)}
+                          disabled={deleteProductMutation.isPending}
+                        >
+                          <Trash2 className='mr-2 h-4 w-4' />
+                          削除
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

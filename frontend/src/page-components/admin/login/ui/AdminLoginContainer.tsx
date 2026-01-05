@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, Eye, EyeOff } from 'lucide-react';
+import { useAdminLogin } from '@/features/admin-auth/login/lib/use-admin-login';
 import {
   Card,
   CardContent,
@@ -19,20 +20,18 @@ export function AdminLoginContainer() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const loginMutation = useAdminLogin();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // TODO: API呼び出し
-    alert('ログイン処理（未実装）');
-
-    // 仮のログイン成功処理
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push('/admin');
-    }, 1000);
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          router.push('/admin');
+        },
+      },
+    );
   };
 
   return (
@@ -84,8 +83,13 @@ export function AdminLoginContainer() {
                 </Button>
               </div>
             </div>
-            <Button type='submit' className='w-full' disabled={isLoading}>
-              {isLoading ? 'ログイン中...' : 'ログイン'}
+            {loginMutation.isError && (
+              <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+                ログインに失敗しました。メールアドレスとパスワードを確認してください。
+              </div>
+            )}
+            <Button type='submit' className='w-full' disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? 'ログイン中...' : 'ログイン'}
             </Button>
           </form>
         </CardContent>

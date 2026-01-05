@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Filter, Eye, MoreHorizontal, Mail } from 'lucide-react';
+import { Search, Eye, MoreHorizontal, Mail } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -12,6 +12,7 @@ import {
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
+import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -21,49 +22,21 @@ import {
   TableRow,
 } from '@/shared/ui/shadcn/ui/table';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/ui/shadcn/ui/select';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import {
-  dummyUsers,
-  userStatusLabels,
-  userStatusColors,
-  type UserStatus,
-} from '../dummy-data/users';
+import { useAdminUsers } from '@/features/admin-user/get-users/lib/use-admin-users';
 
 export function UsersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<UserStatus | 'all'>('all');
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency: 'JPY',
-    }).format(amount);
-  };
-
-  // 今後消す==========================================
-  const filteredUsers = dummyUsers.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (user.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ??
-        false);
-    const matchesStatus =
-      statusFilter === 'all' || user.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const { data, isLoading } = useAdminUsers({
+    search: searchQuery || undefined,
+    limit: 50,
   });
-  // =================================================
 
   return (
     <AdminLayout title='顧客管理'>
@@ -75,109 +48,100 @@ export function UsersHomeContainer() {
               <div className='relative'>
                 <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
                 <Input
-                  placeholder='名前、メール、会社名で検索...'
+                  placeholder='名前、メールで検索...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className='w-full pl-9 sm:w-64'
                 />
               </div>
-              <Select
-                value={statusFilter}
-                onValueChange={(value) =>
-                  setStatusFilter(value as UserStatus | 'all')
-                }
-              >
-                <SelectTrigger className='w-full sm:w-40'>
-                  <Filter className='mr-2 h-4 w-4' />
-                  <SelectValue placeholder='ステータス' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>すべて</SelectItem>
-                  {Object.entries(userStatusLabels).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>顧客ID</TableHead>
-                <TableHead>名前</TableHead>
-                <TableHead>会社名</TableHead>
-                <TableHead className='text-right'>注文数</TableHead>
-                <TableHead className='text-right'>累計購入額</TableHead>
-                <TableHead>ステータス</TableHead>
-                <TableHead>最終ログイン</TableHead>
-                <TableHead className='w-12'></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className='font-medium'>{user.id}</TableCell>
-                  <TableCell>
-                    <div>
-                      <div className='font-medium'>{user.name}</div>
-                      <div className='text-xs text-muted-foreground'>
-                        {user.email}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.companyName || '-'}</TableCell>
-                  <TableCell className='text-right'>
-                    {user.totalOrders}
-                  </TableCell>
-                  <TableCell className='text-right'>
-                    {formatCurrency(user.totalSpent)}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={userStatusColors[user.status]}>
-                      {userStatusLabels[user.status]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className='text-muted-foreground'>
-                    {user.lastLoginAt}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon'>
-                          <MoreHorizontal className='h-4 w-4' />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align='end'>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/admin/users/${user.id}`}>
-                            <Eye className='mr-2 h-4 w-4' />
-                            詳細を見る
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            alert(`メール送信: ${user.email}（未実装）`)
-                          }
-                        >
-                          <Mail className='mr-2 h-4 w-4' />
-                          メール送信
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
+          {isLoading ? (
+            <div className='space-y-3'>
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className='h-16 w-full' />
               ))}
-            </TableBody>
-          </Table>
-
-          {filteredUsers.length === 0 && (
-            <div className='py-12 text-center text-muted-foreground'>
-              該当する顧客がいません
             </div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>顧客ID</TableHead>
+                    <TableHead>名前</TableHead>
+                    <TableHead>会社名</TableHead>
+                    <TableHead>ステータス</TableHead>
+                    <TableHead>登録日</TableHead>
+                    <TableHead className='w-12'></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(data?.customers ?? []).map((customer) => (
+                    <TableRow key={customer.id}>
+                      <TableCell className='font-medium'>{customer.id}</TableCell>
+                      <TableCell>
+                        <div>
+                          <div className='font-medium'>{customer.name || '-'}</div>
+                          <div className='text-xs text-muted-foreground'>
+                            {customer.email}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{customer.company || '-'}</TableCell>
+                      <TableCell>
+                        <Badge variant={customer.is_email_verified ? 'outline' : 'default'}>
+                          {customer.is_email_verified ? '認証済み' : '未認証'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className='text-muted-foreground'>
+                        {customer.created_at
+                          ? new Date(customer.created_at).toLocaleDateString('ja-JP')
+                          : '-'}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant='ghost' size='icon'>
+                              <MoreHorizontal className='h-4 w-4' />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/admin/users/${customer.id}`}>
+                                <Eye className='mr-2 h-4 w-4' />
+                                詳細を見る
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                alert(`メール送信: ${customer.email}（未実装）`)
+                              }
+                            >
+                              <Mail className='mr-2 h-4 w-4' />
+                              メール送信
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              {(data?.customers ?? []).length === 0 && (
+                <div className='py-12 text-center text-muted-foreground'>
+                  該当する顧客がいません
+                </div>
+              )}
+
+              {data?.customers && data.total > data.customers.length && (
+                <div className='mt-4 text-center text-sm text-muted-foreground'>
+                  {data.total}件中 {data.customers.length}件を表示
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

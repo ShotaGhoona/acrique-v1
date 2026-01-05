@@ -1,6 +1,8 @@
 """注文リポジトリインターフェース"""
 
 from abc import ABC, abstractmethod
+from datetime import datetime
+from typing import Any
 
 from app.domain.entities.order import Order, OrderItem, OrderStatus
 
@@ -51,6 +53,60 @@ class IOrderRepository(ABC):
     @abstractmethod
     def generate_order_number(self) -> str:
         """注文番号を生成（ACQ-YYMMDD-XXX形式）"""
+        pass
+
+    @abstractmethod
+    def get_total_spent_by_user_id(self, user_id: int) -> int:
+        """ユーザーの累計購入金額を取得"""
+        pass
+
+    @abstractmethod
+    def get_all(
+        self,
+        search: str | None = None,
+        status: list[OrderStatus] | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[Order]:
+        """注文一覧を取得（Admin用）"""
+        pass
+
+    @abstractmethod
+    def count_all(
+        self,
+        search: str | None = None,
+        status: list[OrderStatus] | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+    ) -> int:
+        """注文数を取得（Admin用）"""
+        pass
+
+    @abstractmethod
+    def get_stats(
+        self,
+        date_from: datetime,
+        date_to: datetime,
+        group_by: str = 'daily',
+    ) -> list[dict[str, Any]]:
+        """売上統計を取得"""
+        pass
+
+    @abstractmethod
+    def get_today_stats(self) -> dict[str, Any]:
+        """本日の統計を取得"""
+        pass
+
+    @abstractmethod
+    def get_pending_count(self) -> int:
+        """対応待ち注文数を取得"""
+        pass
+
+    @abstractmethod
+    def get_processing_count(self) -> int:
+        """製作中注文数を取得"""
         pass
 
 

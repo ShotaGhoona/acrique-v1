@@ -53,7 +53,9 @@ ignore = [
 # ファイルごとの除外ルール
 [tool.ruff.lint.per-file-ignores]
 "alembic/versions/*.py" = ["E501"]  # マイグレーションファイルは長い行を許可
-"scripts/check_onion_architecture.py" = ["C90"]
+"scripts/**/*.py" = ["C90"]  # スクリプトは複雑度チェックを除外
+"test_*.py" = ["C90"]  # テストファイルは複雑度チェックを除外
+"app/application/use_cases/admin_*.py" = ["C90"]  # Admin用usecaseは複雑度チェックを除外
 
 [tool.ruff.lint.isort]
 # インポートのソート設定

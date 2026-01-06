@@ -27,7 +27,7 @@ export function AboutHeroSection() {
 
       {/* Content */}
       <div className='relative flex min-h-screen items-center'>
-        <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-12 w-full'>
           <div className='max-w-3xl'>
             {/* Label */}
             <p className='text-xs font-medium uppercase tracking-[0.3em] text-background/50'>

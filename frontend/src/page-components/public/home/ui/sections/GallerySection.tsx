@@ -1,17 +1,49 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Instagram } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 
 // ギャラリーアイテム（施工事例・使用シーン）
 const galleryItems = [
-  { id: 1, aspect: '1/1', label: '美容室 ロゴサイン' },
-  { id: 2, aspect: '1/1', label: 'カフェ メニュー' },
-  { id: 3, aspect: '1/1', label: 'オフィス 受付' },
-  { id: 4, aspect: '1/1', label: 'ジュエリー店 プライスタグ' },
-  { id: 5, aspect: '1/1', label: '結婚式 ウェルカムボード' },
-  { id: 6, aspect: '1/1', label: 'IT企業 成約記念盾' },
-  { id: 7, aspect: '1/1', label: 'トレカコレクション' },
-  { id: 8, aspect: '1/1', label: 'レストラン QRキューブ' },
+  {
+    id: 1,
+    label: '美容室 ロゴサイン',
+    image: '/IMG/home-page/gallery/31-home-gallery-beauty-salon-logo-sign-v1.png',
+  },
+  {
+    id: 2,
+    label: 'カフェ メニュー',
+    image: '/IMG/home-page/gallery/32-home-gallery-cafe-menu-v1.png',
+  },
+  {
+    id: 3,
+    label: 'オフィス 受付',
+    image: '/IMG/home-page/gallery/33-home-gallery-office-reception-v1.png',
+  },
+  {
+    id: 4,
+    label: 'ジュエリー店 プライスタグ',
+    image: '/IMG/home-page/gallery/34-home-gallery-jewelry-price-tag-v1.png',
+  },
+  {
+    id: 5,
+    label: '結婚式 ウェルカムボード',
+    image: '/IMG/home-page/gallery/35-home-gallery-wedding-welcome-board-v1.png',
+  },
+  {
+    id: 6,
+    label: 'IT企業 成約記念盾',
+    image: '/IMG/home-page/gallery/36-home-gallery-it-company-deal-trophy-v1.png',
+  },
+  {
+    id: 7,
+    label: 'トレカコレクション',
+    image: '/IMG/home-page/gallery/37-home-gallery-trading-card-collection-v1.png',
+  },
+  {
+    id: 8,
+    label: 'レストラン QRキューブ',
+    image: '/IMG/home-page/gallery/38-home-gallery-restaurant-qr-cube-v1.png',
+  },
 ];
 
 export function GallerySection() {
@@ -49,12 +81,19 @@ export function GallerySection() {
                 index === 0 || index === 5 ? 'md:col-span-2 md:row-span-2' : ''
               }`}
             >
-              <ImagePlaceholder
-                aspect={index === 0 || index === 5 ? '1/1' : '1/1'}
-                variant='gradient'
-                label={item.label}
-                className='h-full w-full transition-transform duration-700 group-hover:scale-105'
-              />
+              <div className='relative aspect-square h-full w-full'>
+                <Image
+                  src={item.image}
+                  alt={item.label}
+                  fill
+                  sizes={
+                    index === 0 || index === 5
+                      ? '(max-width: 768px) 100vw, 50vw'
+                      : '(max-width: 768px) 50vw, 25vw'
+                  }
+                  className='object-cover transition-transform duration-700 group-hover:scale-105'
+                />
+              </div>
               {/* Overlay */}
               <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
               <div className='absolute bottom-0 left-0 right-0 translate-y-full p-4 transition-transform duration-300 group-hover:translate-y-0'>

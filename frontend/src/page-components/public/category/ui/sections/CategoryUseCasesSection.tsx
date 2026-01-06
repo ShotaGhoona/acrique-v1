@@ -1,17 +1,61 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import type {
+  CategoryId,
   CategoryWithFeatures,
   UseCase,
 } from '@/shared/domain/category/model/types';
+
+// UseCase画像パスのマッピング
+const useCaseImages: Record<CategoryId, Record<string, string>> = {
+  shop: {
+    'beauty-salon':
+      '/IMG/category-page/gallery/41-category-shop-usecase-beauty-salon-v1.png',
+    'jewelry-shop':
+      '/IMG/category-page/gallery/42-category-shop-usecase-jewelry-shop-v1.png',
+    'cafe-restaurant':
+      '/IMG/category-page/gallery/43-category-shop-usecase-cafe-restaurant-v1.png',
+    boutique:
+      '/IMG/category-page/gallery/44-category-shop-usecase-apparel-boutique-v1.png',
+  },
+  office: {
+    startup:
+      '/IMG/category-page/gallery/51-category-office-usecase-startup-v1.png',
+    'law-firm':
+      '/IMG/category-page/gallery/52-category-office-usecase-law-firm-v1.png',
+    financial:
+      '/IMG/category-page/gallery/53-category-office-usecase-financial-v1.png',
+    'design-agency':
+      '/IMG/category-page/gallery/54-category-office-usecase-design-agency-v1.png',
+  },
+  you: {
+    'oshi-katsu':
+      '/IMG/category-page/gallery/61-category-you-usecase-oshi-katsu-v1.png',
+    wedding:
+      '/IMG/category-page/gallery/62-category-you-usecase-wedding-v1.png',
+    'baby-gift':
+      '/IMG/category-page/gallery/63-category-you-usecase-baby-gift-v1.png',
+    memorial:
+      '/IMG/category-page/gallery/64-category-you-usecase-memorial-v1.png',
+  },
+};
 
 interface CategoryUseCasesSectionProps {
   category: CategoryWithFeatures;
 }
 
-function UseCaseCard({ useCase, index }: { useCase: UseCase; index: number }) {
+function UseCaseCard({
+  useCase,
+  index,
+  categoryId,
+}: {
+  useCase: UseCase;
+  index: number;
+  categoryId: CategoryId;
+}) {
   const isLarge = index === 0;
+  const imageSrc = useCaseImages[categoryId]?.[useCase.id];
 
   return (
     <div
@@ -20,12 +64,19 @@ function UseCaseCard({ useCase, index }: { useCase: UseCase; index: number }) {
       }`}
     >
       {/* Background Image */}
-      <ImagePlaceholder
-        aspect={isLarge ? '16/9' : '4/3'}
-        variant='gradient'
-        label={useCase.title}
-        className='h-full w-full'
-      />
+      <div
+        className={`relative h-full w-full ${isLarge ? 'aspect-video' : 'aspect-[4/3]'}`}
+      >
+        {imageSrc && (
+          <Image
+            src={imageSrc}
+            alt={useCase.title}
+            fill
+            sizes={isLarge ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw'}
+            className='object-cover'
+          />
+        )}
+      </div>
 
       {/* Overlay */}
       <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent' />
@@ -90,7 +141,12 @@ export function CategoryUseCasesSection({
         {/* Use Cases Grid */}
         <div className='grid gap-4 md:grid-cols-3 md:grid-rows-2'>
           {category.useCases.map((useCase, index) => (
-            <UseCaseCard key={useCase.id} useCase={useCase} index={index} />
+            <UseCaseCard
+              key={useCase.id}
+              useCase={useCase}
+              index={index}
+              categoryId={category.id}
+            />
           ))}
         </div>
       </div>

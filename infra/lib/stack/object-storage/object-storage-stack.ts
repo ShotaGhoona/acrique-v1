@@ -36,7 +36,7 @@ export class ObjectStorageStack extends cdk.Stack {
     super(scope, id, props);
 
     // バケット名生成：環境名 + プロジェクト名（アカウントIDは自動で追加される）
-    const bucketPrefix = `${config.envName}-cdk-template-data`;
+    const bucketPrefix = `${config.envName}-acrique-v1-data`;
 
     // オブジェクトストレージリソースの作成（Resource層を使用）
     const objectStorage = new ObjectStorageResource(this, 'ObjectStorage', {

@@ -75,7 +75,7 @@ export class BackendStack extends cdk.Stack {
     // latestタグを使用するためMUTABLEに設定
     // セキュリティはライフサイクルポリシーとイメージスキャンで担保
     const ecrConstruct = new EcrConstruct(this, 'BackendEcr', {
-      repositoryName: `${config.envName}-cdk-template-backend`,
+      repositoryName: `${config.envName}-acrique-v1-backend`,
       removalPolicy: config.removalPolicy,
       maxImageCount: config.envName === 'prod' ? 20 : 10,
       imageTagMutability: require('aws-cdk-lib/aws-ecr').TagMutability.MUTABLE,
@@ -84,11 +84,11 @@ export class BackendStack extends cdk.Stack {
 
     // APIリソースの作成（Resource層を使用）
     const apiResource = new ApiResource(this, 'ApiResource', {
-      lambdaFunctionName: `${config.envName}-cdk-template-api`,
-      apiGatewayName: `${config.envName}-cdk-template-api`,
-      ecsClusterName: `${config.envName}-cdk-template-cluster`,
-      ecsServiceName: `${config.envName}-cdk-template-backend`,
-      albName: `${config.envName}-cdk-template-alb`,
+      lambdaFunctionName: `${config.envName}-acrique-v1-api`,
+      apiGatewayName: `${config.envName}-acrique-v1-api`,
+      ecsClusterName: `${config.envName}-acrique-v1-cluster`,
+      ecsServiceName: `${config.envName}-acrique-v1-backend`,
+      albName: `${config.envName}-acrique-v1-alb`,
       vpc: props.vpc,
       lambdaConfig: config.lambda, // Lambda設定を渡す（undefinedの場合は作成されない）
       wafConfig: config.waf, // WAF設定を渡す（undefinedの場合は作成されない）

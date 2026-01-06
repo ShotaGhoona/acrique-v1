@@ -70,7 +70,7 @@ export class FrontendStack extends cdk.Stack {
       // Amplify Hosting を使用
       const frontendResource = new FrontendResource(this, 'FrontendResource', {
         type: 'amplify',
-        amplifyAppName: `${config.envName}-cdk-template`,
+        amplifyAppName: `${config.envName}-acrique-v1`,
         githubRepo: config.frontend.githubRepo,
         githubBranch: config.frontend.githubBranch,
         monorepoAppRoot: config.frontend.monorepoAppRoot, // モノレポ対応
@@ -96,7 +96,7 @@ export class FrontendStack extends cdk.Stack {
       }
     } else {
       // S3 + CloudFront を使用
-      const bucketPrefix = `${config.envName}-cdk-template-frontend`;
+      const bucketPrefix = `${config.envName}-acrique-v1-frontend`;
 
     const frontendResource = new FrontendResource(this, 'FrontendResource', {
         type: 's3-cloudfront',

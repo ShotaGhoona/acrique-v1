@@ -57,13 +57,13 @@ export class ObservabilityStack extends cdk.Stack {
 
     // CloudWatch Dashboard
     this.dashboard = new cloudwatch.Dashboard(this, 'Dashboard', {
-      dashboardName: `${config.envName}-cdk-template-dashboard`,
+      dashboardName: `${config.envName}-acrique-v1-dashboard`,
     });
 
     // ECSサービスのメトリクス
     if (props?.ecsService) {
       const cpuAlarm = new cloudwatch.Alarm(this, 'EcsCpuAlarm', {
-        alarmName: `${config.envName}-cdk-template-ecs-cpu`,
+        alarmName: `${config.envName}-acrique-v1-ecs-cpu`,
         metric: props.ecsService.metricCpuUtilization(),
         threshold: 80,
         evaluationPeriods: 2,
@@ -82,7 +82,7 @@ export class ObservabilityStack extends cdk.Stack {
     // Aurora クラスターのメトリクス
     if (props?.rdsCluster) {
       const rdsAlarm = new cloudwatch.Alarm(this, 'AuroraCpuAlarm', {
-        alarmName: `${config.envName}-cdk-template-aurora-cpu`,
+        alarmName: `${config.envName}-acrique-v1-aurora-cpu`,
         metric: props.rdsCluster.metricCPUUtilization(),
         threshold: 80,
         evaluationPeriods: 2,
@@ -101,7 +101,7 @@ export class ObservabilityStack extends cdk.Stack {
     // RDS インスタンスのメトリクス
     if (props?.rdsInstance) {
       const rdsAlarm = new cloudwatch.Alarm(this, 'RdsCpuAlarm', {
-        alarmName: `${config.envName}-cdk-template-rds-cpu`,
+        alarmName: `${config.envName}-acrique-v1-rds-cpu`,
         metric: props.rdsInstance.metricCPUUtilization(),
         threshold: 80,
         evaluationPeriods: 2,
@@ -120,7 +120,7 @@ export class ObservabilityStack extends cdk.Stack {
     // Lambda関数のメトリクス
     if (props?.lambdaFunction) {
       const lambdaErrorAlarm = new cloudwatch.Alarm(this, 'LambdaErrorAlarm', {
-        alarmName: `${config.envName}-cdk-template-lambda-errors`,
+        alarmName: `${config.envName}-acrique-v1-lambda-errors`,
         metric: props.lambdaFunction.metricErrors(),
         threshold: 5,
         evaluationPeriods: 1,

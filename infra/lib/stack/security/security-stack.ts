@@ -35,9 +35,9 @@ export class SecurityStack extends cdk.Stack {
 
     // セキュリティリソースの作成（Resource層を使用）
     const securityResource = new SecurityResource(this, 'SecurityResource', {
-      userPoolName: `${config.envName}-cdk-template-users`,
-      userPoolClientName: `${config.envName}-cdk-template-client`,
-      secretName: `${config.envName}/cdk-template/secrets`,
+      userPoolName: `${config.envName}-acrique-v1-users`,
+      userPoolClientName: `${config.envName}-acrique-v1-client`,
+      secretName: `${config.envName}/acrique-v1/secrets`,
       enableSmsAuth: config.cognito?.enableSmsAuth,
       smsExternalId: config.cognito?.smsExternalId,
     });

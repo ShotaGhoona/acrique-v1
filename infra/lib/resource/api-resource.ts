@@ -178,11 +178,12 @@ export class ApiResource extends Construct {
     // 各フィールドを個別の環境変数として展開
     const secrets: Record<string, ecs.Secret> = {};
     if (props.databaseSecret) {
-      secrets['DB_HOST'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'host');
-      secrets['DB_PORT'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'port');
-      secrets['DB_NAME'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'dbname');
-      secrets['DB_USER'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'username');
-      secrets['DB_PASSWORD'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'password');
+      // backendのconfig.pyが期待する環境変数名に合わせる（POSTGRES_*）
+      secrets['POSTGRES_HOST'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'host');
+      secrets['POSTGRES_PORT'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'port');
+      secrets['POSTGRES_DB'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'dbname');
+      secrets['POSTGRES_USER'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'username');
+      secrets['POSTGRES_PASSWORD'] = ecs.Secret.fromSecretsManager(props.databaseSecret, 'password');
     }
 
     // コンテナイメージの決定

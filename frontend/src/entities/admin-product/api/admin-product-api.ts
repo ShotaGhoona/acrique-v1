@@ -11,6 +11,8 @@ import {
   AddProductImageRequest,
   AddProductImageResponse,
   DeleteProductImageResponse,
+  GetPresignedUrlRequest,
+  GetPresignedUrlResponse,
   UpdateProductOptionsRequest,
   UpdateProductOptionsResponse,
   UpdateProductSpecsRequest,
@@ -104,6 +106,20 @@ export const adminProductApi = {
   ): Promise<DeleteProductImageResponse> {
     const response = await httpClient.delete<DeleteProductImageResponse>(
       `/api/admin/products/${productId}/images/${imageId}`,
+    );
+    return response.data;
+  },
+
+  /**
+   * 署名付きアップロードURL取得
+   */
+  async getPresignedUrl(
+    productId: string,
+    data: GetPresignedUrlRequest,
+  ): Promise<GetPresignedUrlResponse> {
+    const response = await httpClient.post<GetPresignedUrlResponse>(
+      `/api/admin/products/${productId}/images/presign`,
+      data,
     );
     return response.data;
   },

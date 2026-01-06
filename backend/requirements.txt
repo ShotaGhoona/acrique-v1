@@ -20,6 +20,9 @@ cryptography==41.0.7
 # Email
 resend==2.19.0
 
+# AWS
+boto3==1.35.0
+
 # Environment
 python-dotenv==1.0.1
 

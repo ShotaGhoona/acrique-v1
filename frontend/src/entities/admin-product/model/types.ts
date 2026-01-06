@@ -184,6 +184,19 @@ export interface DeleteProductImageResponse {
   message: string;
 }
 
+// === 署名付きURL取得リクエスト ===
+export interface GetPresignedUrlRequest {
+  file_name: string;
+  content_type: string;
+}
+
+// === 署名付きURL取得レスポンス ===
+export interface GetPresignedUrlResponse {
+  upload_url: string;
+  file_url: string;
+  key: string;
+}
+
 // === オプション更新リクエスト ===
 export interface UpdateProductOptionsRequest {
   options: AdminProductOption[];

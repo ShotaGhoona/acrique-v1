@@ -2,9 +2,11 @@
 
 from fastapi import APIRouter, Depends, Query, status
 
+from app.application.interfaces.storage_service import IStorageService
 from app.application.schemas.admin_product_schemas import GetAdminProductsInputDTO
 from app.application.use_cases.admin_product_usecase import AdminProductUsecase
 from app.di.admin_product import get_admin_product_usecase
+from app.di.storage import get_storage_service
 from app.infrastructure.security.admin_security import (
     AdminAuth,
     get_current_admin_from_cookie,
@@ -25,6 +27,8 @@ from app.presentation.schemas.admin_product_schemas import (
     DeleteProductResponse,
     GetAdminProductResponse,
     GetAdminProductsResponse,
+    GetPresignedUrlRequest,
+    GetPresignedUrlResponse,
     UpdateProductFaqsRequest,
     UpdateProductFaqsResponse,
     UpdateProductFeaturesRequest,
@@ -161,6 +165,35 @@ async def delete_product_image(
     output = usecase.delete_image(product_id, image_id)
 
     return DeleteProductImageResponse(message=output.message)
+
+
+@router.post(
+    '/{product_id}/images/presign',
+    response_model=GetPresignedUrlResponse,
+)
+async def get_presigned_upload_url(
+    product_id: str,
+    request: GetPresignedUrlRequest,
+    admin: AdminAuth = Depends(get_current_admin_from_cookie),
+    usecase: AdminProductUsecase = Depends(get_admin_product_usecase),
+    storage_service: IStorageService = Depends(get_storage_service),
+) -> GetPresignedUrlResponse:
+    """商品画像アップロード用の署名付きURLを取得"""
+    # 商品の存在確認
+    usecase.get_product(product_id)
+
+    # 署名付きURLを生成
+    result = storage_service.generate_presigned_upload_url(
+        file_name=request.file_name,
+        content_type=request.content_type,
+        folder=f'products/{product_id}/images',
+    )
+
+    return GetPresignedUrlResponse(
+        upload_url=result.upload_url,
+        file_url=result.file_url,
+        key=result.key,
+    )
 
 
 @router.put('/{product_id}/options', response_model=UpdateProductOptionsResponse)

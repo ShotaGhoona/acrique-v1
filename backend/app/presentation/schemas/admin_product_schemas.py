@@ -271,6 +271,21 @@ class DeleteProductImageResponse(BaseModel):
     message: str
 
 
+class GetPresignedUrlRequest(BaseModel):
+    """署名付きURL取得リクエスト"""
+
+    file_name: str = Field(..., min_length=1, description='ファイル名')
+    content_type: str = Field(..., min_length=1, description='Content-Type')
+
+
+class GetPresignedUrlResponse(BaseModel):
+    """署名付きURL取得レスポンス"""
+
+    upload_url: str = Field(..., description='アップロード用署名付きURL')
+    file_url: str = Field(..., description='アップロード後のファイルURL')
+    key: str = Field(..., description='S3オブジェクトキー')
+
+
 class UpdateProductOptionsResponse(BaseModel):
     """オプション更新レスポンス"""
 

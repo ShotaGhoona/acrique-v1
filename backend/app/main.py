@@ -40,7 +40,8 @@ allowed_origins = [
     'http://127.0.0.1:3000',
     'http://localhost:3005',
     'http://127.0.0.1:3005',
-    # ここに本番環境のドメインをデプロイ後追加する。
+    # 本番環境
+    'https://main.d17fbeoc59o61t.amplifyapp.com',
 ]
 
 app.add_middleware(

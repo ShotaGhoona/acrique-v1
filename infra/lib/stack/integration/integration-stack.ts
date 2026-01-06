@@ -35,9 +35,9 @@ export class IntegrationStack extends cdk.Stack {
 
     // メッセージングリソースの作成（Resource層を使用）
     const messagingResource = new MessagingResource(this, 'MessagingResource', {
-      topicName: `${config.envName}-cdk-template-topic`,
-      queueName: `${config.envName}-cdk-template-queue`,
-      dlqName: `${config.envName}-cdk-template-dlq`,
+      topicName: `${config.envName}-acrique-v1-topic`,
+      queueName: `${config.envName}-acrique-v1-queue`,
+      dlqName: `${config.envName}-acrique-v1-dlq`,
     });
 
     this.topic = messagingResource.topic;

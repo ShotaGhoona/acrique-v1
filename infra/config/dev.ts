@@ -13,14 +13,14 @@ export const devConfig: EnvironmentConfig = {
 
   vpc: {
     cidr: '10.0.0.0/16',
-    maxAzs: 1, // コスト削減
-    natGateways: 1,
+    maxAzs: 2, // RDSは最低2AZ必要
+    natGateways: 1, // コスト削減のためNATは1つ
   },
 
   network: {
     cidr: '10.0.0.0/16',
-    maxAzs: 1, // コスト削減
-    natGateways: 1,
+    maxAzs: 2, // RDSは最低2AZ必要
+    natGateways: 1, // コスト削減のためNATは1つ
   },
 
   database: {
@@ -58,12 +58,10 @@ export const devConfig: EnvironmentConfig = {
   },
 
   frontend: {
-    type: 'amplify', // 💡 開発環境: Amplifyで簡単デプロイ
-    // GitHubリポジトリを設定する場合はコメントを外す
-    // githubRepo: 'owner/repo-name',
-    // githubBranch: 'develop',
-    // 📁 モノレポの場合はフロントエンドディレクトリを指定
-    // monorepoAppRoot: 'frontend',
+    type: 'amplify',
+    githubRepo: 'ShotaGhoona/acrique-v1',
+    githubBranch: 'main',
+    monorepoAppRoot: 'frontend', // フロントエンドはfrontendフォルダにある
   },
 
   // 💡 開発環境ではLambdaを無効化（コスト削減）

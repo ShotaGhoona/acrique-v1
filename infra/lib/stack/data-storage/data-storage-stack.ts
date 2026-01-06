@@ -62,14 +62,14 @@ export class DataStorageStack extends cdk.Stack {
     const dataStorage = new DataStorageResource(this, 'DataStorage', {
       enableDynamo,
       dynamoTableName: enableDynamo
-        ? `${config.envName}-cdk-template-table`
+        ? `${config.envName}-acrique-v1-table`
         : undefined,
       enableAurora,
       enableRds,
       engineType: config.database.engine,
       databaseName: 'main',
-      auroraClusterName: `${config.envName}-cdk-template-aurora`,
-      rdsInstanceName: `${config.envName}-cdk-template-rds`,
+      auroraClusterName: `${config.envName}-acrique-v1-aurora`,
+      rdsInstanceName: `${config.envName}-acrique-v1-rds`,
       instanceType: config.database.instanceType,
       multiAz: config.database.multiAz,
       allocatedStorageGb: config.database.allocatedStorageGb,
@@ -91,7 +91,7 @@ export class DataStorageStack extends cdk.Stack {
     // Bastion ホストの作成（有効な場合のみ）
     if (config.bastion?.enabled && this.databaseSecurityGroup) {
       const bastion = new BastionConstruct(this, 'Bastion', {
-        bastionName: `${config.envName}-cdk-template-bastion`,
+        bastionName: `${config.envName}-acrique-v1-bastion`,
         vpc: props.vpc,
         allowSshFrom: config.bastion.allowSshFrom,
         enableSsm: config.bastion.enableSsm ?? true,
@@ -105,7 +105,7 @@ export class DataStorageStack extends cdk.Stack {
         bastion.allowPostgresAccess(this.databaseSecurityGroup);
       }
 
-      console.log(`✅ Bastion host created: ${config.envName}-cdk-template-bastion`);
+      console.log(`✅ Bastion host created: ${config.envName}-acrique-v1-bastion`);
       console.log(`   SSM Session Manager: ${config.bastion.enableSsm ?? true ? 'enabled' : 'disabled'}`);
       if (config.bastion.allowSshFrom) {
         console.log(`   SSH allowed from: ${config.bastion.allowSshFrom}`);

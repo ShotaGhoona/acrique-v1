@@ -32,7 +32,7 @@ export class FoundationStack extends cdk.Stack {
 
     // ネットワーク基盤の作成（Resource層を使用）
     const networkResource = new NetworkResource(this, 'NetworkResource', {
-      vpcName: `${config.envName}-cdk-template-vpc`,
+      vpcName: `${config.envName}-acrique-v1-vpc`,
       cidr: '10.0.0.0/16',
       maxAzs: config.network.maxAzs,
       natGateways: config.network.natGateways,

@@ -84,18 +84,21 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 ## BackendStack（バックエンドAPI）
 
-| タスク | 状況 |
-|--------|------|
-| ECRリポジトリ | [x] |
-| ECSクラスター | [x] |
-| ECS Fargateサービス | [x] |
-| タスク定義 | [x] |
-| ALB（ロードバランサー） | [x] |
-| ヘルスチェック設定 | [x] |
-| 環境変数設定（POSTGRES_*） | [x] |
-| CORS設定（Amplify URL追加） | [x] |
-| Auto Scaling | [ ] |
-| WAF設定 | [ ] |
+| タスク | 状況 | 備考 |
+|--------|------|------|
+| ECRリポジトリ | [x] | |
+| ECSクラスター | [x] | |
+| ECS Fargateサービス | [x] | |
+| タスク定義 | [x] | |
+| ALB（ロードバランサー） | [x] | |
+| ヘルスチェック設定 | [x] | |
+| 環境変数設定（POSTGRES_*） | [x] | |
+| CORS設定（Amplify URL追加） | [x] | |
+| CloudFront（HTTPS化）コンソール | [x] | 手動設定で対応 |
+| CloudFront（HTTPS化）CDK | [ ] | construct作成済み、統合未完了 |
+| Auto Scaling | [ ] | |
+| WAF設定（ALB） | [ ] | |
+| WAF設定（CloudFront） | [x] | Rate limiting有効 |
 
 ---
 
@@ -139,12 +142,14 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 ## セキュリティ
 
-| タスク | 状況 |
-|--------|------|
-| HTTPS化（ACM証明書） | [ ] |
-| カスタムドメイン設定 | [ ] |
-| WAF有効化 | [ ] |
-| セキュリティグループ見直し | [ ] |
+| タスク | 状況 | 備考 |
+|--------|------|------|
+| HTTPS化（CloudFront） | [x] | ALB前段にCloudFront配置 |
+| HTTPS化（ACM証明書） | [ ] | カスタムドメイン取得後 |
+| カスタムドメイン設定 | [ ] | |
+| WAF有効化（CloudFront） | [x] | Rate limiting |
+| WAF有効化（ALB） | [ ] | |
+| セキュリティグループ見直し | [ ] | |
 
 ---
 
@@ -187,7 +192,8 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | リソース | URL |
 |---------|-----|
-| バックエンドAPI | http://dev-acrique-v1-alb-1256355443.ap-northeast-1.elb.amazonaws.com |
+| バックエンドAPI（HTTPS） | https://d3nwschzt6djdp.cloudfront.net |
+| バックエンドAPI（HTTP/内部用） | http://dev-acrique-v1-alb-1256355443.ap-northeast-1.elb.amazonaws.com |
 | フロントエンド | https://main.d17fbeoc59o61t.amplifyapp.com |
 | CloudWatch Dashboard | https://console.aws.amazon.com/cloudwatch/home?region=ap-northeast-1#dashboards:name=dev-acrique-v1-dashboard |
 
@@ -198,5 +204,16 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 1. [x] RDSマイグレーション実行
 2. [x] 初期データ投入
 3. [x] フロントエンド動作確認（CORS修正済み）
-4. [ ] CI/CD構築
-5. [ ] カスタムドメイン＆HTTPS化
+4. [x] HTTPS化（CloudFrontコンソール設定）
+5. [ ] CloudFront CDK統合（construct作成済み）
+6. [ ] CI/CD構築
+7. [ ] カスタムドメイン設定
+
+---
+
+# CDK未統合リソース（コンソールで作成済み）
+
+| リソース | 状況 | 備考 |
+|---------|------|------|
+| CloudFront（ALB用） | コンソール作成済み | `cloudfront-alb-construct.ts`作成済み、api-resource統合未完了 |
+| Amplify App | コンソール作成済み | GitHub OAuth認証の制約 |

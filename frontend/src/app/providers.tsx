@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Provider, useDispatch } from 'react-redux';
 import { store, AppDispatch } from '@/store/store';
 import { QueryProvider } from '@/app/provider/QueryProvider';
@@ -15,11 +16,17 @@ const ENABLE_AUTH = process.env.NEXT_PUBLIC_ENABLE_AUTH !== 'false';
  */
 function AuthInitializer({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>();
+  const pathname = usePathname();
 
   useEffect(() => {
     // 認証が無効の場合はダミーユーザーを設定
     if (!ENABLE_AUTH) {
       dispatch(setUser({ id: 0 }));
+      return;
+    }
+
+    // adminページでは一般ユーザー認証チェックをスキップ
+    if (pathname?.startsWith('/admin')) {
       return;
     }
 
@@ -38,7 +45,7 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
     };
 
     initializeAuth();
-  }, [dispatch]);
+  }, [dispatch, pathname]);
 
   return <>{children}</>;
 }

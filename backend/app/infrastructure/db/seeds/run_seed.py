@@ -1,10 +1,15 @@
 """シード実行スクリプト"""
 
 import sys
+import uuid
 from pathlib import Path
+from typing import Optional
 
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
+
+import boto3
+from botocore.config import Config as BotoConfig
 
 from sqlalchemy.orm import Session
 
@@ -37,11 +42,118 @@ from app.infrastructure.db.seeds.product_seed import (
 )
 from app.infrastructure.db.seeds.user_seed import USERS
 from app.infrastructure.db.session import SessionLocal
+from app.config import get_settings
+
+# シード画像のベースディレクトリ
+SEED_IMAGES_DIR = Path(__file__).parent / 'images'
+
+# MIMEタイプマッピング
+EXTENSION_TO_CONTENT_TYPE = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.webp': 'image/webp',
+    '.gif': 'image/gif',
+}
+
+
+def get_s3_client():
+    """S3クライアントを取得"""
+    settings = get_settings()
+
+    boto_config = BotoConfig(
+        region_name=settings.aws_s3_region,
+        signature_version='s3v4',
+        s3={'addressing_style': 'virtual'},
+    )
+    endpoint_url = f'https://s3.{settings.aws_s3_region}.amazonaws.com'
+
+    if settings.aws_access_key_id and settings.aws_secret_access_key:
+        return boto3.client(
+            's3',
+            region_name=settings.aws_s3_region,
+            endpoint_url=endpoint_url,
+            config=boto_config,
+            aws_access_key_id=settings.aws_access_key_id,
+            aws_secret_access_key=settings.aws_secret_access_key,
+        )
+    else:
+        return boto3.client(
+            's3',
+            region_name=settings.aws_s3_region,
+            endpoint_url=endpoint_url,
+            config=boto_config,
+        )
+
+
+def upload_image_to_s3(local_path: str, s3_client, bucket_name: str, cdn_domain: str) -> Optional[str]:
+    """ローカル画像をS3にアップロードしてURLを返す
+
+    Args:
+        local_path: SEED_IMAGES_DIRからの相対パス（例: 'qr-cube/main.jpg'）
+        s3_client: boto3 S3クライアント
+        bucket_name: S3バケット名
+        cdn_domain: CloudFrontドメイン名
+
+    Returns:
+        str | None: アップロード成功時はCloudFront URL、失敗時はNone
+    """
+    file_path = SEED_IMAGES_DIR / local_path
+    if not file_path.exists():
+        return None
+
+    # 拡張子からContent-Typeを取得
+    extension = file_path.suffix.lower()
+    content_type = EXTENSION_TO_CONTENT_TYPE.get(extension)
+    if not content_type:
+        print(f'  警告: 未対応の画像形式です: {extension}')
+        return None
+
+    # ユニークなS3キーを生成
+    unique_id = uuid.uuid4().hex[:12]
+    s3_key = f'products/{unique_id}{extension}'
+
+    try:
+        # S3にアップロード
+        with open(file_path, 'rb') as f:
+            s3_client.put_object(
+                Bucket=bucket_name,
+                Key=s3_key,
+                Body=f,
+                ContentType=content_type,
+            )
+
+        # CloudFront URLを返す
+        if cdn_domain:
+            return f'https://{cdn_domain}/{s3_key}'
+        else:
+            return f'https://{bucket_name}.s3.amazonaws.com/{s3_key}'
+
+    except Exception as e:
+        print(f'  S3アップロードエラー ({local_path}): {e}')
+        return None
 
 
 def seed_products(session: Session) -> None:
     """商品データをシード"""
     print('商品データをシード中...')
+
+    # 設定を取得
+    settings = get_settings()
+    s3_client = None
+    bucket_name = settings.aws_s3_bucket_name
+    cdn_domain = settings.cdn_domain_name
+
+    # S3アップロードが可能かチェック
+    if bucket_name:
+        try:
+            s3_client = get_s3_client()
+            print(f'  S3バケット: {bucket_name}')
+            if cdn_domain:
+                print(f'  CDNドメイン: {cdn_domain}')
+        except Exception as e:
+            print(f'  警告: S3クライアント初期化失敗: {e}')
+            s3_client = None
 
     # 既存データを削除（外部キー制約の順序に注意）
     session.query(ProductRelationModel).delete()
@@ -63,11 +175,38 @@ def seed_products(session: Session) -> None:
     print(f'  商品を {len(PRODUCTS)} 件登録しました')
 
     # 商品画像を登録
+    uploaded_count = 0
+    skipped_count = 0
     for image_data in PRODUCT_IMAGES:
-        image = ProductImageModel(**image_data)
+        local_path = image_data.get('local_path')
+        s3_url = None
+
+        # local_pathがあればS3にアップロード
+        if local_path and s3_client:
+            s3_url = upload_image_to_s3(local_path, s3_client, bucket_name, cdn_domain)
+            if s3_url:
+                uploaded_count += 1
+            else:
+                skipped_count += 1
+                continue  # 画像ファイルがない場合はスキップ
+
+        if not s3_url:
+            # local_pathがない、またはS3が設定されていない場合はスキップ
+            skipped_count += 1
+            continue
+
+        image = ProductImageModel(
+            product_id=image_data['product_id'],
+            s3_url=s3_url,
+            alt=image_data.get('alt'),
+            is_main=image_data.get('is_main', False),
+            sort_order=image_data.get('sort_order', 0),
+        )
         session.add(image)
     session.commit()
-    print(f'  商品画像を {len(PRODUCT_IMAGES)} 件登録しました')
+    print(f'  商品画像を {uploaded_count} 件アップロード・登録しました')
+    if skipped_count > 0:
+        print(f'  商品画像を {skipped_count} 件スキップしました（画像ファイルなし）')
 
     # 商品オプションを登録（option_idを保持するためのマッピング）
     option_id_map: dict[str, int] = {}

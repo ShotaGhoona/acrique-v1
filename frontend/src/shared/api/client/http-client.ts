@@ -38,7 +38,11 @@ httpClient.interceptors.response.use(
   },
   (error: AxiosError) => {
     if (error.response) {
-      console.error('API Error:', error.response.status, error.response.data);
+      console.error(
+        'API Error:',
+        error.response.status,
+        JSON.stringify(error.response.data, null, 2),
+      );
 
       // 401エラー: 認証エラー時はログインページへリダイレクト（認証が有効な場合のみ）
       if (error.response.status === 401 && ENABLE_AUTH) {

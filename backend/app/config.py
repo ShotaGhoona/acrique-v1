@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     # 例: 'd1234567890.cloudfront.net'
     cdn_domain_name: str = ''
 
+    # Stripe settings
+    stripe_secret_key: str = ''
+    stripe_webhook_secret: str = ''
+
     class Config:
         env_file = '.env'
         extra = 'ignore'  # 未定義のフィールドを無視（後方互換性のため）

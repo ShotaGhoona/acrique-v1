@@ -96,6 +96,31 @@ RESTful API原則に従い、ドメインごとに整理。
 | POST | `/api/payments/intent` | PaymentIntent作成 |
 | POST | `/api/payments/webhook` | Stripe Webhook |
 
+### POST `/api/payments/intent`
+
+**リクエスト:**
+```json
+{
+  "order_id": 123
+}
+```
+
+**レスポンス:**
+```json
+{
+  "client_secret": "pi_xxx_secret_xxx",
+  "payment_intent_id": "pi_xxx",
+  "amount": 16500
+}
+```
+
+### POST `/api/payments/webhook`
+
+Stripeからのイベント通知を受信。処理するイベント:
+- `payment_intent.succeeded` - 決済成功 → 注文ステータスを`paid`に更新
+- `payment_intent.payment_failed` - 決済失敗 → ログ記録
+- `charge.refunded` - 返金 → 注文ステータスを`refunded`に更新
+
 ---
 
 ## お問い合わせ (Contact)

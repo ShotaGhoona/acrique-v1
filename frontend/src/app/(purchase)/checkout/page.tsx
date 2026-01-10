@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { CheckoutContainer } from '@/page-components/purchase/checkout/ui/CheckoutContainer';
+import { CheckoutContainer } from '@/page-components/purchase/checkout/home/ui/CheckoutContainer';
 
 export const metadata: Metadata = {
   title: '購入手続き | ACRIQUE',

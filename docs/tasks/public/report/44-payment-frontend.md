@@ -83,7 +83,7 @@ frontend/src/
 ├── page-components/
 │   └── purchase/
 │       └── checkout/
-│           ├── ui/
+│           ├── home/ui/
 │           │   └── CheckoutContainer.tsx         # [新規] 購入手続き
 │           ├── confirm/
 │           │   └── ui/

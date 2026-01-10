@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck } from 'lucide-react';
@@ -23,11 +23,12 @@ export function CheckoutConfirmContainer() {
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const paymentIntentCreated = useRef(false);
 
   const { data: orderData, isLoading: isOrderLoading } = useOrder(
     orderId ? Number(orderId) : 0,
   );
-  const createPaymentIntent = useCreatePaymentIntent();
+  const { mutate: createPaymentIntent, isPending } = useCreatePaymentIntent();
 
   const order = orderData?.order;
 
@@ -37,19 +38,26 @@ export function CheckoutConfirmContainer() {
       return;
     }
 
-    if (order && !clientSecret) {
-      createPaymentIntent.mutate(Number(orderId), {
+    // 既にclientSecretがある、リクエスト中、または既に作成済みの場合はスキップ
+    if (clientSecret || isPending || paymentIntentCreated.current) {
+      return;
+    }
+
+    if (order) {
+      paymentIntentCreated.current = true;
+      createPaymentIntent(Number(orderId), {
         onSuccess: (data) => {
           setClientSecret(data.client_secret);
           setPaymentAmount(data.amount);
         },
         onError: () => {
+          paymentIntentCreated.current = false;
           toast.error('決済の準備に失敗しました');
           router.push('/checkout');
         },
       });
     }
-  }, [orderId, order, clientSecret, createPaymentIntent, router]);
+  }, [orderId, order, clientSecret, isPending, createPaymentIntent, router]);
 
   const handleSuccess = () => {
     router.push(`/checkout/complete?orderId=${orderId}`);

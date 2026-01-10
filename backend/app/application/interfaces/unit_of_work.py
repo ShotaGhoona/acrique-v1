@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from contextlib import AbstractContextManager
 
 
-class IUnitOfWork(ABC, AbstractContextManager):
+class IUnitOfWork(ABC):
     """
     トランザクション管理のインターフェース
 

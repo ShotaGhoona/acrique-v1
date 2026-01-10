@@ -80,10 +80,14 @@ export function UsersHomeContainer() {
                 <TableBody>
                   {(data?.customers ?? []).map((customer) => (
                     <TableRow key={customer.id}>
-                      <TableCell className='font-medium'>{customer.id}</TableCell>
+                      <TableCell className='font-medium'>
+                        {customer.id}
+                      </TableCell>
                       <TableCell>
                         <div>
-                          <div className='font-medium'>{customer.name || '-'}</div>
+                          <div className='font-medium'>
+                            {customer.name || '-'}
+                          </div>
                           <div className='text-xs text-muted-foreground'>
                             {customer.email}
                           </div>
@@ -91,13 +95,19 @@ export function UsersHomeContainer() {
                       </TableCell>
                       <TableCell>{customer.company || '-'}</TableCell>
                       <TableCell>
-                        <Badge variant={customer.is_email_verified ? 'outline' : 'default'}>
+                        <Badge
+                          variant={
+                            customer.is_email_verified ? 'outline' : 'default'
+                          }
+                        >
                           {customer.is_email_verified ? '認証済み' : '未認証'}
                         </Badge>
                       </TableCell>
                       <TableCell className='text-muted-foreground'>
                         {customer.created_at
-                          ? new Date(customer.created_at).toLocaleDateString('ja-JP')
+                          ? new Date(customer.created_at).toLocaleDateString(
+                              'ja-JP',
+                            )
                           : '-'}
                       </TableCell>
                       <TableCell>

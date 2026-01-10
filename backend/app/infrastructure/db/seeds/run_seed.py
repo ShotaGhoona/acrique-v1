@@ -3,16 +3,15 @@
 import sys
 import uuid
 from pathlib import Path
-from typing import Optional
 
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 
 import boto3
 from botocore.config import Config as BotoConfig
-
 from sqlalchemy.orm import Session
 
+from app.config import get_settings
 from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
@@ -42,7 +41,6 @@ from app.infrastructure.db.seeds.product_seed import (
 )
 from app.infrastructure.db.seeds.user_seed import USERS
 from app.infrastructure.db.session import SessionLocal
-from app.config import get_settings
 
 # シード画像のベースディレクトリ
 SEED_IMAGES_DIR = Path(__file__).parent / 'images'
@@ -86,7 +84,9 @@ def get_s3_client():
         )
 
 
-def upload_image_to_s3(local_path: str, s3_client, bucket_name: str, cdn_domain: str) -> Optional[str]:
+def upload_image_to_s3(
+    local_path: str, s3_client, bucket_name: str, cdn_domain: str
+) -> str | None:
     """ローカル画像をS3にアップロードしてURLを返す
 
     Args:
@@ -134,7 +134,7 @@ def upload_image_to_s3(local_path: str, s3_client, bucket_name: str, cdn_domain:
         return None
 
 
-def seed_products(session: Session) -> None:
+def seed_products(session: Session) -> None:  # noqa: C901
     """商品データをシード"""
     print('商品データをシード中...')
 

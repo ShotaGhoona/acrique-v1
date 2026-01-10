@@ -65,7 +65,9 @@ export function ProductsHomeContainer() {
   const categoryIds = getCategoryIds();
 
   const handleDelete = (productId: string, productName: string) => {
-    if (confirm(`「${productName}」を削除しますか？この操作は取り消せません。`)) {
+    if (
+      confirm(`「${productName}」を削除しますか？この操作は取り消せません。`)
+    ) {
       deleteProductMutation.mutate(productId);
     }
   };
@@ -213,7 +215,9 @@ export function ProductsHomeContainer() {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className='text-destructive'
-                          onClick={() => handleDelete(product.id, product.name_ja)}
+                          onClick={() =>
+                            handleDelete(product.id, product.name_ja)
+                          }
                           disabled={deleteProductMutation.isPending}
                         >
                           <Trash2 className='mr-2 h-4 w-4' />

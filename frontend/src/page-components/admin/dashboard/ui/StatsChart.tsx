@@ -90,7 +90,10 @@ export function StatsChart({ className }: StatsChartProps) {
     <Card className={className}>
       <CardHeader className='flex flex-row items-center justify-between'>
         <CardTitle>売上推移</CardTitle>
-        <Select value={period} onValueChange={(v) => setPeriod(v as StatsPeriod)}>
+        <Select
+          value={period}
+          onValueChange={(v) => setPeriod(v as StatsPeriod)}
+        >
           <SelectTrigger className='w-24'>
             <SelectValue />
           </SelectTrigger>
@@ -114,7 +117,8 @@ export function StatsChart({ className }: StatsChartProps) {
           <>
             <div className='flex h-48 items-end gap-1'>
               {data?.data.map((item, index) => {
-                const height = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
+                const height =
+                  maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
                 return (
                   <div
                     key={index}
@@ -127,7 +131,9 @@ export function StatsChart({ className }: StatsChartProps) {
                     <div className='absolute bottom-full mb-2 hidden rounded bg-popover px-2 py-1 text-xs shadow-lg group-hover:block'>
                       <div className='font-medium'>{formatDate(item.date)}</div>
                       <div>{formatCurrency(item.revenue)}</div>
-                      <div className='text-muted-foreground'>{item.orders}件</div>
+                      <div className='text-muted-foreground'>
+                        {item.orders}件
+                      </div>
                     </div>
                   </div>
                 );
@@ -137,7 +143,9 @@ export function StatsChart({ className }: StatsChartProps) {
               {data?.data && data.data.length > 0 && (
                 <>
                   <span>{formatDate(data.data[0].date)}</span>
-                  <span>{formatDate(data.data[data.data.length - 1].date)}</span>
+                  <span>
+                    {formatDate(data.data[data.data.length - 1].date)}
+                  </span>
                 </>
               )}
             </div>

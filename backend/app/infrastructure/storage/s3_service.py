@@ -10,14 +10,15 @@ from botocore.exceptions import ClientError
 from app.application.interfaces.storage_service import IStorageService, PresignedUrlResult
 from app.config import get_settings
 
-
 # 許可するContent-Type
-ALLOWED_CONTENT_TYPES = frozenset([
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'image/gif',
-])
+ALLOWED_CONTENT_TYPES = frozenset(
+    [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/gif',
+    ]
+)
 
 # Presigned URLの有効期限（秒）
 PRESIGNED_URL_EXPIRES_IN = 3600  # 1時間
@@ -122,7 +123,9 @@ class S3Service(IStorageService):
         if self._cdn_domain_name:
             file_url = f'https://{self._cdn_domain_name}/{s3_key}'
         else:
-            file_url = f'https://{self._bucket_name}.s3.{self._region}.amazonaws.com/{s3_key}'
+            file_url = (
+                f'https://{self._bucket_name}.s3.{self._region}.amazonaws.com/{s3_key}'
+            )
 
         return PresignedUrlResult(
             upload_url=upload_url,

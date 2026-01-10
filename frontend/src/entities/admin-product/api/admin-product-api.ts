@@ -32,7 +32,9 @@ export const adminProductApi = {
   /**
    * 商品一覧取得
    */
-  async getProducts(params?: GetAdminProductsRequest): Promise<GetAdminProductsResponse> {
+  async getProducts(
+    params?: GetAdminProductsRequest,
+  ): Promise<GetAdminProductsResponse> {
     const response = await httpClient.get<GetAdminProductsResponse>(
       '/api/admin/products',
       { params },
@@ -53,7 +55,9 @@ export const adminProductApi = {
   /**
    * 商品作成
    */
-  async createProduct(data: CreateProductRequest): Promise<CreateProductResponse> {
+  async createProduct(
+    data: CreateProductRequest,
+  ): Promise<CreateProductResponse> {
     const response = await httpClient.post<CreateProductResponse>(
       '/api/admin/products',
       data,

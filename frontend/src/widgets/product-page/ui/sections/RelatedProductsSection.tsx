@@ -3,7 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import type { ProductDetail, RelatedProduct } from '@/entities/product/model/types';
+import type {
+  ProductDetail,
+  RelatedProduct,
+} from '@/entities/product/model/types';
 import { useRelatedProducts } from '@/features/product/get-product/lib/use-product';
 
 // 価格フォーマット
@@ -75,7 +78,9 @@ export function RelatedProductsSection({
                   />
                 ) : (
                   <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
-                    <span className='text-xs uppercase tracking-wider'>No Image</span>
+                    <span className='text-xs uppercase tracking-wider'>
+                      No Image
+                    </span>
                   </div>
                 )}
               </div>

@@ -18,7 +18,9 @@ export const adminOrderApi = {
   /**
    * 注文一覧取得
    */
-  async getOrders(params?: GetAdminOrdersRequest): Promise<GetAdminOrdersResponse> {
+  async getOrders(
+    params?: GetAdminOrdersRequest,
+  ): Promise<GetAdminOrdersResponse> {
     const response = await httpClient.get<GetAdminOrdersResponse>(
       '/api/admin/orders',
       { params },

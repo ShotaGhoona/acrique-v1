@@ -55,7 +55,13 @@ export function ProductNewContainer() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.id || !formData.category_id || !formData.name || !formData.name_ja || !formData.base_price) {
+    if (
+      !formData.id ||
+      !formData.category_id ||
+      !formData.name ||
+      !formData.name_ja ||
+      !formData.base_price
+    ) {
       alert('商品ID、カテゴリ、商品名、基本価格は必須です');
       return;
     }
@@ -71,7 +77,9 @@ export function ProductNewContainer() {
         long_description: formData.long_description || undefined,
         base_price: parseInt(formData.base_price, 10),
         price_note: formData.price_note || undefined,
-        lead_time_days: formData.lead_time_days ? parseInt(formData.lead_time_days, 10) : undefined,
+        lead_time_days: formData.lead_time_days
+          ? parseInt(formData.lead_time_days, 10)
+          : undefined,
         lead_time_note: formData.lead_time_note || undefined,
         is_featured: formData.is_featured,
         requires_upload: formData.requires_upload,
@@ -96,7 +104,10 @@ export function ProductNewContainer() {
             一覧に戻る
           </Button>
         </Link>
-        <Button onClick={handleSubmit} disabled={createProductMutation.isPending}>
+        <Button
+          onClick={handleSubmit}
+          disabled={createProductMutation.isPending}
+        >
           <Save className='mr-2 h-4 w-4' />
           {createProductMutation.isPending ? '作成中...' : '保存'}
         </Button>
@@ -118,7 +129,12 @@ export function ProductNewContainer() {
                     id='id'
                     value={formData.id}
                     onChange={(e) =>
-                      setFormData({ ...formData, id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })
+                      setFormData({
+                        ...formData,
+                        id: e.target.value
+                          .toLowerCase()
+                          .replace(/[^a-z0-9-]/g, '-'),
+                      })
                     }
                     placeholder='qr-code-cube'
                   />

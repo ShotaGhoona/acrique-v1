@@ -3,7 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Trash2, Eye, FileText, Image, Settings } from 'lucide-react';
+import {
+  ArrowLeft,
+  Trash2,
+  Eye,
+  FileText,
+  Image,
+  Settings,
+} from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import {
   Tabs,

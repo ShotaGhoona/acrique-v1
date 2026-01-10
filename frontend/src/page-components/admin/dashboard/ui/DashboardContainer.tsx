@@ -60,8 +60,11 @@ const statusVariants: Record<
 };
 
 export function DashboardContainer() {
-  const { data: dashboardData, isLoading: isDashboardLoading } = useAdminDashboard();
-  const { data: ordersData, isLoading: isOrdersLoading } = useAdminOrders({ limit: 5 });
+  const { data: dashboardData, isLoading: isDashboardLoading } =
+    useAdminDashboard();
+  const { data: ordersData, isLoading: isOrdersLoading } = useAdminOrders({
+    limit: 5,
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {

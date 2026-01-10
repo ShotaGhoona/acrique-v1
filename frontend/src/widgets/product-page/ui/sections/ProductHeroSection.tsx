@@ -140,7 +140,10 @@ export function ProductHeroSection({
             <div className='relative aspect-square overflow-hidden rounded-sm bg-secondary/30'>
               {product.images.length > 0 ? (
                 <Image
-                  src={product.images[selectedImage]?.s3_url ?? product.images[0].s3_url}
+                  src={
+                    product.images[selectedImage]?.s3_url ??
+                    product.images[0].s3_url
+                  }
                   alt={product.images[selectedImage]?.alt ?? product.name_ja}
                   fill
                   sizes='(max-width: 1024px) 100vw, 50vw'
@@ -149,7 +152,9 @@ export function ProductHeroSection({
                 />
               ) : (
                 <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
-                  <span className='text-xs uppercase tracking-wider'>No Image</span>
+                  <span className='text-xs uppercase tracking-wider'>
+                    No Image
+                  </span>
                 </div>
               )}
             </div>

@@ -51,7 +51,10 @@ interface UserDetailContainerProps {
 export function UserDetailContainer({ userId }: UserDetailContainerProps) {
   const userIdNum = parseInt(userId, 10);
   const { data: userData, isLoading: isUserLoading } = useAdminUser(userIdNum);
-  const { data: ordersData, isLoading: isOrdersLoading } = useAdminUserOrders(userIdNum, { limit: 5 });
+  const { data: ordersData, isLoading: isOrdersLoading } = useAdminUserOrders(
+    userIdNum,
+    { limit: 5 },
+  );
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -108,7 +111,10 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
             一覧に戻る
           </Button>
         </Link>
-        <Badge variant={customer.is_email_verified ? 'outline' : 'default'} className='text-sm'>
+        <Badge
+          variant={customer.is_email_verified ? 'outline' : 'default'}
+          className='text-sm'
+        >
           {customer.is_email_verified ? '認証済み' : '未認証'}
         </Badge>
       </div>
@@ -161,7 +167,9 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                 <CardTitle>注文履歴</CardTitle>
               </div>
               <Button variant='outline' size='sm' asChild>
-                <Link href={`/admin/orders?user=${customer.id}`}>すべて見る</Link>
+                <Link href={`/admin/orders?user=${customer.id}`}>
+                  すべて見る
+                </Link>
               </Button>
             </CardHeader>
             <CardContent>
@@ -185,19 +193,25 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                     {ordersData.orders.map((order) => (
                       <TableRow key={order.id}>
                         <TableCell className='font-medium'>
-                          <Link href={`/admin/orders/${order.id}`} className='hover:underline'>
+                          <Link
+                            href={`/admin/orders/${order.id}`}
+                            className='hover:underline'
+                          >
                             {order.order_number}
                           </Link>
                         </TableCell>
                         <TableCell>{formatCurrency(order.total)}</TableCell>
                         <TableCell>
                           <Badge variant='outline'>
-                            {orderStatusLabels[order.status as OrderStatus] || order.status}
+                            {orderStatusLabels[order.status as OrderStatus] ||
+                              order.status}
                           </Badge>
                         </TableCell>
                         <TableCell className='text-muted-foreground'>
                           {order.created_at
-                            ? new Date(order.created_at).toLocaleDateString('ja-JP')
+                            ? new Date(order.created_at).toLocaleDateString(
+                                'ja-JP',
+                              )
                             : '-'}
                         </TableCell>
                       </TableRow>
@@ -224,7 +238,9 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
             <CardContent className='space-y-4'>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>総注文数</span>
-                <span className='text-2xl font-bold'>{customer.order_count}</span>
+                <span className='text-2xl font-bold'>
+                  {customer.order_count}
+                </span>
               </div>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>累計購入額</span>
@@ -236,7 +252,9 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                 <span className='text-muted-foreground'>平均注文額</span>
                 <span className='font-medium'>
                   {customer.order_count > 0
-                    ? formatCurrency(customer.total_spent / customer.order_count)
+                    ? formatCurrency(
+                        customer.total_spent / customer.order_count,
+                      )
                     : '-'}
                 </span>
               </div>
@@ -279,7 +297,9 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                 variant='outline'
                 className='w-full'
                 onClick={() =>
-                  alert(`パスワードリセットメール送信: ${customer.email}（未実装）`)
+                  alert(
+                    `パスワードリセットメール送信: ${customer.email}（未実装）`,
+                  )
                 }
               >
                 パスワードリセット

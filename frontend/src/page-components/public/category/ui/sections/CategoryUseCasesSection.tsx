@@ -72,7 +72,11 @@ function UseCaseCard({
             src={imageSrc}
             alt={useCase.title}
             fill
-            sizes={isLarge ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw'}
+            sizes={
+              isLarge
+                ? '(max-width: 768px) 100vw, 66vw'
+                : '(max-width: 768px) 100vw, 33vw'
+            }
             className='object-cover'
           />
         )}

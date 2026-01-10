@@ -38,7 +38,10 @@ import {
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useAdminLogs } from '@/features/admin-log/get-logs/lib/use-admin-logs';
-import type { LogAction, LogTargetType } from '@/entities/admin-log/model/types';
+import type {
+  LogAction,
+  LogTargetType,
+} from '@/entities/admin-log/model/types';
 
 const logActionLabels: Record<LogAction, string> = {
   login: 'ログイン',
@@ -66,7 +69,9 @@ const logActionIcons: Record<LogAction, React.ReactNode> = {
 export function LogsContainer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [actionFilter, setActionFilter] = useState<LogAction | 'all'>('all');
-  const [targetTypeFilter, setTargetTypeFilter] = useState<LogTargetType | 'all'>('all');
+  const [targetTypeFilter, setTargetTypeFilter] = useState<
+    LogTargetType | 'all'
+  >('all');
 
   const { data, isLoading } = useAdminLogs({
     action: actionFilter !== 'all' ? actionFilter : undefined,
@@ -75,8 +80,9 @@ export function LogsContainer() {
   });
 
   const filteredLogs = (data?.logs ?? []).filter((log) => {
-    const matchesSearch =
-      (log.admin_name ?? '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (log.admin_name ?? '')
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
 
@@ -106,7 +112,9 @@ export function LogsContainer() {
             </div>
             <Select
               value={actionFilter}
-              onValueChange={(value) => setActionFilter(value as LogAction | 'all')}
+              onValueChange={(value) =>
+                setActionFilter(value as LogAction | 'all')
+              }
             >
               <SelectTrigger className='w-full sm:w-40'>
                 <Filter className='mr-2 h-4 w-4' />
@@ -175,7 +183,9 @@ export function LogsContainer() {
                           minute: '2-digit',
                         })}
                       </TableCell>
-                      <TableCell className='font-medium'>{log.admin_name}</TableCell>
+                      <TableCell className='font-medium'>
+                        {log.admin_name}
+                      </TableCell>
                       <TableCell>
                         <Badge variant='outline'>
                           {logActionLabels[log.action]}

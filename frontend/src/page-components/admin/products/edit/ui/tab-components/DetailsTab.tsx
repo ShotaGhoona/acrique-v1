@@ -159,7 +159,10 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
       sort_order: i,
       values: opt.values.map((val, j) => ({ ...val, sort_order: j })),
     }));
-    updateOptionsMutation.mutate({ productId, data: { options: sortedOptions } });
+    updateOptionsMutation.mutate({
+      productId,
+      data: { options: sortedOptions },
+    });
   };
 
   // === スペック操作 ===
@@ -205,7 +208,10 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
 
   const handleSaveFeatures = () => {
     const sortedFeatures = features.map((f, i) => ({ ...f, sort_order: i }));
-    updateFeaturesMutation.mutate({ productId, data: { features: sortedFeatures } });
+    updateFeaturesMutation.mutate({
+      productId,
+      data: { features: sortedFeatures },
+    });
   };
 
   // === FAQ操作 ===
@@ -324,13 +330,17 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
                           }
                           className='w-20'
                         />
-                        <span className='text-xs text-muted-foreground'>円</span>
+                        <span className='text-xs text-muted-foreground'>
+                          円
+                        </span>
                       </div>
                       <Button
                         type='button'
                         variant='ghost'
                         size='icon'
-                        onClick={() => removeOptionValue(optionIndex, valueIndex)}
+                        onClick={() =>
+                          removeOptionValue(optionIndex, valueIndex)
+                        }
                         className='h-7 w-7 text-destructive hover:text-destructive'
                       >
                         <Trash2 className='h-3 w-3' />
@@ -453,10 +463,7 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
           </CardHeader>
           <CardContent className='space-y-3'>
             {features.map((feature, index) => (
-              <div
-                key={index}
-                className='rounded-lg border bg-muted/30 p-3'
-              >
+              <div key={index} className='rounded-lg border bg-muted/30 p-3'>
                 <div className='flex items-start gap-2'>
                   <GripVertical className='mt-2 h-4 w-4 flex-shrink-0 text-muted-foreground' />
                   <div className='flex-1 space-y-2'>
@@ -526,10 +533,7 @@ export function DetailsTab({ productId, product }: DetailsTabProps) {
           </CardHeader>
           <CardContent className='space-y-3'>
             {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className='rounded-lg border bg-muted/30 p-3'
-              >
+              <div key={index} className='rounded-lg border bg-muted/30 p-3'>
                 <div className='flex items-start gap-2'>
                   <GripVertical className='mt-2 h-4 w-4 flex-shrink-0 text-muted-foreground' />
                   <div className='flex-1 space-y-2'>

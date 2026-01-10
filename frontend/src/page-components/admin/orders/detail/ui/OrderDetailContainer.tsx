@@ -204,17 +204,24 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                       <TableCell className='font-medium'>
                         <div>
                           {item.product_name_ja || item.product_name}
-                          {item.options && Object.keys(item.options).length > 0 && (
-                            <div className='mt-1 text-xs text-muted-foreground'>
-                              {Object.entries(item.options).map(([key, val]) => (
-                                <span key={key} className='mr-2'>
-                                  {typeof val === 'object' && val !== null && 'label' in val
-                                    ? String((val as { label: string }).label)
-                                    : String(val)}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+                          {item.options &&
+                            Object.keys(item.options).length > 0 && (
+                              <div className='mt-1 text-xs text-muted-foreground'>
+                                {Object.entries(item.options).map(
+                                  ([key, val]) => (
+                                    <span key={key} className='mr-2'>
+                                      {typeof val === 'object' &&
+                                      val !== null &&
+                                      'label' in val
+                                        ? String(
+                                            (val as { label: string }).label,
+                                          )
+                                        : String(val)}
+                                    </span>
+                                  ),
+                                )}
+                              </div>
+                            )}
                         </div>
                       </TableCell>
                       <TableCell className='text-right'>
@@ -273,7 +280,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <Label htmlFor='admin-notes'>内部メモ（顧客には表示されません）</Label>
+                <Label htmlFor='admin-notes'>
+                  内部メモ（顧客には表示されません）
+                </Label>
                 <Textarea
                   id='admin-notes'
                   placeholder='管理者用のメモを入力...'
@@ -303,7 +312,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
             </CardHeader>
             <CardContent className='space-y-3'>
               <div>
-                <span className='text-sm text-muted-foreground'>ステータス</span>
+                <span className='text-sm text-muted-foreground'>
+                  ステータス
+                </span>
                 <div className='mt-1'>
                   <Badge variant={orderStatusColors[order.status]}>
                     {orderStatusLabels[order.status]}
@@ -312,7 +323,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               </div>
               {order.tracking_number && (
                 <div>
-                  <span className='text-sm text-muted-foreground'>追跡番号</span>
+                  <span className='text-sm text-muted-foreground'>
+                    追跡番号
+                  </span>
                   <p className='font-medium'>{order.tracking_number}</p>
                 </div>
               )}
@@ -326,7 +339,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               )}
               {order.delivered_at && (
                 <div>
-                  <span className='text-sm text-muted-foreground'>配達完了日</span>
+                  <span className='text-sm text-muted-foreground'>
+                    配達完了日
+                  </span>
                   <p className='font-medium'>
                     {new Date(order.delivered_at).toLocaleDateString('ja-JP')}
                   </p>
@@ -343,11 +358,15 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                   />
                   <Button
                     onClick={handleShipOrder}
-                    disabled={shipOrderMutation.isPending || !trackingNumber.trim()}
+                    disabled={
+                      shipOrderMutation.isPending || !trackingNumber.trim()
+                    }
                     size='sm'
                     className='w-full'
                   >
-                    {shipOrderMutation.isPending ? '発送処理中...' : '発送完了にする'}
+                    {shipOrderMutation.isPending
+                      ? '発送処理中...'
+                      : '発送完了にする'}
                   </Button>
                 </div>
               )}
@@ -364,7 +383,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               <div>
                 <span className='text-sm text-muted-foreground'>決済方法</span>
                 <p className='font-medium'>
-                  {order.payment_method === 'stripe' ? 'クレジットカード' : '銀行振込'}
+                  {order.payment_method === 'stripe'
+                    ? 'クレジットカード'
+                    : '銀行振込'}
                 </p>
               </div>
               <div>
@@ -385,7 +406,9 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               )}
               <div>
                 <span className='text-sm text-muted-foreground'>合計金額</span>
-                <p className='text-lg font-bold'>{formatCurrency(order.total)}</p>
+                <p className='text-lg font-bold'>
+                  {formatCurrency(order.total)}
+                </p>
               </div>
             </CardContent>
           </Card>

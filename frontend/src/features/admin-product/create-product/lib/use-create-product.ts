@@ -7,7 +7,8 @@ export function useCreateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateProductRequest) => adminProductApi.createProduct(data),
+    mutationFn: (data: CreateProductRequest) =>
+      adminProductApi.createProduct(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ADMIN_PRODUCTS_QUERY_KEY });
     },

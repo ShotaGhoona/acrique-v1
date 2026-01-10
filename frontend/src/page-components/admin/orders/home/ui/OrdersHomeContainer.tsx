@@ -155,9 +155,7 @@ export function OrdersHomeContainer() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={order.paid_at ? 'outline' : 'default'}
-                        >
+                        <Badge variant={order.paid_at ? 'outline' : 'default'}>
                           {order.paid_at ? '支払済' : '未払い'}
                         </Badge>
                       </TableCell>

@@ -188,7 +188,9 @@ async def update_product_image(
     )
 
 
-@router.delete('/{product_id}/images/{image_id}', response_model=DeleteProductImageResponse)
+@router.delete(
+    '/{product_id}/images/{image_id}', response_model=DeleteProductImageResponse
+)
 async def delete_product_image(
     product_id: str,
     image_id: int,

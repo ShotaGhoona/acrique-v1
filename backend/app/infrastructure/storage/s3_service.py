@@ -39,20 +39,33 @@ class S3Service(IStorageService):
         boto_config = BotoConfig(
             region_name=self._region,
             signature_version='s3v4',
+            s3={
+                'addressing_style': 'virtual',
+            },
         )
+
+        # リージョナルエンドポイントURL
+        endpoint_url = f'https://s3.{self._region}.amazonaws.com'
 
         # 認証情報の設定
         # ECS環境ではIAMロールから自動取得されるため、明示的なキーは不要
         if settings.aws_access_key_id and settings.aws_secret_access_key:
             self._s3_client = boto3.client(
                 's3',
+                region_name=self._region,
+                endpoint_url=endpoint_url,
                 config=boto_config,
                 aws_access_key_id=settings.aws_access_key_id,
                 aws_secret_access_key=settings.aws_secret_access_key,
             )
         else:
             # IAMロールからの自動認証（ECS/EC2環境）
-            self._s3_client = boto3.client('s3', config=boto_config)
+            self._s3_client = boto3.client(
+                's3',
+                region_name=self._region,
+                endpoint_url=endpoint_url,
+                config=boto_config,
+            )
 
     def generate_presigned_url(
         self,

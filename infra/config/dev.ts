@@ -104,6 +104,7 @@ export const devConfig: EnvironmentConfig = {
     corsOrigins: [
       'https://main.d17fbeoc59o61t.amplifyapp.com', // Amplify本番URL
       'http://localhost:3000', // ローカル開発
+      'http://localhost:3005', // Docker開発環境
     ],
   },
 

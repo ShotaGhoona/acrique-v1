@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     aws_access_key_id: str = ''
     aws_secret_access_key: str = ''
 
+    # CloudFront CDN settings
+    # CloudFront経由でS3オブジェクトを配信する場合に設定
+    # 例: 'd1234567890.cloudfront.net'
+    cdn_domain_name: str = ''
+
     class Config:
         env_file = '.env'
         extra = 'ignore'  # 未定義のフィールドを無視（後方互換性のため）

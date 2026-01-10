@@ -201,7 +201,7 @@ Base URL: `/api/admin/products`
       "sort_order": 1,
       "created_at": "2026-01-06T10:06:25.306628",
       "updated_at": "2026-01-06T10:06:25.306628",
-      "main_image_url": "https://example.s3.amazonaws.com/products/xxx.jpg"
+      "main_image_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg"
     }
   ],
   "total": 18,
@@ -302,7 +302,7 @@ Base URL: `/api/admin/products`
     "sort_order": 1,
     "created_at": "2026-01-06T10:06:25.306628",
     "updated_at": "2026-01-06T10:06:25.306628",
-    "main_image_url": "https://example.s3.amazonaws.com/products/xxx.jpg",
+    "main_image_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
     "description": "短い説明",
     "long_description": "詳細説明",
     "price_note": "サイズ・オプションにより変動",
@@ -314,7 +314,7 @@ Base URL: `/api/admin/products`
     "images": [
       {
         "id": 118,
-        "s3_url": "https://example.s3.amazonaws.com/products/xxx.jpg",
+        "s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
         "alt": null,
         "is_main": true,
         "sort_order": 3
@@ -418,10 +418,19 @@ Base URL: `/api/admin/products`
 ## 画像管理API
 
 > **環境設定**: S3画像アップロードを使用するには、以下の環境変数が必要です。
-> - `AWS_S3_BUCKET_NAME`: S3バケット名
-> - `AWS_S3_REGION`: S3リージョン（デフォルト: ap-northeast-1）
-> - `AWS_ACCESS_KEY_ID`: AWSアクセスキー（ECS環境ではIAMロール使用）
-> - `AWS_SECRET_ACCESS_KEY`: AWSシークレットキー（ECS環境ではIAMロール使用）
+>
+> | 環境変数 | 必須 | 説明 |
+> |----------|------|------|
+> | `AWS_S3_BUCKET_NAME` | ○ | S3バケット名 |
+> | `AWS_S3_REGION` | - | S3リージョン（デフォルト: ap-northeast-1） |
+> | `AWS_ACCESS_KEY_ID` | △ | AWSアクセスキー（ECS環境ではIAMロール使用） |
+> | `AWS_SECRET_ACCESS_KEY` | △ | AWSシークレットキー（ECS環境ではIAMロール使用） |
+> | `CDN_DOMAIN_NAME` | ○ | CloudFrontドメイン名（例: d3u751jak9qu2w.cloudfront.net） |
+>
+> **アーキテクチャ**: S3はプライベート設定のまま、CloudFront + OAC経由で配信します。
+> ```
+> ブラウザ → CloudFront（OAC） → S3（BLOCK_ALL）
+> ```
 
 ### 6. Presigned URL取得
 
@@ -450,16 +459,18 @@ S3アップロード用のPresigned URLを取得します。
 ```json
 {
   "upload_url": "https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaws.com/products/a58107b19273.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...",
-  "file_url": "https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaws.com/products/a58107b19273.jpg",
+  "file_url": "https://d3u751jak9qu2w.cloudfront.net/products/a58107b19273.jpg",
   "expires_in": 3600
 }
 ```
 
 | フィールド | 型 | 説明 |
 |-----------|------|------|
-| upload_url | string | S3アップロード用URL（PUT）※署名付き |
-| file_url | string | アップロード後のファイルURL |
+| upload_url | string | S3アップロード用URL（PUT）※署名付き、直接S3へアップロード |
+| file_url | string | アップロード後のファイルURL（CloudFront経由） |
 | expires_in | number | 有効期限（秒）※デフォルト: 3600 |
+
+> **注意**: `upload_url`はS3への直接アップロード用、`file_url`はCloudFront経由の配信URLです。
 
 **エラー時 (400 Bad Request)**
 
@@ -481,7 +492,7 @@ S3にアップロード済みの画像をDBに登録します。
 
 ```json
 {
-  "s3_url": "https://bucket.s3.amazonaws.com/products/xxx.jpg",
+  "s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
   "alt": "商品画像",
   "is_main": false,
   "sort_order": 0
@@ -490,10 +501,12 @@ S3にアップロード済みの画像をDBに登録します。
 
 | フィールド | 型 | 必須 | 説明 |
 |-----------|------|------|------|
-| s3_url | string | ○ | S3画像URL |
+| s3_url | string | ○ | 画像URL（CloudFront URLまたはS3 URL） |
 | alt | string | - | 代替テキスト |
 | is_main | boolean | - | メイン画像フラグ（デフォルト: false） |
 | sort_order | number | - | 並び順（デフォルト: 0） |
+
+> **注意**: `s3_url`には Presigned URL APIから返された`file_url`をそのまま使用してください。
 
 #### レスポンス
 
@@ -503,7 +516,7 @@ S3にアップロード済みの画像をDBに登録します。
 {
   "image": {
     "id": 119,
-    "s3_url": "https://bucket.s3.amazonaws.com/products/xxx.jpg",
+    "s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
     "alt": "商品画像",
     "is_main": false,
     "sort_order": 0
@@ -540,7 +553,7 @@ S3にアップロード済みの画像をDBに登録します。
 {
   "image": {
     "id": 119,
-    "s3_url": "https://bucket.s3.amazonaws.com/products/xxx.jpg",
+    "s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
     "alt": "更新後の代替テキスト",
     "is_main": true,
     "sort_order": 1
@@ -793,31 +806,40 @@ S3にアップロード済みの画像をDBに登録します。
 Presigned URL方式でのアップロード手順：
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  Frontend   │     │   Backend   │     │     S3      │
-└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
-       │                   │                   │
-       │ 1. POST /presigned│                   │
-       │──────────────────>│                   │
-       │                   │                   │
-       │ upload_url,       │                   │
-       │ file_url          │                   │
-       │<──────────────────│                   │
-       │                   │                   │
-       │ 2. PUT (file)     │                   │
-       │───────────────────────────────────────>
-       │                   │                   │
-       │                   │            200 OK │
-       │<───────────────────────────────────────
-       │                   │                   │
-       │ 3. POST /images   │                   │
-       │   (s3_url)        │                   │
-       │──────────────────>│                   │
-       │                   │                   │
-       │ image object      │                   │
-       │<──────────────────│                   │
-       │                   │                   │
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Frontend   │     │   Backend   │     │     S3      │     │ CloudFront  │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │                   │                   │                   │
+       │ 1. POST /presigned│                   │                   │
+       │──────────────────>│                   │                   │
+       │                   │                   │                   │
+       │ upload_url (S3),  │                   │                   │
+       │ file_url (CF)     │                   │                   │
+       │<──────────────────│                   │                   │
+       │                   │                   │                   │
+       │ 2. PUT (file) ────────────────────────>                   │
+       │                   │                   │                   │
+       │                   │            200 OK │                   │
+       │<──────────────────────────────────────│                   │
+       │                   │                   │                   │
+       │ 3. POST /images   │                   │                   │
+       │   (file_url)      │                   │                   │
+       │──────────────────>│                   │                   │
+       │                   │                   │                   │
+       │ image object      │                   │                   │
+       │<──────────────────│                   │                   │
+       │                   │                   │                   │
+       │ 4. GET image ─────────────────────────────────────────────>
+       │                   │                   │      OAC          │
+       │                   │                   │<──────────────────│
+       │<──────────────────────────────────────────────────────────│
+       │                   │                   │                   │
 ```
+
+**ポイント**:
+- アップロード（2）は S3 に直接（Presigned URL経由）
+- 配信（4）は CloudFront 経由（OAC認証でS3から取得）
+- S3バケットはパブリックアクセス完全ブロック（セキュア）
 
 ### JavaScript実装例
 
@@ -873,17 +895,26 @@ curl -c cookies.txt -X POST http://localhost:8005/api/admin/auth/login \
 curl -b cookies.txt -X POST "http://localhost:8005/api/admin/products/qr-cube/images/presigned" \
   -H "Content-Type: application/json" \
   -d '{"file_name": "test.jpg", "content_type": "image/jpeg"}'
-# -> upload_url, file_url を取得
+# レスポンス例:
+# {
+#   "upload_url": "https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaws.com/products/xxx.jpg?X-Amz-...",
+#   "file_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
+#   "expires_in": 3600
+# }
 
 # 3. S3にアップロード（upload_urlを使用）
 curl -X PUT "<upload_url>" \
   -H "Content-Type: image/jpeg" \
   --data-binary @test.jpg
 
-# 4. DBに登録（file_urlを使用）
+# 4. DBに登録（file_urlを使用 = CloudFront URL）
 curl -b cookies.txt -X POST "http://localhost:8005/api/admin/products/qr-cube/images" \
   -H "Content-Type: application/json" \
-  -d '{"s3_url": "<file_url>", "alt": "テスト画像", "is_main": false, "sort_order": 0}'
+  -d '{"s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg", "alt": "テスト画像", "is_main": false, "sort_order": 0}'
+
+# 5. CloudFront経由で画像にアクセス
+curl -I "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg"
+# -> HTTP/2 200 が返ればOK
 ```
 
 ---

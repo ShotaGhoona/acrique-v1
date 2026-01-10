@@ -27,6 +27,7 @@ export interface ObjectStorageStackProps extends cdk.StackProps {
  */
 export class ObjectStorageStack extends cdk.Stack {
   public readonly dataBucket: s3.Bucket;
+  public readonly cdnDomainName?: string;
 
   constructor(
     scope: Construct,
@@ -59,9 +60,12 @@ export class ObjectStorageStack extends cdk.Stack {
       bucketName: bucketPrefix, // CDKが自動でユニークなサフィックスを追加
       removalPolicy: config.removalPolicy,
       cors: corsConfig,
+      enableCdn: config.objectStorage?.enableCdn,
+      cdnCorsAllowedOrigins: config.objectStorage?.corsOrigins,
     });
 
     this.dataBucket = objectStorage.bucket;
+    this.cdnDomainName = objectStorage.cdnDomainName;
 
     // タグ付け
     cdk.Tags.of(this).add('Environment', config.envName);
@@ -81,5 +85,20 @@ export class ObjectStorageStack extends cdk.Stack {
       description: 'S3 Data Bucket ARN',
       exportName: `${config.envName}-DataBucketArn`,
     });
+
+    // CloudFront CDN URL（有効な場合）
+    if (objectStorage.cdnDomainName) {
+      new cdk.CfnOutput(this, 'CdnDomainName', {
+        value: objectStorage.cdnDomainName,
+        description: 'CloudFront CDN Domain Name',
+        exportName: `${config.envName}-CdnDomainName`,
+      });
+
+      new cdk.CfnOutput(this, 'CdnUrl', {
+        value: `https://${objectStorage.cdnDomainName}`,
+        description: 'CloudFront CDN URL',
+        exportName: `${config.envName}-CdnUrl`,
+      });
+    }
   }
 }

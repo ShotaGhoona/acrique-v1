@@ -106,6 +106,7 @@ export const devConfig: EnvironmentConfig = {
       'http://localhost:3000', // ローカル開発
       'http://localhost:3005', // Docker開発環境
     ],
+    enableCdn: true, // CloudFront経由でS3オブジェクトを配信（OAC使用）
   },
 
   tags: {

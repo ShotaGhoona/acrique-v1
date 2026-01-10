@@ -54,11 +54,11 @@ Base URL: `/api/products`
       "base_price": 8800,
       "price_note": "サイズ・オプションにより変動",
       "is_featured": true,
-      "main_image_url": "https://example.s3.amazonaws.com/products/xxx.jpg",
+      "main_image_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
       "images": [
         {
           "id": 118,
-          "s3_url": "https://example.s3.amazonaws.com/products/xxx.jpg",
+          "s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
           "alt": null,
           "is_main": true,
           "sort_order": 3
@@ -87,7 +87,7 @@ Base URL: `/api/products`
 | products[].main_image_url | string \| null | メイン画像URL |
 | products[].images | array | 商品画像一覧 |
 | products[].images[].id | number | 画像ID |
-| products[].images[].s3_url | string | S3画像URL |
+| products[].images[].s3_url | string | 画像URL（CloudFront経由） |
 | products[].images[].alt | string \| null | 代替テキスト |
 | products[].images[].is_main | boolean | メイン画像フラグ |
 | products[].images[].sort_order | number | 並び順 |
@@ -149,7 +149,7 @@ Base URL: `/api/products`
       "base_price": 8800,
       "price_note": "サイズ・オプションにより変動",
       "is_featured": true,
-      "main_image_url": "https://example.s3.amazonaws.com/products/xxx.jpg",
+      "main_image_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
       "images": []
     }
   ],
@@ -209,7 +209,7 @@ Base URL: `/api/products`
   "images": [
     {
       "id": 118,
-      "s3_url": "https://example.s3.amazonaws.com/products/xxx.jpg",
+      "s3_url": "https://d3u751jak9qu2w.cloudfront.net/products/xxx.jpg",
       "alt": null,
       "is_main": true,
       "sort_order": 3

@@ -110,6 +110,12 @@ export interface ObjectStorageConfig {
    * @example ['https://example.com', 'http://localhost:3000']
    */
   corsOrigins?: string[];
+  /**
+   * CDN（CloudFront）を有効化
+   * S3バケットはプライベートのまま、CloudFront経由でOACアクセス
+   * @default false
+   */
+  enableCdn?: boolean;
 }
 
 /**

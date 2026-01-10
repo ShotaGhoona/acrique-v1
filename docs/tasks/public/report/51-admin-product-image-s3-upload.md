@@ -289,6 +289,82 @@ Endpoint provider result: https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaw
 
 ---
 
+### 2026-01-10: CloudFront + OAC対応
+
+**目的**: S3バケットをプライベートに保ちつつ、画像をパブリックに配信する
+
+**背景**:
+アップロードした画像がブラウザから403 Forbiddenで表示できなかった。
+`INFRASTRUCTURE.md`のルールに従い、S3直接公開ではなくCloudFront + OAC方式を採用。
+
+```
+ブラウザ → CloudFront（OAC） → S3（BLOCK_ALL）
+              ↑
+         CORSヘッダー付与
+```
+
+**インフラ変更ファイル（4層アーキテクチャに従い下から順に）**:
+
+| レイヤー | ファイル | 変更内容 |
+|----------|----------|----------|
+| Construct | `lib/construct/api/data-cdn-construct.ts` | **新規作成** - データ配信用CloudFront + OAC + CORS |
+| Resource | `lib/resource/object-storage-resource.ts` | `enableCdn`, `cdnCorsAllowedOrigins`プロパティ追加、CloudFront統合 |
+| Stack | `lib/stack/object-storage/object-storage-stack.ts` | `cdnDomainName`出力追加、CloudFront URL出力 |
+| Config | `config/environment.ts` | `ObjectStorageConfig.enableCdn`追加 |
+| Config | `config/dev.ts` | `enableCdn: true`設定 |
+
+**DataCdnConstruct機能**:
+- OAC（Origin Access Control）でS3へのセキュアなアクセス
+- CORS対応のレスポンスヘッダーポリシー
+- キャッシュ最適化（CACHING_OPTIMIZED）
+- PRICE_CLASS_200（日本を含むエッジロケーション）
+
+**バックエンド変更ファイル**:
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `app/config.py` | `cdn_domain_name`設定追加 |
+| `app/infrastructure/storage/s3_service.py` | CloudFront URL生成・解析対応 |
+
+**S3Service変更点**:
+```python
+# CDNドメインが設定されている場合はCloudFront URLを返す
+if self._cdn_domain_name:
+    file_url = f'https://{self._cdn_domain_name}/{s3_key}'
+else:
+    file_url = f'https://{self._bucket_name}.s3.{self._region}.amazonaws.com/{s3_key}'
+```
+
+**環境変数（.env追加）**:
+```env
+# CloudFrontデプロイ後に設定
+CDN_DOMAIN_NAME=d1234567890.cloudfront.net
+```
+
+**デプロイ手順**:
+```bash
+# 1. インフラデプロイ（CloudFront作成）
+cd infra && npx cdk deploy dev-ObjectStorageStack
+
+# 2. 出力されたCloudFrontドメイン名を確認
+# Outputs:
+#   dev-ObjectStorageStack.CdnDomainName = d1234567890.cloudfront.net
+#   dev-ObjectStorageStack.CdnUrl = https://d1234567890.cloudfront.net
+
+# 3. バックエンドの.envに追加
+echo "CDN_DOMAIN_NAME=d1234567890.cloudfront.net" >> backend/.env
+
+# 4. Dockerコンテナ再起動
+docker compose restart backend
+```
+
+**セキュリティ**:
+- S3: `BlockPublicAccess.BLOCK_ALL`（パブリックアクセス完全ブロック）
+- CloudFront: OACでS3へ署名付きアクセス
+- HTTPS強制
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
@@ -298,4 +374,5 @@ Endpoint provider result: https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaw
 [x] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
 [x] フロントエンド対応
 [x] 環境設定・デバッグ（CORS、リージョナルエンドポイント）
-[ ] 動作確認・テスト
+[x] CloudFront + OAC対応（S3プライベート + CDN配信）
+[ ] 動作確認・テスト（CDK deploy + CDN_DOMAIN_NAME設定後）

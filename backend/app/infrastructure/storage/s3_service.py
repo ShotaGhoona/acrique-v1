@@ -34,6 +34,7 @@ class S3Service(IStorageService):
         settings = get_settings()
         self._bucket_name = settings.aws_s3_bucket_name
         self._region = settings.aws_s3_region
+        self._cdn_domain_name = settings.cdn_domain_name
 
         # boto3クライアント設定
         boto_config = BotoConfig(
@@ -117,7 +118,11 @@ class S3Service(IStorageService):
         )
 
         # アップロード後のファイルURL
-        file_url = f'https://{self._bucket_name}.s3.{self._region}.amazonaws.com/{s3_key}'
+        # CloudFront CDNが設定されている場合はCloudFront経由のURLを返す
+        if self._cdn_domain_name:
+            file_url = f'https://{self._cdn_domain_name}/{s3_key}'
+        else:
+            file_url = f'https://{self._bucket_name}.s3.{self._region}.amazonaws.com/{s3_key}'
 
         return PresignedUrlResult(
             upload_url=upload_url,
@@ -156,9 +161,14 @@ class S3Service(IStorageService):
             file_url: ファイルURL
 
         Returns:
-            str | None: S3キー、またはS3のURLでない場合はNone
+            str | None: S3キー、またはS3/CloudFrontのURLでない場合はNone
         """
         parsed = urlparse(file_url)
+
+        # CloudFront URLの場合（CDNドメインが設定されている場合）
+        if self._cdn_domain_name and self._cdn_domain_name in parsed.netloc:
+            # CloudFront URL: https://xxx.cloudfront.net/products/abc.jpg
+            return parsed.path.lstrip('/')
 
         # S3のURL形式かチェック
         # 形式1: https://bucket-name.s3.region.amazonaws.com/key

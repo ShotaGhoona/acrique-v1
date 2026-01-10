@@ -1,9 +1,5 @@
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/shared/ui/shadcn/ui/card';
+import { Card, CardContent, CardHeader } from '@/shared/ui/shadcn/ui/card';
 import {
   Table,
   TableBody,

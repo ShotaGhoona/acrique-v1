@@ -161,9 +161,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
                     <TooltipTrigger asChild>
                       <Link href={item.href}>{button}</Link>
                     </TooltipTrigger>
-                    <TooltipContent side='right'>
-                      {item.label}
-                    </TooltipContent>
+                    <TooltipContent side='right'>{item.label}</TooltipContent>
                   </Tooltip>
                 );
               }

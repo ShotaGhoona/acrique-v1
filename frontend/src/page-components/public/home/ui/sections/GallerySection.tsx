@@ -7,7 +7,8 @@ const galleryItems = [
   {
     id: 1,
     label: '美容室 ロゴサイン',
-    image: '/IMG/home-page/gallery/31-home-gallery-beauty-salon-logo-sign-v1.png',
+    image:
+      '/IMG/home-page/gallery/31-home-gallery-beauty-salon-logo-sign-v1.png',
   },
   {
     id: 2,
@@ -27,17 +28,20 @@ const galleryItems = [
   {
     id: 5,
     label: '結婚式 ウェルカムボード',
-    image: '/IMG/home-page/gallery/35-home-gallery-wedding-welcome-board-v1.png',
+    image:
+      '/IMG/home-page/gallery/35-home-gallery-wedding-welcome-board-v1.png',
   },
   {
     id: 6,
     label: 'IT企業 成約記念盾',
-    image: '/IMG/home-page/gallery/36-home-gallery-it-company-deal-trophy-v1.png',
+    image:
+      '/IMG/home-page/gallery/36-home-gallery-it-company-deal-trophy-v1.png',
   },
   {
     id: 7,
     label: 'トレカコレクション',
-    image: '/IMG/home-page/gallery/37-home-gallery-trading-card-collection-v1.png',
+    image:
+      '/IMG/home-page/gallery/37-home-gallery-trading-card-collection-v1.png',
   },
   {
     id: 8,

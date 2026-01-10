@@ -14,7 +14,9 @@ export const adminUserApi = {
   /**
    * 顧客一覧取得
    */
-  async getUsers(params?: GetAdminUsersRequest): Promise<GetAdminUsersResponse> {
+  async getUsers(
+    params?: GetAdminUsersRequest,
+  ): Promise<GetAdminUsersResponse> {
     const response = await httpClient.get<GetAdminUsersResponse>(
       '/api/admin/users',
       { params },

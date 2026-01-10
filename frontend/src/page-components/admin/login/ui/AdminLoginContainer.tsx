@@ -88,7 +88,11 @@ export function AdminLoginContainer() {
                 ログインに失敗しました。メールアドレスとパスワードを確認してください。
               </div>
             )}
-            <Button type='submit' className='w-full' disabled={loginMutation.isPending}>
+            <Button
+              type='submit'
+              className='w-full'
+              disabled={loginMutation.isPending}
+            >
               {loginMutation.isPending ? 'ログイン中...' : 'ログイン'}
             </Button>
           </form>

@@ -15,8 +15,10 @@ from app.application.schemas.admin_product_schemas import (
     AdminProductOptionValueDTO,
     AdminProductSpecDTO,
     CreateProductInputDTO,
+    GetPresignedUrlInputDTO,
     UpdateProductFaqsInputDTO,
     UpdateProductFeaturesInputDTO,
+    UpdateProductImageInputDTO,
     UpdateProductInputDTO,
     UpdateProductOptionsInputDTO,
     UpdateProductSpecsInputDTO,
@@ -29,7 +31,7 @@ class AdminProductImageResponse(BaseModel):
     """商品画像レスポンス"""
 
     id: int
-    url: str
+    s3_url: str
     alt: str | None
     is_main: bool
     sort_order: int
@@ -38,7 +40,7 @@ class AdminProductImageResponse(BaseModel):
     def from_dto(cls, dto: AdminProductImageDTO) -> 'AdminProductImageResponse':
         return cls(
             id=dto.id,
-            url=dto.url,
+            s3_url=dto.s3_url,
             alt=dto.alt,
             is_main=dto.is_main,
             sort_order=dto.sort_order,
@@ -258,8 +260,26 @@ class DeleteProductResponse(BaseModel):
     message: str
 
 
+# ========== 画像管理 ==========
+
+
+class GetPresignedUrlResponse(BaseModel):
+    """Presigned URL取得レスポンス"""
+
+    upload_url: str
+    file_url: str
+    expires_in: int
+
+
 class AddProductImageResponse(BaseModel):
     """画像追加レスポンス"""
+
+    image: AdminProductImageResponse
+    message: str
+
+
+class UpdateProductImageResponse(BaseModel):
+    """画像更新レスポンス"""
 
     image: AdminProductImageResponse
     message: str
@@ -269,6 +289,9 @@ class DeleteProductImageResponse(BaseModel):
     """画像削除レスポンス"""
 
     message: str
+
+
+# ========== オプション・スペック・特長・FAQ ==========
 
 
 class UpdateProductOptionsResponse(BaseModel):
@@ -390,21 +413,55 @@ class UpdateProductRequest(BaseModel):
         )
 
 
+# ========== 画像管理リクエスト ==========
+
+
+class GetPresignedUrlRequest(BaseModel):
+    """Presigned URL取得リクエスト"""
+
+    file_name: str = Field(..., min_length=1, max_length=200)
+    content_type: str = Field(..., min_length=1, max_length=100)
+
+    def to_dto(self) -> GetPresignedUrlInputDTO:
+        return GetPresignedUrlInputDTO(
+            file_name=self.file_name,
+            content_type=self.content_type,
+        )
+
+
 class AddProductImageRequest(BaseModel):
     """画像追加リクエスト"""
 
-    url: str = Field(..., min_length=1)
-    alt: str | None = Field(None, max_length=200)
+    s3_url: str = Field(..., min_length=1)
+    alt: str | None = Field(None, max_length=500)
     is_main: bool = False
     sort_order: int = 0
 
     def to_dto(self) -> AddProductImageInputDTO:
         return AddProductImageInputDTO(
-            url=self.url,
+            s3_url=self.s3_url,
             alt=self.alt,
             is_main=self.is_main,
             sort_order=self.sort_order,
         )
+
+
+class UpdateProductImageRequest(BaseModel):
+    """画像更新リクエスト"""
+
+    alt: str | None = Field(None, max_length=500)
+    is_main: bool | None = None
+    sort_order: int | None = None
+
+    def to_dto(self) -> UpdateProductImageInputDTO:
+        return UpdateProductImageInputDTO(
+            alt=self.alt,
+            is_main=self.is_main,
+            sort_order=self.sort_order,
+        )
+
+
+# ========== オプション・スペック・特長・FAQリクエスト ==========
 
 
 class ProductOptionValueRequest(BaseModel):

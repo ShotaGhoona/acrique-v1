@@ -25,7 +25,11 @@ import { Separator } from '@/shared/ui/shadcn/ui/separator';
 import { useOrder } from '@/features/order/get-order/lib/use-order';
 import { useCancelOrder } from '@/features/order/cancel-order/lib/use-cancel-order';
 import { OrderDetailSkeleton } from './skeleton/OrderDetailSkeleton';
-import type { OrderStatus, OrderDetail, OrderItem } from '@/entities/order/model/types';
+import type {
+  OrderStatus,
+  OrderDetail,
+  OrderItem,
+} from '@/entities/order/model/types';
 
 interface OrderDetailPageProps {
   orderId: number;
@@ -178,7 +182,6 @@ function OrderItemRow({ item }: { item: OrderItem }) {
     </div>
   );
 }
-
 
 export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
   const router = useRouter();

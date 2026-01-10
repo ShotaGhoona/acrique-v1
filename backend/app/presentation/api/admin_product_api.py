@@ -25,10 +25,14 @@ from app.presentation.schemas.admin_product_schemas import (
     DeleteProductResponse,
     GetAdminProductResponse,
     GetAdminProductsResponse,
+    GetPresignedUrlRequest,
+    GetPresignedUrlResponse,
     UpdateProductFaqsRequest,
     UpdateProductFaqsResponse,
     UpdateProductFeaturesRequest,
     UpdateProductFeaturesResponse,
+    UpdateProductImageRequest,
+    UpdateProductImageResponse,
     UpdateProductOptionsRequest,
     UpdateProductOptionsResponse,
     UpdateProductRequest,
@@ -127,6 +131,26 @@ async def delete_product(
     return DeleteProductResponse(message=output.message)
 
 
+# ========== 画像管理 ==========
+
+
+@router.post('/{product_id}/images/presigned', response_model=GetPresignedUrlResponse)
+async def get_presigned_url(
+    product_id: str,
+    request: GetPresignedUrlRequest,
+    admin: AdminAuth = Depends(get_current_admin_from_cookie),
+    usecase: AdminProductUsecase = Depends(get_admin_product_usecase),
+) -> GetPresignedUrlResponse:
+    """画像アップロード用のPresigned URLを取得"""
+    output = usecase.get_presigned_url(product_id, request.to_dto())
+
+    return GetPresignedUrlResponse(
+        upload_url=output.upload_url,
+        file_url=output.file_url,
+        expires_in=output.expires_in,
+    )
+
+
 @router.post(
     '/{product_id}/images',
     response_model=AddProductImageResponse,
@@ -147,9 +171,25 @@ async def add_product_image(
     )
 
 
+@router.put('/{product_id}/images/{image_id}', response_model=UpdateProductImageResponse)
+async def update_product_image(
+    product_id: str,
+    image_id: int,
+    request: UpdateProductImageRequest,
+    admin: AdminAuth = Depends(get_current_admin_from_cookie),
+    usecase: AdminProductUsecase = Depends(get_admin_product_usecase),
+) -> UpdateProductImageResponse:
+    """商品画像を更新"""
+    output = usecase.update_image(product_id, image_id, request.to_dto())
+
+    return UpdateProductImageResponse(
+        image=AdminProductImageResponse.from_dto(output.image),
+        message=output.message,
+    )
+
+
 @router.delete(
-    '/{product_id}/images/{image_id}',
-    response_model=DeleteProductImageResponse,
+    '/{product_id}/images/{image_id}', response_model=DeleteProductImageResponse
 )
 async def delete_product_image(
     product_id: str,
@@ -161,6 +201,9 @@ async def delete_product_image(
     output = usecase.delete_image(product_id, image_id)
 
     return DeleteProductImageResponse(message=output.message)
+
+
+# ========== オプション・スペック・特長・FAQ ==========
 
 
 @router.put('/{product_id}/options', response_model=UpdateProductOptionsResponse)

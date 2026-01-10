@@ -8,6 +8,7 @@ from app.di import get_db
 from app.infrastructure.db.repositories.product_repository_impl import (
     ProductRepositoryImpl,
 )
+from app.infrastructure.storage.s3_service import S3Service
 
 
 def get_admin_product_usecase(
@@ -15,4 +16,8 @@ def get_admin_product_usecase(
 ) -> AdminProductUsecase:
     """AdminProductUsecaseを取得"""
     product_repository = ProductRepositoryImpl(session)
-    return AdminProductUsecase(product_repository=product_repository)
+    storage_service = S3Service()
+    return AdminProductUsecase(
+        product_repository=product_repository,
+        storage_service=storage_service,
+    )

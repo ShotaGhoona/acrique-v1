@@ -207,7 +207,7 @@ class ProductUsecase:
         """画像エンティティをDTOに変換"""
         return ProductImageDTO(
             id=image.id,
-            url=image.url,
+            s3_url=image.s3_url,
             alt=image.alt,
             is_main=image.is_main,
             sort_order=image.sort_order,

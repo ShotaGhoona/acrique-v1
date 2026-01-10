@@ -285,7 +285,6 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   );
 }
 
-
 export function AddressesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);

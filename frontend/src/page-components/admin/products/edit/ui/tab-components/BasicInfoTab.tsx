@@ -103,9 +103,7 @@ export function BasicInfoTab({
                 <FileText className='h-5 w-5 text-muted-foreground' />
                 <CardTitle className='text-base'>商品情報</CardTitle>
               </div>
-              <CardDescription>
-                商品名や説明文を設定します
-              </CardDescription>
+              <CardDescription>商品名や説明文を設定します</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='grid gap-4 sm:grid-cols-2'>
@@ -149,7 +147,10 @@ export function BasicInfoTab({
                   id='description'
                   value={formData.description}
                   onChange={(e) =>
-                    onFormDataChange({ ...formData, description: e.target.value })
+                    onFormDataChange({
+                      ...formData,
+                      description: e.target.value,
+                    })
                   }
                   placeholder='一覧ページなどに表示される短い説明文'
                   rows={3}
@@ -250,9 +251,7 @@ export function BasicInfoTab({
                 <Tag className='h-5 w-5 text-muted-foreground' />
                 <CardTitle className='text-base'>分類</CardTitle>
               </div>
-              <CardDescription>
-                カテゴリと表示設定
-              </CardDescription>
+              <CardDescription>カテゴリと表示設定</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
@@ -302,9 +301,7 @@ export function BasicInfoTab({
                 <DollarSign className='h-5 w-5 text-muted-foreground' />
                 <CardTitle className='text-base'>価格設定</CardTitle>
               </div>
-              <CardDescription>
-                基本価格と価格に関する備考
-              </CardDescription>
+              <CardDescription>基本価格と価格に関する備考</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
@@ -318,7 +315,10 @@ export function BasicInfoTab({
                     type='number'
                     value={formData.base_price}
                     onChange={(e) =>
-                      onFormDataChange({ ...formData, base_price: e.target.value })
+                      onFormDataChange({
+                        ...formData,
+                        base_price: e.target.value,
+                      })
                     }
                     className='pl-8'
                     placeholder='1000'
@@ -331,7 +331,10 @@ export function BasicInfoTab({
                   id='price_note'
                   value={formData.price_note}
                   onChange={(e) =>
-                    onFormDataChange({ ...formData, price_note: e.target.value })
+                    onFormDataChange({
+                      ...formData,
+                      price_note: e.target.value,
+                    })
                   }
                   placeholder='100個以上で割引あり'
                 />
@@ -346,9 +349,7 @@ export function BasicInfoTab({
                 <Clock className='h-5 w-5 text-muted-foreground' />
                 <CardTitle className='text-base'>納期</CardTitle>
               </div>
-              <CardDescription>
-                標準納期と納期に関する備考
-              </CardDescription>
+              <CardDescription>標準納期と納期に関する備考</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>

@@ -67,8 +67,8 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 |--------|------|
 | S3バケット作成 | [x] |
 | ライフサイクルポリシー | [x] |
-| CORS設定 | [ ] |
-| CloudFront連携 | [ ] |
+| CORS設定 | [x] |
+| CloudFront連携（OAC） | [x] |
 
 ---
 

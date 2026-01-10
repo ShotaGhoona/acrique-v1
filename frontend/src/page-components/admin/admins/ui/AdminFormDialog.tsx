@@ -36,7 +36,11 @@ interface AdminFormDialogProps {
   admin?: Admin | null;
 }
 
-export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogProps) {
+export function AdminFormDialog({
+  open,
+  onOpenChange,
+  admin,
+}: AdminFormDialogProps) {
   const isEditing = !!admin;
   const createAdminMutation = useCreateAdmin();
   const updateAdminMutation = useUpdateAdmin();
@@ -73,7 +77,13 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
     e.preventDefault();
 
     if (isEditing && admin) {
-      const updateData: { email?: string; password?: string; name?: string; role?: AdminRole; is_active?: boolean } = {
+      const updateData: {
+        email?: string;
+        password?: string;
+        name?: string;
+        role?: AdminRole;
+        is_active?: boolean;
+      } = {
         email: formData.email,
         name: formData.name,
         role: formData.role,
@@ -107,13 +117,16 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
     }
   };
 
-  const isPending = createAdminMutation.isPending || updateAdminMutation.isPending;
+  const isPending =
+    createAdminMutation.isPending || updateAdminMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>{isEditing ? '管理者を編集' : '管理者を追加'}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? '管理者を編集' : '管理者を追加'}
+          </DialogTitle>
           <DialogDescription>
             {isEditing
               ? '管理者情報を編集します。パスワードは変更する場合のみ入力してください。'
@@ -127,7 +140,9 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
               <Input
                 id='name'
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 placeholder='山田 太郎'
                 required
               />
@@ -138,7 +153,9 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
                 id='email'
                 type='email'
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 placeholder='admin@example.com'
                 required
               />
@@ -151,7 +168,9 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
                 id='password'
                 type='password'
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 placeholder='••••••••'
                 required={!isEditing}
               />
@@ -160,7 +179,9 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
               <Label htmlFor='role'>権限</Label>
               <Select
                 value={formData.role}
-                onValueChange={(value) => setFormData({ ...formData, role: value as AdminRole })}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, role: value as AdminRole })
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -180,13 +201,19 @@ export function AdminFormDialog({ open, onOpenChange, admin }: AdminFormDialogPr
                 <Switch
                   id='is_active'
                   checked={formData.is_active}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, is_active: checked })
+                  }
                 />
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button type='button' variant='outline' onClick={() => onOpenChange(false)}>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={() => onOpenChange(false)}
+            >
               キャンセル
             </Button>
             <Button type='submit' disabled={isPending}>

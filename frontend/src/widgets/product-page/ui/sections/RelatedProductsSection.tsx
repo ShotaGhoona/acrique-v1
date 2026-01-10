@@ -1,9 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
-import type { ProductDetail, RelatedProduct } from '@/entities/product/model/types';
+import type {
+  ProductDetail,
+  RelatedProduct,
+} from '@/entities/product/model/types';
 import { useRelatedProducts } from '@/features/product/get-product/lib/use-product';
 
 // 価格フォーマット
@@ -64,13 +67,22 @@ export function RelatedProductsSection({
               href={`/${product.category_id}/${relatedProduct.id}`}
               className='group'
             >
-              <div className='overflow-hidden rounded-sm bg-background'>
-                <ImagePlaceholder
-                  aspect='4/3'
-                  variant='light'
-                  label={relatedProduct.name_ja}
-                  className='w-full transition-transform duration-500 group-hover:scale-105'
-                />
+              <div className='relative aspect-[4/3] overflow-hidden rounded-sm bg-secondary/30'>
+                {relatedProduct.main_image_url ? (
+                  <Image
+                    src={relatedProduct.main_image_url}
+                    alt={relatedProduct.name_ja}
+                    fill
+                    sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+                    className='object-cover transition-transform duration-500 group-hover:scale-105'
+                  />
+                ) : (
+                  <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
+                    <span className='text-xs uppercase tracking-wider'>
+                      No Image
+                    </span>
+                  </div>
+                )}
               </div>
               <div className='mt-4'>
                 <p className='text-xs uppercase tracking-wider text-muted-foreground'>

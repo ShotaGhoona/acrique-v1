@@ -1,9 +1,5 @@
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/shared/ui/shadcn/ui/card';
+import { Card, CardContent, CardHeader } from '@/shared/ui/shadcn/ui/card';
 
 export function ProductEditSkeleton() {
   return (
@@ -59,7 +55,10 @@ export function ProductEditSkeleton() {
             <CardContent>
               <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
                 {[...Array(4)].map((_, i) => (
-                  <Skeleton key={i} className='aspect-square w-full rounded-lg' />
+                  <Skeleton
+                    key={i}
+                    className='aspect-square w-full rounded-lg'
+                  />
                 ))}
               </div>
             </CardContent>

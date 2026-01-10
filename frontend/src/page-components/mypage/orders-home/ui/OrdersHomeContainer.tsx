@@ -138,7 +138,6 @@ function EmptyState() {
   );
 }
 
-
 export function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const { data, isLoading, error } = useOrders(

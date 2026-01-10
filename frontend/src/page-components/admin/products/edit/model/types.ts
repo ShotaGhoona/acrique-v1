@@ -1,7 +1,5 @@
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import type {
-  AdminProductDetail,
-} from '@/entities/admin-product/model/types';
+import type { AdminProductDetail } from '@/entities/admin-product/model/types';
 
 // 基本情報フォームの型
 export interface BasicInfoFormData {

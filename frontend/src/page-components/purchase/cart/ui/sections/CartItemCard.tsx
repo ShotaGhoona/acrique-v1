@@ -1,9 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import { QuantitySelector } from './QuantitySelector';
 import type { CartItem } from '@/entities/cart/model/types';
 
@@ -42,19 +42,19 @@ export function CartItemCard({
     >
       {/* Product Image */}
       <Link href={`/shop/${item.product_id}`} className='shrink-0'>
-        <div className='h-24 w-24 overflow-hidden rounded-sm sm:h-32 sm:w-32'>
+        <div className='relative h-24 w-24 overflow-hidden rounded-sm bg-secondary/30 sm:h-32 sm:w-32'>
           {item.product_image_url ? (
-            <img
+            <Image
               src={item.product_image_url}
               alt={item.product_name_ja || item.product_name || '商品画像'}
-              className='h-full w-full object-cover transition-transform duration-300 hover:scale-105'
+              fill
+              sizes='128px'
+              className='object-cover transition-transform duration-300 hover:scale-105'
             />
           ) : (
-            <ImagePlaceholder
-              aspect='1/1'
-              variant='light'
-              className='h-full w-full'
-            />
+            <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
+              <span className='text-xs uppercase tracking-wider'>No Image</span>
+            </div>
           )}
         </div>
       </Link>

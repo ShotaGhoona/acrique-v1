@@ -152,7 +152,9 @@ RESTful API原則に従い、ドメインごとに整理。
 | GET | `/api/admin/products/{id}` | 商品詳細 |
 | PUT | `/api/admin/products/{id}` | 商品更新 |
 | DELETE | `/api/admin/products/{id}` | 商品削除 |
+| POST | `/api/admin/products/{id}/images/presigned` | Presigned URL取得 |
 | POST | `/api/admin/products/{id}/images` | 画像追加 |
+| PUT | `/api/admin/products/{id}/images/{image_id}` | 画像更新 |
 | DELETE | `/api/admin/products/{id}/images/{image_id}` | 画像削除 |
 | PUT | `/api/admin/products/{id}/options` | オプション更新 |
 | PUT | `/api/admin/products/{id}/specs` | スペック更新 |

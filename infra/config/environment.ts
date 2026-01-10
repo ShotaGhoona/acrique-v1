@@ -101,6 +101,24 @@ export interface BatchConfig {
 }
 
 /**
+ * オブジェクトストレージ設定インターフェース
+ */
+export interface ObjectStorageConfig {
+  /**
+   * CORS許可オリジン
+   * Presigned URLでのアップロードに必要
+   * @example ['https://example.com', 'http://localhost:3000']
+   */
+  corsOrigins?: string[];
+  /**
+   * CDN（CloudFront）を有効化
+   * S3バケットはプライベートのまま、CloudFront経由でOACアクセス
+   * @default false
+   */
+  enableCdn?: boolean;
+}
+
+/**
  * Cognito設定インターフェース
  */
 export interface CognitoConfig {
@@ -299,6 +317,12 @@ export interface EnvironmentConfig {
    * ECS Scheduled Taskによる定期実行
    */
   batch?: BatchConfig;
+
+  /**
+   * オブジェクトストレージ設定
+   * S3のCORS設定など
+   */
+  objectStorage?: ObjectStorageConfig;
 
   /**
    * タグ設定

@@ -1,8 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import {
   getAllCategories,
   getCategoryIds,
@@ -19,15 +19,24 @@ function ProductCard({
   product: ProductListItem;
   categoryId: string;
 }) {
+  const imageUrl = product.main_image_url ?? product.images[0]?.s3_url;
+
   return (
     <Link href={`/${categoryId}/${product.id}`} className='group block'>
-      <div className='overflow-hidden rounded-sm'>
-        <ImagePlaceholder
-          aspect='1/1'
-          variant='light'
-          label={product.name}
-          className='transition-transform duration-500 group-hover:scale-105'
-        />
+      <div className='relative aspect-square overflow-hidden rounded-sm bg-secondary/30'>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product.name_ja}
+            fill
+            sizes='(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw'
+            className='object-cover transition-transform duration-500 group-hover:scale-105'
+          />
+        ) : (
+          <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
+            <span className='text-xs uppercase tracking-wider'>No Image</span>
+          </div>
+        )}
       </div>
       <div className='mt-4'>
         <h4 className='text-sm font-medium tracking-wide transition-colors group-hover:text-accent'>

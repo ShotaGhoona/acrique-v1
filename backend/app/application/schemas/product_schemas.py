@@ -13,7 +13,7 @@ class ProductImageDTO(BaseModel):
     """商品画像DTO"""
 
     id: int
-    url: str
+    s3_url: str
     alt: str | None
     is_main: bool
     sort_order: int

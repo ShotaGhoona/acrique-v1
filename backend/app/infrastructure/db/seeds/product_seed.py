@@ -375,25 +375,28 @@ PRODUCTS = [
 # 商品画像データ
 # =============================================================================
 
+# 画像ファイルは seeds/images/{product_id}/ に配置
+# local_path: 画像ファイルのパス（seeds/images/ からの相対パス）
+# 画像がない場合はスキップされる
 PRODUCT_IMAGES = [
     # QR Cube
     {
         'product_id': 'qr-cube',
-        'url': '/images/products/qr-cube-1.jpg',
+        'local_path': 'qr-cube/main.jpg',
         'alt': 'QRコードキューブ メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'qr-cube',
-        'url': '/images/products/qr-cube-2.jpg',
+        'local_path': 'qr-cube/02.jpg',
         'alt': 'QRコードキューブ 使用例',
         'is_main': False,
         'sort_order': 2,
     },
     {
         'product_id': 'qr-cube',
-        'url': '/images/products/qr-cube-3.jpg',
+        'local_path': 'qr-cube/03.jpg',
         'alt': 'QRコードキューブ サイズ比較',
         'is_main': False,
         'sort_order': 3,
@@ -401,14 +404,14 @@ PRODUCT_IMAGES = [
     # Logo Cutout
     {
         'product_id': 'logo-cutout',
-        'url': '/images/products/logo-cutout-1.jpg',
+        'local_path': 'logo-cutout/main.jpg',
         'alt': 'ロゴカットアウト メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'logo-cutout',
-        'url': '/images/products/logo-cutout-2.jpg',
+        'local_path': 'logo-cutout/02.jpg',
         'alt': 'ロゴカットアウト 使用例',
         'is_main': False,
         'sort_order': 2,
@@ -416,7 +419,7 @@ PRODUCT_IMAGES = [
     # Price Tag
     {
         'product_id': 'price-tag',
-        'url': '/images/products/price-tag-1.jpg',
+        'local_path': 'price-tag/main.jpg',
         'alt': 'プライスタグ メイン',
         'is_main': True,
         'sort_order': 1,
@@ -424,14 +427,14 @@ PRODUCT_IMAGES = [
     # Menu Stand
     {
         'product_id': 'menu-stand',
-        'url': '/images/products/menu-stand-1.jpg',
+        'local_path': 'menu-stand/main.jpg',
         'alt': 'メニュースタンド メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'menu-stand',
-        'url': '/images/products/menu-stand-2.jpg',
+        'local_path': 'menu-stand/02.jpg',
         'alt': 'メニュースタンド 使用例',
         'is_main': False,
         'sort_order': 2,
@@ -439,7 +442,7 @@ PRODUCT_IMAGES = [
     # Display Riser
     {
         'product_id': 'display-riser',
-        'url': '/images/products/display-riser-1.jpg',
+        'local_path': 'display-riser/main.jpg',
         'alt': 'ディスプレイライザー メイン',
         'is_main': True,
         'sort_order': 1,
@@ -447,7 +450,7 @@ PRODUCT_IMAGES = [
     # Sign Holder
     {
         'product_id': 'sign-holder',
-        'url': '/images/products/sign-holder-1.jpg',
+        'local_path': 'sign-holder/main.jpg',
         'alt': 'サインホルダー メイン',
         'is_main': True,
         'sort_order': 1,
@@ -455,14 +458,14 @@ PRODUCT_IMAGES = [
     # Wall Sign
     {
         'product_id': 'wall-sign',
-        'url': '/images/products/wall-sign-1.jpg',
+        'local_path': 'wall-sign/main.jpg',
         'alt': 'ウォールサイン メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'wall-sign',
-        'url': '/images/products/wall-sign-2.jpg',
+        'local_path': 'wall-sign/02.jpg',
         'alt': 'ウォールサイン 設置例',
         'is_main': False,
         'sort_order': 2,
@@ -470,14 +473,14 @@ PRODUCT_IMAGES = [
     # Tombstones
     {
         'product_id': 'tombstones',
-        'url': '/images/products/tombstones-1.jpg',
+        'local_path': 'tombstones/main.jpg',
         'alt': '成約記念モニュメント メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'tombstones',
-        'url': '/images/products/tombstones-2.jpg',
+        'local_path': 'tombstones/02.jpg',
         'alt': '成約記念モニュメント バリエーション',
         'is_main': False,
         'sort_order': 2,
@@ -485,7 +488,7 @@ PRODUCT_IMAGES = [
     # Name Plate
     {
         'product_id': 'name-plate',
-        'url': '/images/products/name-plate-1.jpg',
+        'local_path': 'name-plate/main.jpg',
         'alt': '役員用ネームプレート メイン',
         'is_main': True,
         'sort_order': 1,
@@ -493,14 +496,14 @@ PRODUCT_IMAGES = [
     # Award
     {
         'product_id': 'award',
-        'url': '/images/products/award-1.jpg',
+        'local_path': 'award/main.jpg',
         'alt': 'アワードトロフィー メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'award',
-        'url': '/images/products/award-2.jpg',
+        'local_path': 'award/02.jpg',
         'alt': 'アワードトロフィー バリエーション',
         'is_main': False,
         'sort_order': 2,
@@ -508,7 +511,7 @@ PRODUCT_IMAGES = [
     # Door Sign
     {
         'product_id': 'door-sign',
-        'url': '/images/products/door-sign-1.jpg',
+        'local_path': 'door-sign/main.jpg',
         'alt': 'ドアサイン メイン',
         'is_main': True,
         'sort_order': 1,
@@ -516,7 +519,7 @@ PRODUCT_IMAGES = [
     # Reception
     {
         'product_id': 'reception',
-        'url': '/images/products/reception-1.jpg',
+        'local_path': 'reception/main.jpg',
         'alt': 'レセプションサイン メイン',
         'is_main': True,
         'sort_order': 1,
@@ -524,14 +527,14 @@ PRODUCT_IMAGES = [
     # Card Display
     {
         'product_id': 'card-display',
-        'url': '/images/products/card-display-1.jpg',
+        'local_path': 'card-display/main.jpg',
         'alt': 'トレカディスプレイ メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'card-display',
-        'url': '/images/products/card-display-2.jpg',
+        'local_path': 'card-display/02.jpg',
         'alt': 'トレカディスプレイ 使用例',
         'is_main': False,
         'sort_order': 2,
@@ -539,14 +542,14 @@ PRODUCT_IMAGES = [
     # Wedding Board
     {
         'product_id': 'wedding-board',
-        'url': '/images/products/wedding-board-1.jpg',
+        'local_path': 'wedding-board/main.jpg',
         'alt': 'ウェディングボード メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'wedding-board',
-        'url': '/images/products/wedding-board-2.jpg',
+        'local_path': 'wedding-board/02.jpg',
         'alt': 'ウェディングボード デザイン例',
         'is_main': False,
         'sort_order': 2,
@@ -554,7 +557,7 @@ PRODUCT_IMAGES = [
     # Baby Print
     {
         'product_id': 'baby-print',
-        'url': '/images/products/baby-print-1.jpg',
+        'local_path': 'baby-print/main.jpg',
         'alt': '手形足形アート メイン',
         'is_main': True,
         'sort_order': 1,
@@ -562,7 +565,7 @@ PRODUCT_IMAGES = [
     # Photo Frame
     {
         'product_id': 'photo-frame',
-        'url': '/images/products/photo-frame-1.jpg',
+        'local_path': 'photo-frame/main.jpg',
         'alt': 'アクリルフォトフレーム メイン',
         'is_main': True,
         'sort_order': 1,
@@ -570,14 +573,14 @@ PRODUCT_IMAGES = [
     # Acrylic Stand
     {
         'product_id': 'acrylic-stand',
-        'url': '/images/products/acrylic-stand-1.jpg',
+        'local_path': 'acrylic-stand/main.jpg',
         'alt': 'アクリルスタンド メイン',
         'is_main': True,
         'sort_order': 1,
     },
     {
         'product_id': 'acrylic-stand',
-        'url': '/images/products/acrylic-stand-2.jpg',
+        'local_path': 'acrylic-stand/02.jpg',
         'alt': 'アクリルスタンド サイズ展開',
         'is_main': False,
         'sort_order': 2,
@@ -585,7 +588,7 @@ PRODUCT_IMAGES = [
     # Key Block
     {
         'product_id': 'key-block',
-        'url': '/images/products/key-block-1.jpg',
+        'local_path': 'key-block/main.jpg',
         'alt': 'キーブロック メイン',
         'is_main': True,
         'sort_order': 1,

@@ -39,11 +39,12 @@ const adminRoleLabels: Record<AdminRole, string> = {
   staff: 'スタッフ',
 };
 
-const adminRoleColors: Record<AdminRole, 'default' | 'secondary' | 'outline'> = {
-  super_admin: 'default',
-  admin: 'secondary',
-  staff: 'outline',
-};
+const adminRoleColors: Record<AdminRole, 'default' | 'secondary' | 'outline'> =
+  {
+    super_admin: 'default',
+    admin: 'secondary',
+    staff: 'outline',
+  };
 
 export function AdminsContainer() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -122,7 +123,9 @@ export function AdminsContainer() {
                   {filteredAdmins.map((admin) => (
                     <TableRow key={admin.id}>
                       <TableCell className='font-medium'>{admin.id}</TableCell>
-                      <TableCell className='font-medium'>{admin.name}</TableCell>
+                      <TableCell className='font-medium'>
+                        {admin.name}
+                      </TableCell>
                       <TableCell>{admin.email}</TableCell>
                       <TableCell>
                         <Badge variant={adminRoleColors[admin.role]}>
@@ -138,13 +141,16 @@ export function AdminsContainer() {
                       </TableCell>
                       <TableCell className='text-muted-foreground'>
                         {admin.last_login_at
-                          ? new Date(admin.last_login_at).toLocaleString('ja-JP', {
-                              year: 'numeric',
-                              month: 'numeric',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })
+                          ? new Date(admin.last_login_at).toLocaleString(
+                              'ja-JP',
+                              {
+                                year: 'numeric',
+                                month: 'numeric',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              },
+                            )
                           : '-'}
                       </TableCell>
                       <TableCell>
@@ -155,7 +161,9 @@ export function AdminsContainer() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align='end'>
-                            <DropdownMenuItem onClick={() => handleOpenEdit(admin)}>
+                            <DropdownMenuItem
+                              onClick={() => handleOpenEdit(admin)}
+                            >
                               <Edit className='mr-2 h-4 w-4' />
                               編集
                             </DropdownMenuItem>

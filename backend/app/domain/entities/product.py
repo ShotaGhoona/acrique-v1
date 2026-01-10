@@ -51,8 +51,8 @@ class Product(BaseModel):
         """メイン画像のURLを取得"""
         for image in self.images:
             if image.is_main:
-                return image.url
-        return self.images[0].url if self.images else None
+                return image.s3_url
+        return self.images[0].s3_url if self.images else None
 
 
 class ProductImage(BaseModel):
@@ -60,7 +60,7 @@ class ProductImage(BaseModel):
 
     id: int | None = Field(None, description='画像ID')
     product_id: str = Field(..., description='商品ID')
-    url: str = Field(..., description='画像URL')
+    s3_url: str = Field(..., description='S3画像URL')
     alt: str | None = Field(None, description='代替テキスト')
     is_main: bool = Field(default=False, description='メイン画像')
     sort_order: int = Field(default=0, description='並び順')

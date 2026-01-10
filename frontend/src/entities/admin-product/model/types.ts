@@ -1,7 +1,7 @@
 // === 商品画像 ===
 export interface AdminProductImage {
   id: number;
-  url: string;
+  s3_url: string;
   alt: string | null;
   is_main: boolean;
   sort_order: number;
@@ -165,9 +165,22 @@ export interface DeleteProductResponse {
   message: string;
 }
 
+// === Presigned URL取得リクエスト ===
+export interface GetPresignedUrlRequest {
+  file_name: string;
+  content_type: string;
+}
+
+// === Presigned URL取得レスポンス ===
+export interface GetPresignedUrlResponse {
+  upload_url: string;
+  file_url: string;
+  expires_in: number;
+}
+
 // === 画像追加リクエスト ===
 export interface AddProductImageRequest {
-  url: string;
+  s3_url: string;
   alt?: string;
   is_main?: boolean;
   sort_order?: number;
@@ -175,6 +188,19 @@ export interface AddProductImageRequest {
 
 // === 画像追加レスポンス ===
 export interface AddProductImageResponse {
+  image: AdminProductImage;
+  message: string;
+}
+
+// === 画像更新リクエスト ===
+export interface UpdateProductImageRequest {
+  alt?: string;
+  is_main?: boolean;
+  sort_order?: number;
+}
+
+// === 画像更新レスポンス ===
+export interface UpdateProductImageResponse {
   image: AdminProductImage;
   message: string;
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -15,7 +16,6 @@ import {
   Plus,
 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import { useAddToCart } from '@/features/cart/add-to-cart/lib/use-add-to-cart';
 import { useAppSelector } from '@/store/hooks/typed-hooks';
 import type { ProductDetail } from '@/entities/product/model/types';
@@ -31,13 +31,6 @@ interface ProductHeroSectionProps {
   onOptionChange: (optionId: number, valueId: number) => void;
   onQuantityChange: (quantity: number) => void;
 }
-
-const galleryImages = [
-  { id: 1, label: 'メイン画像' },
-  { id: 2, label: '使用イメージ' },
-  { id: 3, label: 'サイズ感' },
-  { id: 4, label: 'ディテール' },
-];
 
 const trustBadges = [
   { icon: Truck, label: '全国送料無料', note: '¥10,000以上' },
@@ -144,35 +137,52 @@ export function ProductHeroSection({
           {/* Left: Image Gallery */}
           <div className='lg:sticky lg:top-24 lg:self-start'>
             {/* Main Image */}
-            <div className='relative overflow-hidden rounded-sm bg-secondary/30'>
-              <ImagePlaceholder
-                aspect='1/1'
-                variant='light'
-                label={galleryImages[selectedImage].label}
-                className='w-full'
-              />
+            <div className='relative aspect-square overflow-hidden rounded-sm bg-secondary/30'>
+              {product.images.length > 0 ? (
+                <Image
+                  src={
+                    product.images[selectedImage]?.s3_url ??
+                    product.images[0].s3_url
+                  }
+                  alt={product.images[selectedImage]?.alt ?? product.name_ja}
+                  fill
+                  sizes='(max-width: 1024px) 100vw, 50vw'
+                  className='object-cover'
+                  priority
+                />
+              ) : (
+                <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
+                  <span className='text-xs uppercase tracking-wider'>
+                    No Image
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Thumbnails */}
-            <div className='mt-4 grid grid-cols-4 gap-3'>
-              {galleryImages.map((image, index) => (
-                <button
-                  key={image.id}
-                  onClick={() => setSelectedImage(index)}
-                  className={`relative overflow-hidden rounded-sm transition-all ${
-                    selectedImage === index
-                      ? 'ring-2 ring-foreground ring-offset-2'
-                      : 'opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <ImagePlaceholder
-                    aspect='1/1'
-                    variant='light'
-                    className='w-full'
-                  />
-                </button>
-              ))}
-            </div>
+            {product.images.length > 1 && (
+              <div className='mt-4 grid grid-cols-4 gap-3'>
+                {product.images.map((image, index) => (
+                  <button
+                    key={image.id}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative aspect-square overflow-hidden rounded-sm transition-all ${
+                      selectedImage === index
+                        ? 'ring-2 ring-foreground ring-offset-2'
+                        : 'opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <Image
+                      src={image.s3_url}
+                      alt={image.alt ?? `${product.name_ja} ${index + 1}`}
+                      fill
+                      sizes='25vw'
+                      className='object-cover'
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right: Product Info & Purchase */}

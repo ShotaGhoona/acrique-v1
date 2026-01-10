@@ -232,16 +232,44 @@ class ProductRepositoryImpl(IProductRepository):
         )
         return [self._image_to_entity(img) for img in images]
 
+    def get_image(self, image_id: int) -> ProductImage | None:
+        """画像をIDで取得"""
+        image_model = (
+            self.session.query(ProductImageModel)
+            .filter(ProductImageModel.id == image_id)
+            .first()
+        )
+        if image_model is None:
+            return None
+        return self._image_to_entity(image_model)
+
     def add_image(self, image: ProductImage) -> ProductImage:
         """商品画像を追加"""
         image_model = ProductImageModel(
             product_id=image.product_id,
-            url=image.url,
+            s3_url=image.s3_url,
             alt=image.alt,
             is_main=image.is_main,
             sort_order=image.sort_order,
         )
         self.session.add(image_model)
+        self.session.flush()
+        return self._image_to_entity(image_model)
+
+    def update_image(self, image: ProductImage) -> ProductImage:
+        """商品画像を更新（メタデータのみ: alt, is_main, sort_order）"""
+        image_model = (
+            self.session.query(ProductImageModel)
+            .filter(ProductImageModel.id == image.id)
+            .first()
+        )
+        if image_model is None:
+            raise ValueError(f'Image with id {image.id} not found')
+
+        image_model.alt = image.alt
+        image_model.is_main = image.is_main
+        image_model.sort_order = image.sort_order
+
         self.session.flush()
         return self._image_to_entity(image_model)
 
@@ -536,7 +564,7 @@ class ProductRepositoryImpl(IProductRepository):
         return ProductImage(
             id=model.id,
             product_id=model.product_id,
-            url=model.url,
+            s3_url=model.s3_url,
             alt=model.alt,
             is_main=model.is_main,
             sort_order=model.sort_order,

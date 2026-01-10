@@ -64,7 +64,7 @@ describe('ObservabilityStack', () => {
 
       it('should have correct dashboard name', () => {
         template.hasResourceProperties('AWS::CloudWatch::Dashboard', {
-          DashboardName: `${testConfig.envName}-cdk-template-dashboard`,
+          DashboardName: `${testConfig.envName}-${testConfig.tags.Project}-dashboard`,
         });
       });
     });

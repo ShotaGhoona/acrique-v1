@@ -5,7 +5,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 from app.application.schemas.admin_product_schemas import (
-    AddProductImageInputDTO,
     AdminProductDetailDTO,
     AdminProductDTO,
     AdminProductFaqDTO,
@@ -258,17 +257,7 @@ class DeleteProductResponse(BaseModel):
     message: str
 
 
-class AddProductImageResponse(BaseModel):
-    """画像追加レスポンス"""
-
-    image: AdminProductImageResponse
-    message: str
-
-
-class DeleteProductImageResponse(BaseModel):
-    """画像削除レスポンス"""
-
-    message: str
+# ========== 画像管理（TODO: S3アップロード対応で新規実装予定） ==========
 
 
 class UpdateProductOptionsResponse(BaseModel):
@@ -390,21 +379,7 @@ class UpdateProductRequest(BaseModel):
         )
 
 
-class AddProductImageRequest(BaseModel):
-    """画像追加リクエスト"""
-
-    url: str = Field(..., min_length=1)
-    alt: str | None = Field(None, max_length=200)
-    is_main: bool = False
-    sort_order: int = 0
-
-    def to_dto(self) -> AddProductImageInputDTO:
-        return AddProductImageInputDTO(
-            url=self.url,
-            alt=self.alt,
-            is_main=self.is_main,
-            sort_order=self.sort_order,
-        )
+# ========== 画像管理リクエスト（TODO: S3アップロード対応で新規実装予定） ==========
 
 
 class ProductOptionValueRequest(BaseModel):

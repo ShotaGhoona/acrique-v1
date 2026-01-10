@@ -1,8 +1,6 @@
 """Admin商品管理ユースケース"""
 
 from app.application.schemas.admin_product_schemas import (
-    AddProductImageInputDTO,
-    AddProductImageOutputDTO,
     AdminProductDetailDTO,
     AdminProductDTO,
     AdminProductFaqDTO,
@@ -13,7 +11,6 @@ from app.application.schemas.admin_product_schemas import (
     AdminProductSpecDTO,
     CreateProductInputDTO,
     CreateProductOutputDTO,
-    DeleteProductImageOutputDTO,
     DeleteProductOutputDTO,
     GetAdminProductOutputDTO,
     GetAdminProductsInputDTO,
@@ -191,38 +188,7 @@ class AdminProductUsecase:
 
         return DeleteProductOutputDTO(message='商品を削除しました')
 
-    def add_image(
-        self, product_id: str, input_dto: AddProductImageInputDTO
-    ) -> AddProductImageOutputDTO:
-        """商品画像を追加"""
-        product = self.product_repository.get_by_id(product_id, include_relations=False)
-        if product is None:
-            raise ProductNotFoundError()
-
-        image = ProductImage(
-            product_id=product_id,
-            url=input_dto.url,
-            alt=input_dto.alt,
-            is_main=input_dto.is_main,
-            sort_order=input_dto.sort_order,
-        )
-
-        created_image = self.product_repository.add_image(image)
-
-        return AddProductImageOutputDTO(
-            image=self._to_image_dto(created_image),
-            message='画像を追加しました',
-        )
-
-    def delete_image(self, product_id: str, image_id: int) -> DeleteProductImageOutputDTO:
-        """商品画像を削除"""
-        product = self.product_repository.get_by_id(product_id, include_relations=False)
-        if product is None:
-            raise ProductNotFoundError()
-
-        self.product_repository.delete_image(image_id)
-
-        return DeleteProductImageOutputDTO(message='画像を削除しました')
+    # ========== 画像管理（TODO: S3アップロード対応で新規実装予定） ==========
 
     def update_options(
         self, product_id: str, input_dto: UpdateProductOptionsInputDTO

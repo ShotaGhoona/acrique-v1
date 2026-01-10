@@ -205,29 +205,7 @@ class DeleteProductOutputDTO(BaseModel):
     message: str
 
 
-# ========== 画像管理 ==========
-
-
-class AddProductImageInputDTO(BaseModel):
-    """画像追加入力DTO"""
-
-    url: str
-    alt: str | None = None
-    is_main: bool = False
-    sort_order: int = 0
-
-
-class AddProductImageOutputDTO(BaseModel):
-    """画像追加出力DTO"""
-
-    image: AdminProductImageDTO
-    message: str
-
-
-class DeleteProductImageOutputDTO(BaseModel):
-    """画像削除出力DTO"""
-
-    message: str
+# ========== 画像管理（TODO: S3アップロード対応で新規実装予定） ==========
 
 
 # ========== オプション更新 ==========

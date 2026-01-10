@@ -10,18 +10,14 @@ from app.infrastructure.security.admin_security import (
     get_current_admin_from_cookie,
 )
 from app.presentation.schemas.admin_product_schemas import (
-    AddProductImageRequest,
-    AddProductImageResponse,
     AdminProductDetailResponse,
     AdminProductFaqResponse,
     AdminProductFeatureResponse,
-    AdminProductImageResponse,
     AdminProductOptionResponse,
     AdminProductResponse,
     AdminProductSpecResponse,
     CreateProductRequest,
     CreateProductResponse,
-    DeleteProductImageResponse,
     DeleteProductResponse,
     GetAdminProductResponse,
     GetAdminProductsResponse,
@@ -127,40 +123,7 @@ async def delete_product(
     return DeleteProductResponse(message=output.message)
 
 
-@router.post(
-    '/{product_id}/images',
-    response_model=AddProductImageResponse,
-    status_code=status.HTTP_201_CREATED,
-)
-async def add_product_image(
-    product_id: str,
-    request: AddProductImageRequest,
-    admin: AdminAuth = Depends(get_current_admin_from_cookie),
-    usecase: AdminProductUsecase = Depends(get_admin_product_usecase),
-) -> AddProductImageResponse:
-    """商品画像を追加"""
-    output = usecase.add_image(product_id, request.to_dto())
-
-    return AddProductImageResponse(
-        image=AdminProductImageResponse.from_dto(output.image),
-        message=output.message,
-    )
-
-
-@router.delete(
-    '/{product_id}/images/{image_id}',
-    response_model=DeleteProductImageResponse,
-)
-async def delete_product_image(
-    product_id: str,
-    image_id: int,
-    admin: AdminAuth = Depends(get_current_admin_from_cookie),
-    usecase: AdminProductUsecase = Depends(get_admin_product_usecase),
-) -> DeleteProductImageResponse:
-    """商品画像を削除"""
-    output = usecase.delete_image(product_id, image_id)
-
-    return DeleteProductImageResponse(message=output.message)
+# ========== 画像管理（TODO: S3アップロード対応で新規実装予定） ==========
 
 
 @router.put('/{product_id}/options', response_model=UpdateProductOptionsResponse)

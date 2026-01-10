@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     # Frontend URL (for email links)
     frontend_url: str = 'http://localhost:3000'
 
+    # S3 settings
+    aws_s3_bucket_name: str = ''
+    aws_s3_region: str = 'ap-northeast-1'
+    aws_access_key_id: str = ''
+    aws_secret_access_key: str = ''
+
     class Config:
         env_file = '.env'
         extra = 'ignore'  # 未定義のフィールドを無視（後方互換性のため）

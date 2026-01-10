@@ -114,11 +114,47 @@ class IStorageService(ABC):
 
 ---
 
+### 2025-01-10: S3Service実装
+
+**目的**: S3へのファイルアップロード・削除を行うサービスを実装
+
+**作成/変更ファイル**:
+
+| ファイル | 内容 |
+|----------|------|
+| `app/config.py` | S3設定項目追加（`aws_s3_bucket_name`, `aws_s3_region`, `aws_access_key_id`, `aws_secret_access_key`） |
+| `app/infrastructure/storage/__init__.py` | モジュール初期化 |
+| `app/infrastructure/storage/s3_service.py` | S3Service実装 |
+
+**S3Service機能**:
+
+| メソッド | 説明 |
+|----------|------|
+| `generate_presigned_url()` | アップロード用Presigned URL生成 |
+| `delete_object()` | S3からオブジェクト削除 |
+
+**実装詳細**:
+- ファイル形式制限: `image/jpeg`, `image/png`, `image/webp`, `image/gif`
+- Presigned URL有効期限: 3600秒（1時間）
+- ユニークファイル名生成: UUID12桁 + 拡張子
+- 認証: IAMロール優先、フォールバックでアクセスキー
+
+**環境変数（.env）**:
+```env
+AWS_S3_BUCKET_NAME=dev-acrique-v1-data
+AWS_S3_REGION=ap-northeast-1
+# ローカル開発時のみ（ECSではIAMロール使用）
+AWS_ACCESS_KEY_ID=xxx
+AWS_SECRET_ACCESS_KEY=xxx
+```
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
 [x] StorageServiceインターフェース作成
 [x] DBカラム名変更 (url → s3_url)
-[] S3Service実装
+[x] S3Service実装
 [] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
 [] フロントエンド対応

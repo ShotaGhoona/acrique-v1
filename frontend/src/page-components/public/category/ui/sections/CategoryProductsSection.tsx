@@ -1,6 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { ImagePlaceholder } from '@/shared/ui/placeholder/ImagePlaceholder';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
 import type { ProductListItem } from '@/entities/product/model/types';
 
@@ -21,16 +21,25 @@ function ProductCard({
   product: ProductListItem;
   categoryId: string;
 }) {
+  const imageUrl = product.main_image_url ?? product.images[0]?.s3_url;
+
   return (
     <Link href={`/${categoryId}/${product.id}`} className='group block'>
       {/* Image */}
-      <div className='relative overflow-hidden rounded-sm bg-secondary/30'>
-        <ImagePlaceholder
-          aspect='4/3'
-          variant='light'
-          label={product.name}
-          className='transition-transform duration-500 group-hover:scale-105'
-        />
+      <div className='relative aspect-[4/3] overflow-hidden rounded-sm bg-secondary/30'>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product.name_ja}
+            fill
+            sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
+            className='object-cover transition-transform duration-500 group-hover:scale-105'
+          />
+        ) : (
+          <div className='flex h-full w-full items-center justify-center text-muted-foreground/40'>
+            <span className='text-xs uppercase tracking-wider'>No Image</span>
+          </div>
+        )}
         {/* Price Badge */}
         <div className='absolute bottom-4 right-4 rounded-sm bg-background/95 px-3 py-1.5 text-sm font-medium shadow-sm backdrop-blur-sm'>
           {formatPrice(product.base_price)}

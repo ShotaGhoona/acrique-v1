@@ -56,10 +56,36 @@ Admin画面での商品画像管理をURL手入力からS3アップロード（P
 
 ---
 
+### 2025-01-10: StorageServiceインターフェース作成
+
+**目的**: S3操作を抽象化するインターフェースをApplication層に作成
+
+**作成ファイル**:
+
+| ファイル | 内容 |
+|----------|------|
+| `app/application/interfaces/storage_service.py` | `IStorageService`インターフェース、`PresignedUrlResult`データクラス |
+
+**インターフェース定義**:
+```python
+class IStorageService(ABC):
+    def generate_presigned_url(file_name, content_type, folder) -> PresignedUrlResult
+    def delete_object(file_url) -> bool
+```
+
+**Domain層変更**:
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `app/domain/repositories/product_repository.py` | `get_image`, `update_image` メソッド追加 |
+| `app/infrastructure/db/repositories/product_repository_impl.py` | 上記メソッドの実装追加 |
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
-[] StorageServiceインターフェース作成
+[x] StorageServiceインターフェース作成
 [] S3Service実装
 [] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
 [] フロントエンド対応

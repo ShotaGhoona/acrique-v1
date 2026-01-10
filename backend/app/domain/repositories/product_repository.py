@@ -95,8 +95,18 @@ class IProductRepository(ABC):
         pass
 
     @abstractmethod
+    def get_image(self, image_id: int) -> ProductImage | None:
+        """画像をIDで取得"""
+        pass
+
+    @abstractmethod
     def add_image(self, image: ProductImage) -> ProductImage:
         """商品画像を追加"""
+        pass
+
+    @abstractmethod
+    def update_image(self, image: ProductImage) -> ProductImage:
+        """商品画像を更新（メタデータのみ: alt, is_main, sort_order）"""
         pass
 
     @abstractmethod

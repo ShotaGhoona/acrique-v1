@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { S3Construct } from '../construct/datastore/s3-construct';
+import { S3Construct, S3CorsConfig } from '../construct/datastore/s3-construct';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { RemovalPolicy } from 'aws-cdk-lib';
 
@@ -23,6 +23,11 @@ export interface ObjectStorageResourceProps {
    * @default true
    */
   encrypted?: boolean;
+  /**
+   * CORS設定
+   * Presigned URLでのアップロードに必要
+   */
+  cors?: S3CorsConfig;
 }
 
 /**
@@ -46,6 +51,7 @@ export class ObjectStorageResource extends Construct {
       bucketName: props.bucketName,
       removalPolicy: props.removalPolicy,
       versioned: props.versioned,
+      cors: props.cors,
     });
     this.bucket = s3Construct.bucket;
 

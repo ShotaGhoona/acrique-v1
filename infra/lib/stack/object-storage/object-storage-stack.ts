@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { EnvironmentConfig } from '../../../config/environment';
 import { ObjectStorageResource } from '../../resource/object-storage-resource';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import { S3CorsConfig } from '../../construct/datastore/s3-construct';
 
 export interface ObjectStorageStackProps extends cdk.StackProps {
   // 将来的に追加の設定が必要になった場合に備える
@@ -38,10 +39,26 @@ export class ObjectStorageStack extends cdk.Stack {
     // バケット名生成：環境名 + プロジェクト名（アカウントIDは自動で追加される）
     const bucketPrefix = `${config.envName}-acrique-v1-data`;
 
+    // CORS設定を構築（環境設定から取得）
+    const corsConfig: S3CorsConfig | undefined = config.objectStorage?.corsOrigins
+      ? {
+          allowedOrigins: config.objectStorage.corsOrigins,
+          allowedMethods: [
+            s3.HttpMethods.GET,
+            s3.HttpMethods.PUT,
+            s3.HttpMethods.POST,
+          ],
+          allowedHeaders: ['*'],
+          exposedHeaders: ['ETag'],
+          maxAge: 3600,
+        }
+      : undefined;
+
     // オブジェクトストレージリソースの作成（Resource層を使用）
     const objectStorage = new ObjectStorageResource(this, 'ObjectStorage', {
       bucketName: bucketPrefix, // CDKが自動でユニークなサフィックスを追加
       removalPolicy: config.removalPolicy,
+      cors: corsConfig,
     });
 
     this.dataBucket = objectStorage.bucket;

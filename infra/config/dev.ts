@@ -98,6 +98,15 @@ export const devConfig: EnvironmentConfig = {
   //   useExistingCluster: true, // BackendStackのクラスターを共有
   // },
 
+  // 💡 オブジェクトストレージ設定
+  // Presigned URLでの画像アップロードに必要
+  objectStorage: {
+    corsOrigins: [
+      'https://main.d17fbeoc59o61t.amplifyapp.com', // Amplify本番URL
+      'http://localhost:3000', // ローカル開発
+    ],
+  },
+
   tags: {
     Environment: 'dev',
     Project: 'acrique',

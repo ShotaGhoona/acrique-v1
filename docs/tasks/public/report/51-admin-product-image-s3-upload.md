@@ -32,9 +32,33 @@ Admin画面での商品画像管理をURL手入力からS3アップロード（P
 
 ---
 
+### 2025-01-10: S3 CORS設定
+
+**目的**: Presigned URLでのアップロードを可能にするためCORS設定を追加
+
+**変更ファイル（4層アーキテクチャに従い下から順に）**:
+
+| レイヤー | ファイル | 変更内容 |
+|----------|----------|----------|
+| 1 Construct | `lib/construct/datastore/s3-construct.ts` | `S3CorsConfig`インターフェース追加、CORS設定適用 |
+| 2 Resource | `lib/resource/object-storage-resource.ts` | `cors`プロパティ追加 |
+| 3 Stack | `lib/stack/object-storage/object-storage-stack.ts` | 環境設定からCORS構築 |
+| Config | `config/environment.ts` | `ObjectStorageConfig`インターフェース追加 |
+| Config | `config/dev.ts` | corsOrigins設定追加 |
+
+**CORS設定内容**:
+- 許可オリジン: Amplify URL, localhost:3000
+- 許可メソッド: GET, PUT, POST
+- 許可ヘッダー: *
+- 公開ヘッダー: ETag
+
+**デプロイ**: `cdk deploy ObjectStorageStack`が必要
+
+---
+
 ## 次のステップ
 
-[] S3 CORS設定
+[x] S3 CORS設定
 [] StorageServiceインターフェース作成
 [] S3Service実装
 [] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）

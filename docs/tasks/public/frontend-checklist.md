@@ -50,10 +50,10 @@
 | `/mypage/profile` | プロフィール | [x] | [x] |
 | `/mypage/addresses` | 配送先管理 | [x] | [x] |
 | `/cart` | カート | [x] | [x] |
-| `/checkout` | 購入手続き | [ ] | [ ] |
+| `/checkout` | 購入手続き | [x] | [x] |
 | `/checkout/upload` | データ入稿 | [ ] | [ ] |
-| `/checkout/confirm` | 注文確認 | [ ] | [ ] |
-| `/checkout/complete` | 注文完了 | [ ] | [ ] |
+| `/checkout/confirm` | 注文確認・決済 | [x] | [x] |
+| `/checkout/complete` | 注文完了 | [x] | [x] |
 
 ---
 
@@ -131,19 +131,32 @@
 
 | タスク | 状況 |
 |--------|------|
-| Stripe Elements導入 | [ ] |
-| カード入力フォーム | [ ] |
-| 決済処理 | [ ] |
-| エラーハンドリング | [ ] |
+| shared/lib/stripe.ts | [x] |
+| entities/payment | [x] |
+| features/payment/create-payment-intent | [x] |
+| widgets/payment/card-form | [x] |
+| Stripe Elements導入 | [x] |
+| カード入力フォーム | [x] |
+| 決済処理 | [x] |
+| エラーハンドリング | [x] |
+| 購入手続きUI | [x] |
+| 注文確認・決済UI | [x] |
+| 注文完了UI | [x] |
 
 ## ファイルアップロード
 
 | タスク | 状況 |
 |--------|------|
+| entities/upload | [ ] |
+| features/upload/upload-file | [ ] |
+| features/upload/get-uploads | [ ] |
+| widgets/upload/dropzone | [ ] |
 | ドラッグ&ドロップ | [ ] |
 | プレビュー表示 | [ ] |
 | ファイル形式バリデーション | [ ] |
 | アップロード進捗 | [ ] |
+| チェックアウト入稿UI | [ ] |
+| マイページ入稿UI | [ ] |
 
 ## ユーザー機能
 
@@ -180,7 +193,7 @@
 | features/order/cancel-order | [x] |
 | 注文一覧UI | [x] |
 | 注文詳細UI | [x] |
-| チェックアウトUI | [ ] |
+| チェックアウトUI | [x] |
 
 ---
 

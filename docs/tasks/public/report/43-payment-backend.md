@@ -2,7 +2,7 @@
 
 ## 概要
 
-Stripe決済のバックエンドAPIを実装しました。FastAPIのオニオンアーキテクチャに従い、PaymentIntent作成とWebhook処理のエンドポイントを提供します。
+Stripe決済のバックエンドAPIを実装しました。FastAPIのオニオンアーキテクチャに従い、PaymentIntent作成とWebhook処理のエンドポイントを提供します。決済成功時には注文確認メールを自動送信します。
 
 **実装日**: 2026-01-10
 **ブランチ**: feat/payment
@@ -48,7 +48,7 @@ Stripe決済のバックエンドAPIを実装しました。FastAPIのオニオ�
 ### POST `/api/payments/webhook`
 
 **処理するイベント:**
-- `payment_intent.succeeded` - 決済成功 → 注文ステータスを`paid`に更新
+- `payment_intent.succeeded` - 決済成功 → 注文ステータスを`paid`に更新 → **注文確認メール送信**
 - `payment_intent.payment_failed` - 決済失敗 → ログ記録
 - `charge.refunded` - 返金 → ログ記録
 
@@ -61,20 +61,25 @@ backend/app/
 ├── config.py                                    # [編集] Stripe設定追加
 ├── main.py                                      # [編集] ルーター登録
 ├── domain/
-│   └── exceptions/
-│       └── payment.py                           # [新規] 決済例外
+│   ├── exceptions/
+│   │   └── payment.py                           # [新規] 決済例外
+│   └── repositories/
+│       └── address_repository.py                # [既存] 住所リポジトリI/F
 ├── application/
 │   ├── interfaces/
-│   │   └── stripe_service.py                    # [新規] Stripeインターフェース
+│   │   ├── stripe_service.py                    # [新規] Stripeインターフェース
+│   │   └── email_service.py                     # [編集] 注文確認メール追加
 │   ├── schemas/
 │   │   └── payment_schemas.py                   # [新規] 決済スキーマ（DTO）
 │   └── use_cases/
 │       └── payment_usecase.py                   # [新規] 決済ユースケース
 ├── infrastructure/
-│   └── stripe/
-│       ├── __init__.py                          # [新規]
-│       ├── stripe_client.py                     # [新規] Stripeクライアント
-│       └── stripe_service_impl.py               # [新規] Stripeサービス実装
+│   ├── stripe/
+│   │   ├── __init__.py                          # [新規]
+│   │   ├── stripe_client.py                     # [新規] Stripeクライアント
+│   │   └── stripe_service_impl.py               # [新規] Stripeサービス実装
+│   └── email/
+│       └── resend_email_service.py              # [編集] 注文確認メール実装追加
 ├── presentation/
 │   ├── api/
 │   │   └── payment_api.py                       # [新規] APIエンドポイント
@@ -100,14 +105,17 @@ backend/app/
 │  payment_usecase.py (UseCase)                                │
 │  payment_schemas.py (DTO)                                    │
 │  stripe_service.py (Interface)                               │
+│  email_service.py (Interface)                                │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   Infrastructure層                           │
 │  stripe_service_impl.py (Stripeサービス実装)                  │
+│  resend_email_service.py (メール送信実装)                     │
 │  order_repository_impl.py (注文リポジトリ)                    │
 │  user_repository_impl.py (ユーザーリポジトリ)                  │
+│  address_repository_impl.py (住所リポジトリ)                  │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -153,7 +161,8 @@ class IStripeService(ABC):
 **主要メソッド:**
 - `create_payment_intent()` - PaymentIntent作成
 - `handle_webhook()` - Webhook処理
-- `_handle_payment_succeeded()` - 決済成功処理
+- `_handle_payment_succeeded()` - 決済成功処理（メール送信含む）
+- `_send_order_confirmation_email()` - 注文確認メール送信
 - `_handle_payment_failed()` - 決済失敗処理
 - `_handle_refund()` - 返金処理
 
@@ -165,6 +174,75 @@ Stripe SDKを使用したサービス実装。
 - APIキーは環境変数から取得
 - Webhook署名検証を実装
 - 金額はDBから取得（Frontendを信用しない）
+
+---
+
+## 注文確認メール機能
+
+### 概要
+
+決済成功時（Webhook: `payment_intent.succeeded`）に、注文者へ確認メールを自動送信します。
+
+### メール内容
+
+| 項目 | 説明 |
+|------|------|
+| 件名 | 【ACRIQUE】ご注文ありがとうございます（{注文番号}） |
+| 注文番号 | ACQ-YYMMDD-XXX 形式 |
+| 注文日 | YYYY年MM月DD日 形式 |
+| 商品リスト | 商品名、数量、金額 |
+| 合計金額 | 税込金額 |
+| 配送先 | 郵便番号、住所、宛名 |
+| 今後の流れ | 4ステップの案内 |
+
+### 実装詳細
+
+**IEmailService（インターフェース）:**
+```python
+@dataclass
+class OrderConfirmationData:
+    order_number: str
+    order_date: str
+    total: int
+    items: list[dict]
+    shipping_address: str
+    user_name: str
+
+class IEmailService(ABC):
+    @abstractmethod
+    def send_order_confirmation_email(
+        self, to_email: str, order_data: OrderConfirmationData
+    ) -> bool:
+        pass
+```
+
+**PaymentUsecase:**
+```python
+def _handle_payment_succeeded(self, payment_intent: dict) -> None:
+    # ... ステータス更新処理 ...
+
+    # 注文確認メールを送信
+    self._send_order_confirmation_email(order)
+
+def _send_order_confirmation_email(self, order) -> None:
+    # ユーザー・住所・注文商品情報を取得
+    # OrderConfirmationData を作成
+    # メール送信（失敗しても注文処理には影響させない）
+```
+
+### 依存性注入
+
+```python
+# di/payment.py
+def get_payment_usecase(session: Session = Depends(get_db)) -> PaymentUsecase:
+    return PaymentUsecase(
+        stripe_service=StripeServiceImpl(),
+        order_repository=OrderRepositoryImpl(session),
+        user_repository=UserRepositoryImpl(session),
+        email_service=ResendEmailService(),           # 追加
+        address_repository=AddressRepositoryImpl(session),  # 追加
+    )
+```
 
 ---
 
@@ -200,6 +278,34 @@ PaymentIntentCreationError: 400,
 WebhookSignatureError: 400,
 ```
 
+### 4. application/interfaces/email_service.py
+
+注文確認メール用のデータクラスとメソッドを追加。
+
+```python
+@dataclass
+class OrderConfirmationData:
+    order_number: str
+    order_date: str
+    total: int
+    items: list[dict]
+    shipping_address: str
+    user_name: str
+
+class IEmailService(ABC):
+    # 既存メソッド...
+
+    @abstractmethod
+    def send_order_confirmation_email(
+        self, to_email: str, order_data: OrderConfirmationData
+    ) -> bool:
+        pass
+```
+
+### 5. infrastructure/email/resend_email_service.py
+
+注文確認メールの送信実装とHTMLテンプレートを追加。
+
 ---
 
 ## セットアップ手順
@@ -219,7 +325,19 @@ STRIPE_SECRET_KEY=sk_test_xxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxx
 ```
 
-### 3. Stripe Webhookエンドポイント設定
+### 3. ローカル開発でのWebhook設定
+
+```bash
+# Stripe CLIをインストール
+brew install stripe/stripe-cli/stripe
+
+# Webhookリスナーを起動
+stripe listen --forward-to localhost:8000/api/payments/webhook
+
+# 表示されるwhsec_xxxを.envに設定
+```
+
+### 4. 本番環境でのWebhook設定
 
 Stripeダッシュボードで以下のエンドポイントを登録：
 - URL: `https://your-domain.com/api/payments/webhook`
@@ -280,6 +398,7 @@ sequenceDiagram
     participant B as Backend
     participant S as Stripe
     participant DB as Database
+    participant E as Email (Resend)
 
     F->>B: POST /api/payments/intent
     B->>DB: 注文情報取得
@@ -295,6 +414,9 @@ sequenceDiagram
     S->>B: Webhook: payment_intent.succeeded
     B->>B: 署名検証
     B->>DB: 注文ステータス更新（paid）
+    B->>DB: ユーザー・住所情報取得
+    B->>E: 注文確認メール送信
+    E-->>B: 送信結果
     B-->>S: 200 OK
 ```
 
@@ -302,10 +424,12 @@ sequenceDiagram
 
 ## 次のステップ
 
-- [ ] Webhook実装（05-Stripe-Webhook実装）
+- [x] ~~Webhook実装（05-Stripe-Webhook実装）~~
+- [x] ~~注文確認メール送信~~
 - [ ] Stripe Customer作成（ユーザー登録時）
 - [ ] 返金処理の詳細実装
 - [ ] 決済履歴の管理画面表示
+- [ ] 発送通知メール
 
 ---
 
@@ -314,3 +438,4 @@ sequenceDiagram
 - [04-Stripe-Backend実装-PaymentIntent-APIの作成](../../learning/stripe/04-Stripe-Backend実装-PaymentIntent-APIの作成.md)
 - [05-Stripe-Webhook実装-決済完了処理](../../learning/stripe/05-Stripe-Webhook実装-決済完了処理.md)
 - [13-API設計](../../../requirements/13-API設計.md)
+- [44-payment-frontend.md](./44-payment-frontend.md) - フロントエンド実装レポート

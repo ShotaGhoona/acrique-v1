@@ -3,6 +3,10 @@
 import logging
 from datetime import datetime
 
+from app.application.interfaces.email_service import (
+    IEmailService,
+    OrderConfirmationData,
+)
 from app.application.interfaces.stripe_service import IStripeService
 from app.application.schemas.payment_schemas import (
     CreatePaymentIntentInputDTO,
@@ -16,6 +20,7 @@ from app.domain.exceptions.payment import (
     PaymentAlreadyProcessedError,
     WebhookSignatureError,
 )
+from app.domain.repositories.address_repository import IAddressRepository
 from app.domain.repositories.order_repository import IOrderRepository
 from app.domain.repositories.user_repository import IUserRepository
 
@@ -30,10 +35,14 @@ class PaymentUsecase:
         stripe_service: IStripeService,
         order_repository: IOrderRepository,
         user_repository: IUserRepository,
+        email_service: IEmailService,
+        address_repository: IAddressRepository,
     ):
         self.stripe_service = stripe_service
         self.order_repository = order_repository
         self.user_repository = user_repository
+        self.email_service = email_service
+        self.address_repository = address_repository
 
     def create_payment_intent(
         self, user_id: int, input_dto: CreatePaymentIntentInputDTO
@@ -166,6 +175,61 @@ class PaymentUsecase:
         self.order_repository.update(order)
 
         logger.info(f'Order {order.order_number} marked as paid')
+
+        # 注文確認メールを送信
+        self._send_order_confirmation_email(order)
+
+    def _send_order_confirmation_email(self, order) -> None:
+        """注文確認メールを送信
+
+        Args:
+            order: 注文エンティティ
+        """
+        try:
+            # ユーザー情報を取得
+            user = self.user_repository.get_by_id(order.user_id)
+            if user is None:
+                logger.error(f'User not found for order {order.order_number}')
+                return
+
+            # 配送先住所を取得
+            shipping_address_str = ''
+            if order.shipping_address_id:
+                address = self.address_repository.get_by_id(order.shipping_address_id)
+                if address:
+                    shipping_address_str = (
+                        f'〒{address.postal_code}\n'
+                        f'{address.prefecture}{address.city}{address.address1}\n'
+                        f'{address.address2 or ""}\n'
+                        f'{address.name}'
+                    ).strip()
+
+            # 注文商品リストを作成
+            items = [
+                {
+                    'name': item.product_name_ja or item.product_name,
+                    'quantity': item.quantity,
+                    'price': item.subtotal,
+                }
+                for item in order.items
+            ]
+
+            # メール送信データを作成
+            order_data = OrderConfirmationData(
+                order_number=order.order_number,
+                order_date=order.created_at.strftime('%Y年%m月%d日'),
+                total=order.total,
+                items=items,
+                shipping_address=shipping_address_str,
+                user_name=user.name or '',
+            )
+
+            # メール送信
+            self.email_service.send_order_confirmation_email(user.email, order_data)
+
+        except Exception as e:
+            # メール送信失敗は注文処理に影響させない
+            logger.error(f'Failed to send order confirmation email for {order.order_number}: {e}')
 
     def _handle_payment_failed(self, payment_intent: dict) -> None:
         """決済失敗を処理

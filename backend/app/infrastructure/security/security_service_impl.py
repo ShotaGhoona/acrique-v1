@@ -132,3 +132,35 @@ def get_current_user_from_cookie(request: Request) -> User:
         return User(id=user_id)
     except JWTError as e:
         raise credentials_exception from e
+
+
+def get_optional_user_from_cookie(request: Request) -> User | None:
+    """Cookieからアクセストークンを取得してユーザー情報をバリデーション（オプショナル）
+
+    トークンがない、または無効な場合はNoneを返す（例外を投げない）
+    """
+    settings = get_settings()
+
+    # 認証が無効の場合はダミーユーザーを返す
+    if not settings.enable_auth:
+        return User(id=0)
+
+    token = request.cookies.get('access_token')
+    if not token:
+        return None
+
+    try:
+        algorithm = settings.jwt_algorithm
+
+        if algorithm == 'RS256':
+            _, public_key = _load_rsa_keys()
+            payload = jwt.decode(token, public_key, algorithms=[algorithm])
+        else:
+            return None
+
+        user_id: int = payload.get('user_id')
+        if user_id is None:
+            return None
+        return User(id=user_id)
+    except JWTError:
+        return None

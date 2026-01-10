@@ -101,10 +101,12 @@ class StatusResponse(BaseModel):
     """認証状態レスポンス"""
 
     is_authenticated: bool = Field(..., description='認証済みかどうか')
-    user_id: int = Field(..., description='ユーザーID')
-    email: str = Field(..., description='メールアドレス')
+    user_id: int | None = Field(None, description='ユーザーID（未認証の場合はnull）')
+    email: str | None = Field(None, description='メールアドレス（未認証の場合はnull）')
     name: str | None = Field(None, description='氏名')
-    is_email_verified: bool = Field(..., description='メール認証済みかどうか')
+    is_email_verified: bool | None = Field(
+        None, description='メール認証済みかどうか（未認証の場合はnull）'
+    )
 
     @classmethod
     def from_dto(cls, dto: StatusOutputDTO) -> StatusResponse:

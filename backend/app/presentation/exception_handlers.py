@@ -37,6 +37,12 @@ from app.domain.exceptions.common import (
     ValidationError,
 )
 from app.domain.exceptions.order import OrderCannotCancelError, OrderNotFoundError
+from app.domain.exceptions.payment import (
+    OrderNotPendingError,
+    PaymentAlreadyProcessedError,
+    PaymentIntentCreationError,
+    WebhookSignatureError,
+)
 from app.domain.exceptions.product import ProductNotActiveError, ProductNotFoundError
 from app.domain.exceptions.user import InvalidPasswordError, UserNotFoundError
 
@@ -53,6 +59,10 @@ EXCEPTION_STATUS_MAP: dict[type[DomainException], int] = {
     CartEmptyError: 400,
     NoAvailableProductsError: 400,
     OrderCannotCancelError: 400,
+    OrderNotPendingError: 400,
+    PaymentAlreadyProcessedError: 400,
+    PaymentIntentCreationError: 400,
+    WebhookSignatureError: 400,
     ValidationError: 400,
     AdminEmailAlreadyExistsError: 400,
     CannotDeleteSelfError: 400,

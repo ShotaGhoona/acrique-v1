@@ -7,6 +7,7 @@ from app.di.auth import get_auth_usecase
 from app.infrastructure.security.security_service_impl import (
     User,
     get_current_user_from_cookie,
+    get_optional_user_from_cookie,
 )
 from app.presentation.schemas.auth_schemas import (
     LoginRequest,
@@ -76,10 +77,15 @@ def logout(
 
 @router.get('/status', response_model=StatusResponse, status_code=status.HTTP_200_OK)
 def get_status(
-    current_user: User = Depends(get_current_user_from_cookie),
+    current_user: User | None = Depends(get_optional_user_from_cookie),
     auth_usecase: AuthUsecase = Depends(get_auth_usecase),
 ) -> StatusResponse:
-    """認証状態取得エンドポイント"""
+    """認証状態取得エンドポイント
+
+    トークンがない、または無効な場合は is_authenticated=False を返す（401エラーにならない）
+    """
+    if current_user is None:
+        return StatusResponse(is_authenticated=False, user_id=None)
     output_dto = auth_usecase.get_auth_status(user_id=current_user.id)
     return StatusResponse.from_dto(output_dto)
 

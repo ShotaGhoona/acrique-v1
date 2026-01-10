@@ -76,72 +76,72 @@ export function CheckoutConfirmContainer() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
+    <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
       {/* Breadcrumb */}
-      <nav className="mb-8 flex items-center gap-2 text-xs text-muted-foreground">
-        <Link href="/" className="transition-colors hover:text-foreground">
+      <nav className='mb-8 flex items-center gap-2 text-xs text-muted-foreground'>
+        <Link href='/' className='transition-colors hover:text-foreground'>
           Home
         </Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link href="/cart" className="transition-colors hover:text-foreground">
+        <ChevronRight className='h-3 w-3' />
+        <Link href='/cart' className='transition-colors hover:text-foreground'>
           カート
         </Link>
-        <ChevronRight className="h-3 w-3" />
+        <ChevronRight className='h-3 w-3' />
         <Link
-          href="/checkout"
-          className="transition-colors hover:text-foreground"
+          href='/checkout'
+          className='transition-colors hover:text-foreground'
         >
           購入手続き
         </Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground">注文確認</span>
+        <ChevronRight className='h-3 w-3' />
+        <span className='text-foreground'>注文確認</span>
       </nav>
 
       {/* Page Header */}
-      <h1 className="mb-8 text-2xl font-light tracking-tight md:text-3xl">
+      <h1 className='mb-8 text-2xl font-light tracking-tight md:text-3xl'>
         注文確認・お支払い
       </h1>
 
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className='grid gap-8 lg:grid-cols-3'>
         {/* Main Content */}
-        <div className="space-y-8 lg:col-span-2">
+        <div className='space-y-8 lg:col-span-2'>
           {/* Order Summary */}
-          <section className="rounded-sm border border-border bg-background p-6">
-            <h2 className="mb-4 text-lg font-medium">ご注文内容</h2>
+          <section className='rounded-sm border border-border bg-background p-6'>
+            <h2 className='mb-4 text-lg font-medium'>ご注文内容</h2>
 
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {order.items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between border-b border-border py-4 last:border-0"
+                  className='flex items-center justify-between border-b border-border py-4 last:border-0'
                 >
                   <div>
-                    <p className="font-medium">
+                    <p className='font-medium'>
                       {item.product_name_ja || item.product_name}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className='text-sm text-muted-foreground'>
                       数量: {item.quantity}
                     </p>
                   </div>
-                  <p className="font-medium">{formatPrice(item.subtotal)}</p>
+                  <p className='font-medium'>{formatPrice(item.subtotal)}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-4 space-y-2 border-t border-border pt-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">小計</span>
+            <div className='mt-4 space-y-2 border-t border-border pt-4'>
+              <div className='flex justify-between text-sm'>
+                <span className='text-muted-foreground'>小計</span>
                 <span>{formatPrice(order.subtotal)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">送料</span>
+              <div className='flex justify-between text-sm'>
+                <span className='text-muted-foreground'>送料</span>
                 <span>{formatPrice(order.shipping_fee)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">消費税</span>
+              <div className='flex justify-between text-sm'>
+                <span className='text-muted-foreground'>消費税</span>
                 <span>{formatPrice(order.tax)}</span>
               </div>
-              <div className="flex justify-between border-t border-border pt-4 text-lg font-medium">
+              <div className='flex justify-between border-t border-border pt-4 text-lg font-medium'>
                 <span>合計（税込）</span>
                 <span>{formatPrice(order.total)}</span>
               </div>
@@ -149,8 +149,8 @@ export function CheckoutConfirmContainer() {
           </section>
 
           {/* Payment Form */}
-          <section className="rounded-sm border border-border bg-background p-6">
-            <h2 className="mb-4 text-lg font-medium">お支払い情報</h2>
+          <section className='rounded-sm border border-border bg-background p-6'>
+            <h2 className='mb-4 text-lg font-medium'>お支払い情報</h2>
 
             {clientSecret ? (
               <Elements stripe={getStripe()}>
@@ -162,42 +162,42 @@ export function CheckoutConfirmContainer() {
                 />
               </Elements>
             ) : (
-              <div className="flex items-center justify-center py-8">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
+              <div className='flex items-center justify-center py-8'>
+                <div className='h-8 w-8 animate-spin rounded-full border-2 border-foreground border-t-transparent' />
               </div>
             )}
 
             {/* Test Card Info (Development) */}
             {process.env.NODE_ENV === 'development' && (
-              <div className="mt-6 rounded-sm bg-secondary/50 p-4 text-sm">
-                <p className="font-medium">テスト用カード</p>
-                <p className="mt-1 text-muted-foreground">
+              <div className='mt-6 rounded-sm bg-secondary/50 p-4 text-sm'>
+                <p className='font-medium'>テスト用カード</p>
+                <p className='mt-1 text-muted-foreground'>
                   番号: 4242 4242 4242 4242
                 </p>
-                <p className="text-muted-foreground">
+                <p className='text-muted-foreground'>
                   有効期限: 12/30（未来の日付）
                 </p>
-                <p className="text-muted-foreground">CVC: 123</p>
+                <p className='text-muted-foreground'>CVC: 123</p>
               </div>
             )}
           </section>
         </div>
 
         {/* Security Notice */}
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-sm border border-border bg-background p-6">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-green-600" />
-              <h3 className="font-medium">安全なお支払い</h3>
+        <div className='lg:sticky lg:top-24 lg:self-start'>
+          <div className='rounded-sm border border-border bg-background p-6'>
+            <div className='flex items-center gap-2'>
+              <ShieldCheck className='h-5 w-5 text-green-600' />
+              <h3 className='font-medium'>安全なお支払い</h3>
             </div>
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className='mt-3 text-sm text-muted-foreground'>
               お客様のカード情報は、Stripeの安全な決済システムで処理されます。
               当社のサーバーにカード情報が保存されることはありません。
             </p>
 
-            <div className="mt-6 space-y-3 text-sm text-muted-foreground">
+            <div className='mt-6 space-y-3 text-sm text-muted-foreground'>
               <p>
-                <span className="font-medium text-foreground">注文番号:</span>{' '}
+                <span className='font-medium text-foreground'>注文番号:</span>{' '}
                 {order.order_number}
               </p>
             </div>
@@ -210,15 +210,15 @@ export function CheckoutConfirmContainer() {
 
 function ConfirmSkeleton() {
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
-      <Skeleton className="mb-8 h-4 w-64" />
-      <Skeleton className="mb-8 h-8 w-48" />
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="space-y-8 lg:col-span-2">
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-48 w-full" />
+    <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
+      <Skeleton className='mb-8 h-4 w-64' />
+      <Skeleton className='mb-8 h-8 w-48' />
+      <div className='grid gap-8 lg:grid-cols-3'>
+        <div className='space-y-8 lg:col-span-2'>
+          <Skeleton className='h-64 w-full' />
+          <Skeleton className='h-48 w-full' />
         </div>
-        <Skeleton className="h-48 w-full" />
+        <Skeleton className='h-48 w-full' />
       </div>
     </div>
   );

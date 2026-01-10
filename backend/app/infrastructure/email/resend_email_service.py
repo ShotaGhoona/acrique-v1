@@ -212,18 +212,20 @@ class ResendEmailService(IEmailService):
 </html>
 """
 
-    def _order_confirmation_email_template(self, order_data: OrderConfirmationData) -> str:
+    def _order_confirmation_email_template(
+        self, order_data: OrderConfirmationData
+    ) -> str:
         """注文確認メールのHTMLテンプレート"""
         # 商品リストのHTML生成
         items_html = ''
         for item in order_data.items:
-            items_html += f'''
+            items_html += f"""
             <tr>
                 <td style="padding: 12px 0; border-bottom: 1px solid #eee;">{item["name"]}</td>
                 <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: center;">{item["quantity"]}</td>
                 <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">¥{item["price"]:,}</td>
             </tr>
-            '''
+            """
 
         display_name = order_data.user_name if order_data.user_name else 'お客様'
 

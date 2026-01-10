@@ -59,7 +59,7 @@ class StripeServiceImpl(IStripeService):
             )
 
         except stripe.error.StripeError as e:
-            raise PaymentIntentCreationError(str(e))
+            raise PaymentIntentCreationError(str(e)) from e
 
     def retrieve_payment_intent(
         self,

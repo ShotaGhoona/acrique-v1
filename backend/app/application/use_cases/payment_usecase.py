@@ -129,7 +129,7 @@ class PaymentUsecase:
             event = self.stripe_service.construct_webhook_event(payload, sig_header)
         except Exception as e:
             logger.error(f'Webhook signature verification failed: {e}')
-            raise WebhookSignatureError()
+            raise WebhookSignatureError() from e
 
         event_type = event.get('type')
         data = event.get('data', {}).get('object', {})
@@ -156,7 +156,9 @@ class PaymentUsecase:
         order_id = metadata.get('order_id')
 
         if not order_id:
-            logger.warning(f'No order_id in metadata for PaymentIntent {payment_intent_id}')
+            logger.warning(
+                f'No order_id in metadata for PaymentIntent {payment_intent_id}'
+            )
             return
 
         order = self.order_repository.get_by_id(int(order_id))
@@ -229,7 +231,9 @@ class PaymentUsecase:
 
         except Exception as e:
             # メール送信失敗は注文処理に影響させない
-            logger.error(f'Failed to send order confirmation email for {order.order_number}: {e}')
+            logger.error(
+                f'Failed to send order confirmation email for {order.order_number}: {e}'
+            )
 
     def _handle_payment_failed(self, payment_intent: dict) -> None:
         """決済失敗を処理

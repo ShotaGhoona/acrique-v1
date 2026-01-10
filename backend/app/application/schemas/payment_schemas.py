@@ -40,9 +40,7 @@ class CreatePaymentIntentResponse(BaseModel):
     amount: int = Field(..., description='決済金額')
 
     @classmethod
-    def from_dto(
-        cls, dto: CreatePaymentIntentOutputDTO
-    ) -> 'CreatePaymentIntentResponse':
+    def from_dto(cls, dto: CreatePaymentIntentOutputDTO) -> 'CreatePaymentIntentResponse':
         return cls(
             client_secret=dto.client_secret,
             payment_intent_id=dto.payment_intent_id,

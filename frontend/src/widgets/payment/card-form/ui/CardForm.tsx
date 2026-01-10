@@ -86,10 +86,10 @@ export function CardForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="space-y-4">
+      <div className='space-y-4'>
         <div>
-          <label className="mb-2 block text-sm font-medium">カード情報</label>
-          <div className="rounded-sm border border-border p-4 focus-within:border-foreground focus-within:ring-1 focus-within:ring-foreground">
+          <label className='mb-2 block text-sm font-medium'>カード情報</label>
+          <div className='rounded-sm border border-border p-4 focus-within:border-foreground focus-within:ring-1 focus-within:ring-foreground'>
             <CardElement
               options={CARD_ELEMENT_OPTIONS}
               onChange={(event) => {
@@ -102,15 +102,15 @@ export function CardForm({
             />
           </div>
           {cardError && (
-            <p className="mt-2 text-sm text-destructive">{cardError}</p>
+            <p className='mt-2 text-sm text-destructive'>{cardError}</p>
           )}
         </div>
 
         <Button
-          type="submit"
+          type='submit'
           disabled={!stripe || isProcessing}
-          className="w-full"
-          size="lg"
+          className='w-full'
+          size='lg'
         >
           {isProcessing ? '処理中...' : `${formatPrice(amount)}を支払う`}
         </Button>

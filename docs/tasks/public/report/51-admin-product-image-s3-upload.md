@@ -236,6 +236,59 @@ AWS_SECRET_ACCESS_KEY=xxx
 
 ---
 
+### 2026-01-10: 環境設定・デバッグ
+
+**問題1: Network Error（バックエンドに到達しない）**
+
+原因: `.env`の環境変数名が`config.py`と不一致
+
+| 誤った変数名 | 正しい変数名 |
+|--------------|--------------|
+| `S3_BUCKET_NAME` | `AWS_S3_BUCKET_NAME` |
+| `AWS_REGION` | `AWS_S3_REGION` |
+
+**問題2: CORS Error（403 Forbidden on preflight）**
+
+原因: S3のCORS設定に`localhost:3005`が含まれていなかった（`localhost:3000`のみ）
+
+対応:
+1. `infra/config/dev.ts`の`corsOrigins`に`http://localhost:3005`を追加
+2. `npx cdk deploy dev-ObjectStorageStack`でデプロイ
+
+**問題3: 500 Internal Server Error on OPTIONS**
+
+原因: Presigned URLがグローバルエンドポイント（`s3.amazonaws.com`）で生成され、リージョナルエンドポイント（`s3.ap-northeast-1.amazonaws.com`）でなかった
+
+対応: `app/infrastructure/storage/s3_service.py`を修正
+
+```python
+# 修正前
+self._s3_client = boto3.client('s3', config=boto_config)
+
+# 修正後
+endpoint_url = f'https://s3.{self._region}.amazonaws.com'
+boto_config = BotoConfig(
+    region_name=self._region,
+    signature_version='s3v4',
+    s3={'addressing_style': 'virtual'},
+)
+self._s3_client = boto3.client(
+    's3',
+    region_name=self._region,
+    endpoint_url=endpoint_url,
+    config=boto_config,
+    ...
+)
+```
+
+**結果**: Presigned URLが正しいリージョナルエンドポイントで生成されるようになった
+
+```
+Endpoint provider result: https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaws.com
+```
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
@@ -244,4 +297,5 @@ AWS_SECRET_ACCESS_KEY=xxx
 [x] S3Service実装
 [x] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
 [x] フロントエンド対応
+[x] 環境設定・デバッグ（CORS、リージョナルエンドポイント）
 [ ] 動作確認・テスト

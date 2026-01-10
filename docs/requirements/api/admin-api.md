@@ -4,6 +4,29 @@
 
 管理者向けAPIエンドポイント仕様です。すべてのエンドポイントにはAdmin認証（Cookie）が必要です。
 
+**最終テスト日**: 2026-01-10
+
+---
+
+## テスト結果
+
+| カテゴリ | エンドポイント | Status |
+|----------|---------------|--------|
+| 認証 | POST `/api/admin/auth/login` | 200 |
+| 認証 | GET `/api/admin/auth/status` | 200 |
+| 認証 | POST `/api/admin/auth/logout` | 200 |
+| 商品 | GET `/api/admin/products` | 200 |
+| 商品 | GET `/api/admin/products/{id}` | 200 |
+| 商品 | PUT `/api/admin/products/{id}` | 200 |
+| 画像 | POST `/api/admin/products/{id}/images/presigned` | 200 |
+| 画像 | POST `/api/admin/products/{id}/images` | 201 |
+| 画像 | PUT `/api/admin/products/{id}/images/{id}` | 200 |
+| 画像 | DELETE `/api/admin/products/{id}/images/{id}` | 200 |
+| オプション | PUT `/api/admin/products/{id}/options` | 200 |
+| スペック | PUT `/api/admin/products/{id}/specs` | 200 |
+| 特長 | PUT `/api/admin/products/{id}/features` | 200 |
+| FAQ | PUT `/api/admin/products/{id}/faqs` | 200 |
+
 ---
 
 ## 認証API
@@ -394,6 +417,12 @@ Base URL: `/api/admin/products`
 
 ## 画像管理API
 
+> **環境設定**: S3画像アップロードを使用するには、以下の環境変数が必要です。
+> - `AWS_S3_BUCKET_NAME`: S3バケット名
+> - `AWS_S3_REGION`: S3リージョン（デフォルト: ap-northeast-1）
+> - `AWS_ACCESS_KEY_ID`: AWSアクセスキー（ECS環境ではIAMロール使用）
+> - `AWS_SECRET_ACCESS_KEY`: AWSシークレットキー（ECS環境ではIAMロール使用）
+
 ### 6. Presigned URL取得
 
 #### `POST /api/admin/products/{product_id}/images/presigned`
@@ -420,17 +449,25 @@ S3アップロード用のPresigned URLを取得します。
 
 ```json
 {
-  "upload_url": "https://bucket.s3.amazonaws.com/products/xxx.jpg?X-Amz-...",
-  "file_url": "https://bucket.s3.amazonaws.com/products/xxx.jpg",
+  "upload_url": "https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaws.com/products/a58107b19273.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...",
+  "file_url": "https://dev-acrique-v1-data.s3.ap-northeast-1.amazonaws.com/products/a58107b19273.jpg",
   "expires_in": 3600
 }
 ```
 
 | フィールド | 型 | 説明 |
 |-----------|------|------|
-| upload_url | string | S3アップロード用URL（PUT） |
+| upload_url | string | S3アップロード用URL（PUT）※署名付き |
 | file_url | string | アップロード後のファイルURL |
-| expires_in | number | 有効期限（秒） |
+| expires_in | number | 有効期限（秒）※デフォルト: 3600 |
+
+**エラー時 (400 Bad Request)**
+
+```json
+{
+  "detail": "許可されていないファイル形式です: text/plain. 許可されている形式: image/jpeg, image/png, image/webp, image/gif"
+}
+```
 
 ---
 
@@ -518,7 +555,10 @@ S3にアップロード済みの画像をDBに登録します。
 
 #### `DELETE /api/admin/products/{product_id}/images/{image_id}`
 
-画像を削除します。S3からも削除されます。
+画像を削除します。DBレコードとS3オブジェクトの両方が削除されます。
+
+> **注意**: S3からの削除に失敗しても、DBレコードは削除されます。
+> S3削除失敗時はログに記録されますが、APIは成功を返します。
 
 #### レスポンス
 
@@ -527,6 +567,14 @@ S3にアップロード済みの画像をDBに登録します。
 ```json
 {
   "message": "画像を削除しました"
+}
+```
+
+**エラー時 (404 Not Found)**
+
+```json
+{
+  "detail": "画像が見つかりません: 999"
 }
 ```
 
@@ -744,31 +792,98 @@ S3にアップロード済みの画像をDBに登録します。
 
 Presigned URL方式でのアップロード手順：
 
-1. `POST /api/admin/products/{id}/images/presigned` でPresigned URL取得
-2. 取得した`upload_url`に対してPUTリクエストでファイルをS3に直接アップロード
-3. アップロード成功後、`POST /api/admin/products/{id}/images` で`file_url`をDBに登録
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Frontend   │     │   Backend   │     │     S3      │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │                   │                   │
+       │ 1. POST /presigned│                   │
+       │──────────────────>│                   │
+       │                   │                   │
+       │ upload_url,       │                   │
+       │ file_url          │                   │
+       │<──────────────────│                   │
+       │                   │                   │
+       │ 2. PUT (file)     │                   │
+       │───────────────────────────────────────>
+       │                   │                   │
+       │                   │            200 OK │
+       │<───────────────────────────────────────
+       │                   │                   │
+       │ 3. POST /images   │                   │
+       │   (s3_url)        │                   │
+       │──────────────────>│                   │
+       │                   │                   │
+       │ image object      │                   │
+       │<──────────────────│                   │
+       │                   │                   │
+```
+
+### JavaScript実装例
 
 ```javascript
 // 1. Presigned URL取得
-const { upload_url, file_url } = await getPresignedUrl(productId, {
-  file_name: file.name,
-  content_type: file.type
+const presignedRes = await fetch(`/api/admin/products/${productId}/images/presigned`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify({
+    file_name: file.name,
+    content_type: file.type
+  })
 });
+const { upload_url, file_url } = await presignedRes.json();
 
-// 2. S3にアップロード
-await fetch(upload_url, {
+// 2. S3にアップロード（Presigned URLへ直接PUT）
+const uploadRes = await fetch(upload_url, {
   method: 'PUT',
   body: file,
   headers: { 'Content-Type': file.type }
 });
 
+if (!uploadRes.ok) {
+  throw new Error('S3 upload failed');
+}
+
 // 3. DBに登録
-await addImage(productId, {
-  s3_url: file_url,
-  alt: 'Image description',
-  is_main: false,
-  sort_order: 0
+const addRes = await fetch(`/api/admin/products/${productId}/images`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify({
+    s3_url: file_url,
+    alt: 'Image description',
+    is_main: false,
+    sort_order: 0
+  })
 });
+const { image } = await addRes.json();
+console.log('Image added:', image.id);
+```
+
+### cURLテスト例
+
+```bash
+# 1. ログイン
+curl -c cookies.txt -X POST http://localhost:8005/api/admin/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@acrique.jp", "password": "admin123"}'
+
+# 2. Presigned URL取得
+curl -b cookies.txt -X POST "http://localhost:8005/api/admin/products/qr-cube/images/presigned" \
+  -H "Content-Type: application/json" \
+  -d '{"file_name": "test.jpg", "content_type": "image/jpeg"}'
+# -> upload_url, file_url を取得
+
+# 3. S3にアップロード（upload_urlを使用）
+curl -X PUT "<upload_url>" \
+  -H "Content-Type: image/jpeg" \
+  --data-binary @test.jpg
+
+# 4. DBに登録（file_urlを使用）
+curl -b cookies.txt -X POST "http://localhost:8005/api/admin/products/qr-cube/images" \
+  -H "Content-Type: application/json" \
+  -d '{"s3_url": "<file_url>", "alt": "テスト画像", "is_main": false, "sort_order": 0}'
 ```
 
 ---

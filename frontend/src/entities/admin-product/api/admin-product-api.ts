@@ -8,8 +8,12 @@ import {
   UpdateProductRequest,
   UpdateProductResponse,
   DeleteProductResponse,
+  GetPresignedUrlRequest,
+  GetPresignedUrlResponse,
   AddProductImageRequest,
   AddProductImageResponse,
+  UpdateProductImageRequest,
+  UpdateProductImageResponse,
   DeleteProductImageResponse,
   UpdateProductOptionsRequest,
   UpdateProductOptionsResponse,
@@ -82,6 +86,20 @@ export const adminProductApi = {
   },
 
   /**
+   * Presigned URL取得
+   */
+  async getPresignedUrl(
+    productId: string,
+    data: GetPresignedUrlRequest,
+  ): Promise<GetPresignedUrlResponse> {
+    const response = await httpClient.post<GetPresignedUrlResponse>(
+      `/api/admin/products/${productId}/images/presigned`,
+      data,
+    );
+    return response.data;
+  },
+
+  /**
    * 画像追加
    */
   async addImage(
@@ -90,6 +108,21 @@ export const adminProductApi = {
   ): Promise<AddProductImageResponse> {
     const response = await httpClient.post<AddProductImageResponse>(
       `/api/admin/products/${productId}/images`,
+      data,
+    );
+    return response.data;
+  },
+
+  /**
+   * 画像更新
+   */
+  async updateImage(
+    productId: string,
+    imageId: number,
+    data: UpdateProductImageRequest,
+  ): Promise<UpdateProductImageResponse> {
+    const response = await httpClient.put<UpdateProductImageResponse>(
+      `/api/admin/products/${productId}/images/${imageId}`,
       data,
     );
     return response.data;

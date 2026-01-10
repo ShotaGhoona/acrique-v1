@@ -181,6 +181,61 @@ AWS_SECRET_ACCESS_KEY=xxx
 
 ---
 
+### 2026-01-10: フロントエンド対応
+
+**目的**: URL手入力からファイルアップロード（Presigned URL方式）に変更
+
+**変更ファイル（FSDアーキテクチャに従い下から順に）**:
+
+| レイヤー | ファイル | 変更内容 |
+|----------|----------|----------|
+| Entities | `src/entities/admin-product/model/types.ts` | 型定義追加・修正 |
+| Entities | `src/entities/admin-product/api/admin-product-api.ts` | APIメソッド追加 |
+| Features | `src/features/admin-product/upload-image/lib/use-upload-product-image.ts` | 新規作成 |
+| Features | `src/features/admin-product/update-image/lib/use-update-product-image.ts` | 新規作成 |
+| Page-Components | `src/page-components/admin/products/edit/ui/tab-components/MediaTab.tsx` | UI全面改修 |
+
+**Entities層 - 型定義追加**:
+
+| 型名 | 内容 |
+|------|------|
+| `GetPresignedUrlRequest` | `file_name`, `content_type` |
+| `GetPresignedUrlResponse` | `upload_url`, `file_url`, `expires_in` |
+| `AddProductImageRequest` | `url` → `s3_url` に修正 |
+| `UpdateProductImageRequest` | `alt`, `is_main`, `sort_order` |
+| `UpdateProductImageResponse` | `image`, `message` |
+
+**Entities層 - APIメソッド追加**:
+
+| メソッド | 説明 |
+|----------|------|
+| `getPresignedUrl(productId, data)` | Presigned URL取得 |
+| `updateImage(productId, imageId, data)` | 画像メタデータ更新 |
+
+**Features層 - 新規Hook**:
+
+| Hook | 説明 |
+|------|------|
+| `useUploadProductImage` | Presigned URL取得 → S3アップロード → DB登録の一連処理。進捗コールバック対応 |
+| `useUpdateProductImage` | 画像メタデータ更新（alt, is_main, sort_order） |
+
+**Page-Components層 - MediaTab改修**:
+
+| Before | After |
+|--------|-------|
+| URL手入力ダイアログ | ファイルアップロードダイアログ |
+| `<Input placeholder="URL">` | ドラッグ&ドロップエリア |
+| プレビューなし | アップロード前プレビュー表示 |
+| 進捗表示なし | Progressバーで進捗表示 |
+| バリデーションなし | ファイル形式・サイズチェック |
+| メイン設定がPOST（バグ） | メイン設定がPUT（正常） |
+
+**バリデーション設定**:
+- 許可形式: JPEG, PNG, WebP, GIF
+- 最大サイズ: 10MB
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
@@ -188,4 +243,5 @@ AWS_SECRET_ACCESS_KEY=xxx
 [x] DBカラム名変更 (url → s3_url)
 [x] S3Service実装
 [x] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
-[] フロントエンド対応
+[x] フロントエンド対応
+[ ] 動作確認・テスト

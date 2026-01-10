@@ -99,7 +99,7 @@ export const testConfig: EnvironmentConfig = {
 
   tags: {
     Environment: 'test',
-    Project: 'cdk-template',
+    Project: 'acrique-v1',
     ManagedBy: 'CDK',
   },
 };

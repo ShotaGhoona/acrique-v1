@@ -31,7 +31,7 @@ describe('IntegrationStack', () => {
 
     it('should have correct display name', () => {
       template.hasResourceProperties('AWS::SNS::Topic', {
-        DisplayName: `${testConfig.envName}-cdk-template-topic`,
+        DisplayName: `${testConfig.envName}-${testConfig.tags.Project}-topic`,
       });
     });
   });

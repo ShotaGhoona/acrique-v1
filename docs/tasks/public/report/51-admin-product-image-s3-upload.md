@@ -150,11 +150,42 @@ AWS_SECRET_ACCESS_KEY=xxx
 
 ---
 
+### 2025-01-10: 新規API実装
+
+**目的**: 画像管理用の4つのAPIエンドポイントを実装
+
+**変更ファイル（4層アーキテクチャに従い下から順に）**:
+
+| レイヤー | ファイル | 変更内容 |
+|----------|----------|----------|
+| Domain | `app/domain/exceptions/product.py` | `ProductImageNotFoundError` 例外追加 |
+| Application | `app/application/schemas/admin_product_schemas.py` | 画像管理用DTO追加（`GetPresignedUrlInputDTO`, `GetPresignedUrlOutputDTO`, `AddProductImageInputDTO`, `AddProductImageOutputDTO`, `UpdateProductImageInputDTO`, `UpdateProductImageOutputDTO`, `DeleteProductImageOutputDTO`） |
+| Application | `app/application/use_cases/admin_product_usecase.py` | `IStorageService`注入、`get_presigned_url`, `add_image`, `update_image`, `delete_image` メソッド追加 |
+| Presentation | `app/presentation/schemas/admin_product_schemas.py` | Request/Response追加（`GetPresignedUrlRequest`, `GetPresignedUrlResponse`, `AddProductImageRequest`, `AddProductImageResponse`, `UpdateProductImageRequest`, `UpdateProductImageResponse`, `DeleteProductImageResponse`） |
+| Presentation | `app/presentation/api/admin_product_api.py` | 4エンドポイント追加 |
+| DI | `app/di/admin_product.py` | `S3Service`注入追加 |
+
+**新規エンドポイント**:
+
+| メソッド | パス | 説明 |
+|----------|------|------|
+| POST | `/api/admin/products/{id}/images/presigned` | Presigned URL取得 |
+| POST | `/api/admin/products/{id}/images` | 画像追加 |
+| PUT | `/api/admin/products/{id}/images/{image_id}` | 画像更新（メタデータのみ） |
+| DELETE | `/api/admin/products/{id}/images/{image_id}` | 画像削除 |
+
+**アップロードフロー**:
+1. フロントエンド: `/presigned` でPresigned URL取得
+2. フロントエンド: 取得したURLに直接S3へPUTリクエスト
+3. フロントエンド: アップロード成功後、`/images` でDB登録
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
 [x] StorageServiceインターフェース作成
 [x] DBカラム名変更 (url → s3_url)
 [x] S3Service実装
-[] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
+[x] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
 [] フロントエンド対応

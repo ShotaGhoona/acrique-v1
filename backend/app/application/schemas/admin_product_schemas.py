@@ -205,7 +205,59 @@ class DeleteProductOutputDTO(BaseModel):
     message: str
 
 
-# ========== 画像管理（TODO: S3アップロード対応で新規実装予定） ==========
+# ========== 画像管理 ==========
+
+
+class GetPresignedUrlInputDTO(BaseModel):
+    """Presigned URL取得入力DTO"""
+
+    file_name: str
+    content_type: str
+
+
+class GetPresignedUrlOutputDTO(BaseModel):
+    """Presigned URL取得出力DTO"""
+
+    upload_url: str
+    file_url: str
+    expires_in: int
+
+
+class AddProductImageInputDTO(BaseModel):
+    """画像追加入力DTO"""
+
+    s3_url: str
+    alt: str | None = None
+    is_main: bool = False
+    sort_order: int = 0
+
+
+class AddProductImageOutputDTO(BaseModel):
+    """画像追加出力DTO"""
+
+    image: AdminProductImageDTO
+    message: str
+
+
+class UpdateProductImageInputDTO(BaseModel):
+    """画像更新入力DTO（メタデータのみ）"""
+
+    alt: str | None = None
+    is_main: bool | None = None
+    sort_order: int | None = None
+
+
+class UpdateProductImageOutputDTO(BaseModel):
+    """画像更新出力DTO"""
+
+    image: AdminProductImageDTO
+    message: str
+
+
+class DeleteProductImageOutputDTO(BaseModel):
+    """画像削除出力DTO"""
+
+    message: str
 
 
 # ========== オプション更新 ==========

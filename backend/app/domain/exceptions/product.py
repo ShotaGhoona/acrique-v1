@@ -31,3 +31,17 @@ class ProductNotActiveError(DomainException):
             message=message,
             code='PRODUCT_NOT_ACTIVE',
         )
+
+
+class ProductImageNotFoundError(DomainException):
+    """商品画像が見つからない"""
+
+    def __init__(self, image_id: int | None = None):
+        if image_id:
+            message = f'画像が見つかりません: {image_id}'
+        else:
+            message = '画像が見つかりません'
+        super().__init__(
+            message=message,
+            code='PRODUCT_IMAGE_NOT_FOUND',
+        )

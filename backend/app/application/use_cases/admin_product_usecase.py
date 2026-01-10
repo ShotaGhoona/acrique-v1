@@ -1,6 +1,9 @@
 """Admin商品管理ユースケース"""
 
+from app.application.interfaces.storage_service import IStorageService
 from app.application.schemas.admin_product_schemas import (
+    AddProductImageInputDTO,
+    AddProductImageOutputDTO,
     AdminProductDetailDTO,
     AdminProductDTO,
     AdminProductFaqDTO,
@@ -11,14 +14,19 @@ from app.application.schemas.admin_product_schemas import (
     AdminProductSpecDTO,
     CreateProductInputDTO,
     CreateProductOutputDTO,
+    DeleteProductImageOutputDTO,
     DeleteProductOutputDTO,
     GetAdminProductOutputDTO,
     GetAdminProductsInputDTO,
     GetAdminProductsOutputDTO,
+    GetPresignedUrlInputDTO,
+    GetPresignedUrlOutputDTO,
     UpdateProductFaqsInputDTO,
     UpdateProductFaqsOutputDTO,
     UpdateProductFeaturesInputDTO,
     UpdateProductFeaturesOutputDTO,
+    UpdateProductImageInputDTO,
+    UpdateProductImageOutputDTO,
     UpdateProductInputDTO,
     UpdateProductOptionsInputDTO,
     UpdateProductOptionsOutputDTO,
@@ -35,15 +43,20 @@ from app.domain.entities.product import (
     ProductOptionValue,
     ProductSpec,
 )
-from app.domain.exceptions.product import ProductNotFoundError
+from app.domain.exceptions.product import ProductImageNotFoundError, ProductNotFoundError
 from app.domain.repositories.product_repository import IProductRepository
 
 
 class AdminProductUsecase:
     """Admin商品管理ユースケース"""
 
-    def __init__(self, product_repository: IProductRepository):
+    def __init__(
+        self,
+        product_repository: IProductRepository,
+        storage_service: IStorageService,
+    ):
         self.product_repository = product_repository
+        self.storage_service = storage_service
 
     def get_products(
         self, input_dto: GetAdminProductsInputDTO
@@ -188,7 +201,107 @@ class AdminProductUsecase:
 
         return DeleteProductOutputDTO(message='商品を削除しました')
 
-    # ========== 画像管理（TODO: S3アップロード対応で新規実装予定） ==========
+    # ========== 画像管理 ==========
+
+    def get_presigned_url(
+        self, product_id: str, input_dto: GetPresignedUrlInputDTO
+    ) -> GetPresignedUrlOutputDTO:
+        """Presigned URLを取得"""
+        # 商品の存在確認
+        product = self.product_repository.get_by_id(product_id, include_relations=False)
+        if product is None:
+            raise ProductNotFoundError()
+
+        # Presigned URL生成
+        result = self.storage_service.generate_presigned_url(
+            file_name=input_dto.file_name,
+            content_type=input_dto.content_type,
+            folder='products',
+        )
+
+        return GetPresignedUrlOutputDTO(
+            upload_url=result.upload_url,
+            file_url=result.file_url,
+            expires_in=result.expires_in,
+        )
+
+    def add_image(
+        self, product_id: str, input_dto: AddProductImageInputDTO
+    ) -> AddProductImageOutputDTO:
+        """画像を追加"""
+        # 商品の存在確認
+        product = self.product_repository.get_by_id(product_id, include_relations=False)
+        if product is None:
+            raise ProductNotFoundError()
+
+        # 画像エンティティを作成
+        image = ProductImage(
+            product_id=product_id,
+            s3_url=input_dto.s3_url,
+            alt=input_dto.alt,
+            is_main=input_dto.is_main,
+            sort_order=input_dto.sort_order,
+        )
+
+        # DBに保存
+        created_image = self.product_repository.add_image(image)
+
+        return AddProductImageOutputDTO(
+            image=self._to_image_dto(created_image),
+            message='画像を追加しました',
+        )
+
+    def update_image(
+        self, product_id: str, image_id: int, input_dto: UpdateProductImageInputDTO
+    ) -> UpdateProductImageOutputDTO:
+        """画像メタデータを更新"""
+        # 商品の存在確認
+        product = self.product_repository.get_by_id(product_id, include_relations=False)
+        if product is None:
+            raise ProductNotFoundError()
+
+        # 画像の存在確認
+        image = self.product_repository.get_image(image_id)
+        if image is None or image.product_id != product_id:
+            raise ProductImageNotFoundError()
+
+        # 指定されたフィールドのみ更新
+        if input_dto.alt is not None:
+            image.alt = input_dto.alt
+        if input_dto.is_main is not None:
+            image.is_main = input_dto.is_main
+        if input_dto.sort_order is not None:
+            image.sort_order = input_dto.sort_order
+
+        # DBを更新
+        updated_image = self.product_repository.update_image(image)
+
+        return UpdateProductImageOutputDTO(
+            image=self._to_image_dto(updated_image),
+            message='画像を更新しました',
+        )
+
+    def delete_image(self, product_id: str, image_id: int) -> DeleteProductImageOutputDTO:
+        """画像を削除"""
+        # 商品の存在確認
+        product = self.product_repository.get_by_id(product_id, include_relations=False)
+        if product is None:
+            raise ProductNotFoundError()
+
+        # 画像の存在確認
+        image = self.product_repository.get_image(image_id)
+        if image is None or image.product_id != product_id:
+            raise ProductImageNotFoundError()
+
+        # S3から削除（失敗しても続行）
+        self.storage_service.delete_object(image.s3_url)
+
+        # DBから削除
+        self.product_repository.delete_image(image_id)
+
+        return DeleteProductImageOutputDTO(message='画像を削除しました')
+
+    # ========== オプション管理 ==========
 
     def update_options(
         self, product_id: str, input_dto: UpdateProductOptionsInputDTO

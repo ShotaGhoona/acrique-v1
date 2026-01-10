@@ -70,7 +70,7 @@ export function MediaTab({ productId, product }: MediaTabProps) {
     addImageMutation.mutate({
       productId,
       data: {
-        url: image.url,
+        url: image.s3_url,
         alt: image.alt || undefined,
         is_main: true,
         sort_order: image.sort_order,
@@ -91,9 +91,9 @@ export function MediaTab({ productId, product }: MediaTabProps) {
                 key={image.id}
                 className='group relative aspect-square overflow-hidden rounded-lg bg-muted'
               >
-                {image.url ? (
+                {image.s3_url ? (
                   <img
-                    src={image.url}
+                    src={image.s3_url}
                     alt={image.alt ?? '商品画像'}
                     className='h-full w-full object-cover'
                   />

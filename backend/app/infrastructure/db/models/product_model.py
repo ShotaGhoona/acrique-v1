@@ -65,7 +65,7 @@ class ProductImageModel(Base):
     product_id = Column(
         String(100), ForeignKey('products.id'), nullable=False, index=True
     )
-    url = Column(String(500), nullable=False)
+    s3_url = Column(String(500), nullable=False)
     alt = Column(String(255), nullable=True)
     is_main = Column(Boolean, default=False)
     sort_order = Column(Integer, default=0)

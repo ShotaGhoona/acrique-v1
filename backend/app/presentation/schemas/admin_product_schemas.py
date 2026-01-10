@@ -28,7 +28,7 @@ class AdminProductImageResponse(BaseModel):
     """商品画像レスポンス"""
 
     id: int
-    url: str
+    s3_url: str
     alt: str | None
     is_main: bool
     sort_order: int
@@ -37,7 +37,7 @@ class AdminProductImageResponse(BaseModel):
     def from_dto(cls, dto: AdminProductImageDTO) -> 'AdminProductImageResponse':
         return cls(
             id=dto.id,
-            url=dto.url,
+            s3_url=dto.s3_url,
             alt=dto.alt,
             is_main=dto.is_main,
             sort_order=dto.sort_order,

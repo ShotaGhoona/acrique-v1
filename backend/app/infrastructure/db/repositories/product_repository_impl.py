@@ -247,7 +247,7 @@ class ProductRepositoryImpl(IProductRepository):
         """商品画像を追加"""
         image_model = ProductImageModel(
             product_id=image.product_id,
-            url=image.url,
+            s3_url=image.s3_url,
             alt=image.alt,
             is_main=image.is_main,
             sort_order=image.sort_order,
@@ -564,7 +564,7 @@ class ProductRepositoryImpl(IProductRepository):
         return ProductImage(
             id=model.id,
             product_id=model.product_id,
-            url=model.url,
+            s3_url=model.s3_url,
             alt=model.alt,
             is_main=model.is_main,
             sort_order=model.sort_order,

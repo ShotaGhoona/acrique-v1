@@ -82,10 +82,43 @@ class IStorageService(ABC):
 
 ---
 
+### 2025-01-10: DBカラム名変更 (url → s3_url)
+
+**目的**: 画像URLがS3からのものであることを明示するためカラム名をリネーム
+
+**変更ファイル一覧**:
+
+| レイヤー | ファイル | 変更内容 |
+|----------|----------|----------|
+| Domain | `app/domain/entities/product.py` | `ProductImage.url` → `ProductImage.s3_url` |
+| Infrastructure | `app/infrastructure/db/models/product_model.py` | `ProductImageModel.url` → `s3_url` |
+| Infrastructure | `app/infrastructure/db/repositories/product_repository_impl.py` | マッピング修正 |
+| Application | `app/application/schemas/admin_product_schemas.py` | `AdminProductImageDTO.url` → `s3_url` |
+| Application | `app/application/schemas/product_schemas.py` | `ProductImageDTO.url` → `s3_url` |
+| Application | `app/application/use_cases/admin_product_usecase.py` | 参照修正 |
+| Application | `app/application/use_cases/product_usecase.py` | 参照修正 |
+| Presentation | `app/presentation/schemas/admin_product_schemas.py` | `AdminProductImageResponse.url` → `s3_url` |
+| Presentation | `app/presentation/schemas/product_schemas.py` | `ProductImageResponse.url` → `s3_url` |
+| Infrastructure | `app/infrastructure/db/seeds/product_seed.py` | シードデータ修正 |
+| Migration | `alembic/versions/c8f3a1b2d456_rename_url_to_s3_url_in_product_images.py` | カラム名変更マイグレーション |
+
+**フロントエンド変更**:
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `src/entities/admin-product/model/types.ts` | `AdminProductImage.url` → `s3_url` |
+| `src/entities/product/model/types.ts` | `ProductImage.url` → `s3_url` |
+| `src/page-components/admin/.../MediaTab.tsx` | `image.url` → `image.s3_url` |
+
+**デプロイ時の注意**: `alembic upgrade head` が必要
+
+---
+
 ## 次のステップ
 
 [x] S3 CORS設定
 [x] StorageServiceインターフェース作成
+[x] DBカラム名変更 (url → s3_url)
 [] S3Service実装
 [] 新規API実装（Presigned URL取得、画像追加、画像更新、画像削除）
 [] フロントエンド対応

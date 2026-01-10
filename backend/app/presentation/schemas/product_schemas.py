@@ -32,7 +32,7 @@ class ProductImageResponse(BaseModel):
     """商品画像レスポンス"""
 
     id: int
-    url: str
+    s3_url: str
     alt: str | None
     is_main: bool
     sort_order: int

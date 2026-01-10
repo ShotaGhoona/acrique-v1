@@ -1,7 +1,7 @@
 // === 商品画像 ===
 export interface AdminProductImage {
   id: number;
-  url: string;
+  s3_url: string;
   alt: string | null;
   is_main: boolean;
   sort_order: number;

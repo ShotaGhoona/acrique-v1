@@ -305,9 +305,9 @@ class AdminProductUsecase:
         if product.images:
             main_image = next((img for img in product.images if img.is_main), None)
             if main_image:
-                main_image_url = main_image.url
+                main_image_url = main_image.s3_url
             elif product.images:
-                main_image_url = product.images[0].url
+                main_image_url = product.images[0].s3_url
 
         return AdminProductDTO(
             id=product.id,
@@ -331,9 +331,9 @@ class AdminProductUsecase:
         if product.images:
             main_image = next((img for img in product.images if img.is_main), None)
             if main_image:
-                main_image_url = main_image.url
+                main_image_url = main_image.s3_url
             elif product.images:
-                main_image_url = product.images[0].url
+                main_image_url = product.images[0].s3_url
 
         return AdminProductDetailDTO(
             id=product.id,
@@ -367,7 +367,7 @@ class AdminProductUsecase:
     def _to_image_dto(self, image: ProductImage) -> AdminProductImageDTO:
         return AdminProductImageDTO(
             id=image.id,
-            url=image.url,
+            s3_url=image.s3_url,
             alt=image.alt,
             is_main=image.is_main,
             sort_order=image.sort_order,

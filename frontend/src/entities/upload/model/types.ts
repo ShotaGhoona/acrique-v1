@@ -12,6 +12,7 @@ export interface Upload {
   file_size: number | null;
   upload_type: string | null;
   status: UploadStatus;
+  admin_notes: string | null;
   order_id: number | null;
   order_item_id: number | null;
   quantity_index: number;

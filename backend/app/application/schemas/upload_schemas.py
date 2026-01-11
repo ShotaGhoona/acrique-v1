@@ -16,6 +16,7 @@ class UploadDTO(BaseModel):
     file_size: int | None = Field(None, description='ファイルサイズ（bytes）')
     upload_type: str | None = Field(None, description='アップロード種別')
     status: str = Field(..., description='ステータス')
+    admin_notes: str | None = Field(None, description='管理者メモ（差し戻し理由等）')
     order_id: int | None = Field(None, description='注文ID')
     order_item_id: int | None = Field(None, description='注文明細ID')
     quantity_index: int = Field(1, description='何個目の入稿か（1始まり）')

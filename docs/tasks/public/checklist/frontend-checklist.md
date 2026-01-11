@@ -46,12 +46,12 @@
 | `/mypage` | マイページ | [x] | [x] |
 | `/mypage/orders` | 注文履歴 | [x] | [x] |
 | `/mypage/orders/[id]` | 注文詳細 | [x] | [x] |
-| `/mypage/orders/[id]/upload` | データ入稿 | [ ] | [ ] |
+| `/mypage/orders/[id]/upload` | データ入稿 | [x] | [x] |
 | `/mypage/profile` | プロフィール | [x] | [x] |
 | `/mypage/addresses` | 配送先管理 | [x] | [x] |
 | `/cart` | カート | [x] | [x] |
 | `/checkout` | 購入手続き | [x] | [x] |
-| `/checkout/upload` | データ入稿 | [ ] | [ ] |
+| `/checkout/upload` | データ入稿 | [x] | [x] |
 | `/checkout/confirm` | 注文確認・決済 | [x] | [x] |
 | `/checkout/complete` | 注文完了 | [x] | [x] |
 
@@ -147,16 +147,18 @@
 
 | タスク | 状況 |
 |--------|------|
-| entities/upload | [ ] |
-| features/upload/upload-file | [ ] |
-| features/upload/get-uploads | [ ] |
-| widgets/upload/dropzone | [ ] |
-| ドラッグ&ドロップ | [ ] |
-| プレビュー表示 | [ ] |
-| ファイル形式バリデーション | [ ] |
-| アップロード進捗 | [ ] |
-| チェックアウト入稿UI | [ ] |
-| マイページ入稿UI | [ ] |
+| entities/upload | [x] |
+| features/upload/upload-file | [x] |
+| features/upload/get-uploads | [x] |
+| features/upload/delete-upload | [x] |
+| features/upload/link-uploads | [x] |
+| widgets/upload/dropzone | [x] |
+| ドラッグ&ドロップ | [x] |
+| プレビュー表示 | [x] |
+| ファイル形式バリデーション | [x] |
+| アップロード進捗 | [x] |
+| チェックアウト入稿UI | [x] |
+| マイページ入稿UI | [x] |
 
 ## ユーザー機能
 

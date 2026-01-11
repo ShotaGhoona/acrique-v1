@@ -1,3 +1,30 @@
+// === アップロードステータス ===
+export type UploadStatus =
+  | 'pending'
+  | 'submitted'
+  | 'reviewing'
+  | 'approved'
+  | 'rejected';
+
+export const UPLOAD_STATUS_LABELS: Record<UploadStatus, string> = {
+  pending: '確認待ち',
+  submitted: '提出済み',
+  reviewing: '確認中',
+  approved: '承認済み',
+  rejected: '差し戻し',
+};
+
+export const UPLOAD_STATUS_COLORS: Record<
+  UploadStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
+  pending: 'default',
+  submitted: 'secondary',
+  reviewing: 'secondary',
+  approved: 'outline',
+  rejected: 'destructive',
+};
+
 // === アップロード種別 ===
 export type UploadType = 'logo' | 'qr' | 'photo' | 'text';
 

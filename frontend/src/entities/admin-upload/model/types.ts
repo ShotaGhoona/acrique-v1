@@ -1,4 +1,4 @@
-import type { UploadStatus } from '@/entities/upload/model/types';
+import type { UploadStatus } from '@/shared/domain/upload/model/types';
 
 // === Admin用入稿データ型 ===
 export interface AdminUpload {

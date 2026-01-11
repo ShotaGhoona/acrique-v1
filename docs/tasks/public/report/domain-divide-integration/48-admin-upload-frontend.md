@@ -9,6 +9,12 @@ Phase 4（入稿フロー改善）の一部。
 
 ## 実装済み
 
+### shared/domain/upload
+
+| ファイル | 追加内容 |
+|----------|----------|
+| `model/types.ts` | `UploadStatus`型、`UPLOAD_STATUS_LABELS`、`UPLOAD_STATUS_COLORS` |
+
 ### entities/admin-upload
 
 | ファイル | 説明 |
@@ -31,14 +37,37 @@ Phase 4（入稿フロー改善）の一部。
 - `ADMIN_UPLOADS_QUERY_KEY`
 - `ADMIN_UPLOAD_QUERY_KEY`
 
+### page-components/admin/uploads
+
+| ファイル | 状況 |
+|----------|------|
+| `home/ui/UploadsHomeContainer.tsx` | API接続完了（`useAdminUploads`使用） |
+| `detail/ui/UploadDetailContainer.tsx` | API接続完了（承認/差し戻し実装済み） |
+
+**削除したファイル:**
+- `home/dummy-data/uploads.ts` - ダミーデータ削除
+
 ---
 
-## 未実装（page-components）
+## 未実装（マイページ再入稿画面）
+
+以下のページでは、差し戻し理由（`admin_notes`）の表示が未実装:
 
 | ページ | 状況 |
 |--------|------|
-| `/admin/uploads` 一覧画面 | ダミーデータ → API接続必要 |
-| `/admin/uploads/[id]` 詳細画面 | 承認/差し戻しボタン実装必要 |
+| `mypage/order-detail/ui/OrderDetailContainer.tsx` | ダミーの差し戻し項目表示中 |
+| `mypage/order-upload/ui/OrderUploadContainer.tsx` | ダミーの差し戻し理由表示中 |
+
+### 必要な変更
+
+**バックエンド:**
+- `UploadDTO`に`admin_notes`を追加
+- `UploadResponse`に`admin_notes`を追加
+
+**フロントエンド:**
+- `entities/upload/model/types.ts`の`Upload`型に`admin_notes`を追加
+- `OrderDetailContainer`でrejectedのuploadを`useUploads`から取得して表示
+- `OrderUploadContainer`で`admin_notes`を表示
 
 ---
 

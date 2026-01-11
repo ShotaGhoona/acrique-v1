@@ -37,6 +37,15 @@ from app.domain.exceptions.common import (
     ValidationError,
 )
 from app.domain.exceptions.order import OrderCannotCancelError, OrderNotFoundError
+from app.domain.exceptions.upload import (
+    FileSizeTooLargeError,
+    InvalidContentTypeError,
+    InvalidUploadTypeError,
+    UploadAlreadyLinkedError,
+    UploadNotDeletableError,
+    UploadNotFoundError,
+    UploadNotOwnedError,
+)
 from app.domain.exceptions.payment import (
     OrderNotPendingError,
     PaymentAlreadyProcessedError,
@@ -66,6 +75,11 @@ EXCEPTION_STATUS_MAP: dict[type[DomainException], int] = {
     ValidationError: 400,
     AdminEmailAlreadyExistsError: 400,
     CannotDeleteSelfError: 400,
+    InvalidContentTypeError: 400,
+    InvalidUploadTypeError: 400,
+    FileSizeTooLargeError: 400,
+    UploadNotDeletableError: 400,
+    UploadAlreadyLinkedError: 400,
     # 401 Unauthorized - 認証失敗
     InvalidCredentialsError: 401,
     AdminInvalidCredentialsError: 401,
@@ -74,6 +88,7 @@ EXCEPTION_STATUS_MAP: dict[type[DomainException], int] = {
     PermissionDeniedError: 403,
     AdminInactiveError: 403,
     AdminPermissionDeniedError: 403,
+    UploadNotOwnedError: 403,
     # 404 Not Found - リソースが見つからない
     NotFoundError: 404,
     UserNotFoundError: 404,
@@ -82,6 +97,7 @@ EXCEPTION_STATUS_MAP: dict[type[DomainException], int] = {
     OrderNotFoundError: 404,
     AddressNotFoundError: 404,
     AdminNotFoundError: 404,
+    UploadNotFoundError: 404,
     # 500 Internal Server Error - 操作失敗
     OperationFailedError: 500,
 }

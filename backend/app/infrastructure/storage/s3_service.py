@@ -10,13 +10,24 @@ from botocore.exceptions import ClientError
 from app.application.interfaces.storage_service import IStorageService, PresignedUrlResult
 from app.config import get_settings
 
-# 許可するContent-Type
+# 許可するContent-Type（商品画像用）
 ALLOWED_CONTENT_TYPES = frozenset(
     [
         'image/jpeg',
         'image/png',
         'image/webp',
         'image/gif',
+    ]
+)
+
+# 許可するContent-Type（消費者入稿用）
+ALLOWED_UPLOAD_CONTENT_TYPES = frozenset(
+    [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'application/pdf',
+        'image/svg+xml',
     ]
 )
 
@@ -81,18 +92,25 @@ class S3Service(IStorageService):
             file_name: ファイル名（拡張子含む）
             content_type: MIMEタイプ（例: 'image/jpeg'）
             folder: 保存先フォルダ（デフォルト: 'products'）
+                    消費者入稿の場合: 'uploads/user-{user_id}'
 
         Returns:
-            PresignedUrlResult: アップロードURL、ファイルURL、有効期限
+            PresignedUrlResult: アップロードURL、ファイルURL、S3キー、有効期限
 
         Raises:
             ValueError: 許可されていないContent-Typeの場合
         """
         # Content-Typeのバリデーション
-        if content_type not in ALLOWED_CONTENT_TYPES:
+        # uploadsフォルダの場合は消費者入稿用の許可リストを使用
+        if folder.startswith('uploads/'):
+            allowed_types = ALLOWED_UPLOAD_CONTENT_TYPES
+        else:
+            allowed_types = ALLOWED_CONTENT_TYPES
+
+        if content_type not in allowed_types:
             raise ValueError(
                 f'許可されていないファイル形式です: {content_type}. '
-                f'許可されている形式: {", ".join(ALLOWED_CONTENT_TYPES)}'
+                f'許可されている形式: {", ".join(allowed_types)}'
             )
 
         # ユニークなファイル名を生成（UUIDを付与）
@@ -130,6 +148,7 @@ class S3Service(IStorageService):
         return PresignedUrlResult(
             upload_url=upload_url,
             file_url=file_url,
+            s3_key=s3_key,
             expires_in=PRESIGNED_URL_EXPIRES_IN,
         )
 

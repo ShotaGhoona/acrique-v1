@@ -19,6 +19,7 @@ from app.presentation.api.cart_api import router as cart_router
 from app.presentation.api.order_api import router as order_router
 from app.presentation.api.payment_api import router as payment_router
 from app.presentation.api.product_api import router as product_router
+from app.presentation.api.upload_api import order_uploads_router, router as upload_router
 from app.presentation.api.user_api import router as user_router
 from app.presentation.exception_handlers import register_exception_handlers
 
@@ -75,6 +76,8 @@ app.include_router(product_router, prefix='/api')
 app.include_router(cart_router, prefix='/api')
 app.include_router(order_router, prefix='/api')
 app.include_router(payment_router, prefix='/api')
+app.include_router(upload_router, prefix='/api')
+app.include_router(order_uploads_router, prefix='/api')
 
 # Admin API ルーター
 app.include_router(admin_auth_router, prefix='/api')

@@ -11,6 +11,7 @@ import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import { useCart } from '@/features/cart/get-cart/lib/use-cart';
 import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
 import { useCreateOrder } from '@/features/order/create-order/lib/use-create-order';
+import { AddressFormModal } from '@/widgets/adress/address-form-modal/ui/AddressFormModal';
 import type { Address } from '@/entities/address/model/types';
 import type { PaymentMethod } from '@/entities/order/model/types';
 
@@ -30,6 +31,7 @@ export function CheckoutContainer() {
 
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('stripe');
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const addresses = useMemo(
     () => addressData?.addresses ?? [],
@@ -120,11 +122,13 @@ export function CheckoutContainer() {
                 <p className='text-sm text-muted-foreground'>
                   配送先が登録されていません
                 </p>
-                <Button asChild variant='outline' className='mt-4'>
-                  <Link href='/mypage/addresses'>
-                    <Plus className='mr-2 h-4 w-4' />
-                    配送先を追加
-                  </Link>
+                <Button
+                  variant='outline'
+                  className='mt-4'
+                  onClick={() => setIsAddressModalOpen(true)}
+                >
+                  <Plus className='mr-2 h-4 w-4' />
+                  配送先を追加
                 </Button>
               </div>
             ) : (
@@ -172,16 +176,33 @@ export function CheckoutContainer() {
             )}
 
             {addresses.length > 0 && (
-              <div className='mt-4'>
+              <div className='mt-4 flex items-center justify-between'>
                 <Link
                   href='/mypage/addresses'
                   className='text-sm text-muted-foreground transition-colors hover:text-foreground'
                 >
                   配送先を管理する
                 </Link>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={() => setIsAddressModalOpen(true)}
+                >
+                  <Plus className='mr-1 h-4 w-4' />
+                  新しい配送先を追加
+                </Button>
               </div>
             )}
           </section>
+
+          {/* Address Form Modal */}
+          <AddressFormModal
+            open={isAddressModalOpen}
+            onOpenChange={setIsAddressModalOpen}
+            onSuccess={(newAddress) => {
+              setSelectedAddressId(String(newAddress.id));
+            }}
+          />
 
           {/* Payment Method */}
           <section className='rounded-sm border border-border bg-background p-6'>

@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
 import { Label } from '@/shared/ui/shadcn/ui/label';
+import { SITE_INFO } from '@/shared/config/site-info';
 
 const inquiryTypes = [
   { value: 'product', label: '商品に関するご質問' },
@@ -169,7 +170,7 @@ export function ContactFormSection() {
               <div className='rounded-sm bg-secondary/50 p-6'>
                 <h3 className='font-medium'>返信について</h3>
                 <p className='mt-2 text-sm text-muted-foreground'>
-                  通常、2営業日以内にご返信いたします。
+                  通常、{SITE_INFO.responseTime.text}にご返信いたします。
                   お急ぎの場合はお電話にてお問い合わせください。
                 </p>
               </div>
@@ -183,16 +184,16 @@ export function ContactFormSection() {
                 <div>
                   <p className='text-sm text-muted-foreground'>Email</p>
                   <a
-                    href='mailto:info@acrique.jp'
+                    href={`mailto:${SITE_INFO.contact.email}`}
                     className='text-lg transition-colors hover:text-muted-foreground'
                   >
-                    info@acrique.jp
+                    {SITE_INFO.contact.email}
                   </a>
                 </div>
 
                 <div>
                   <p className='text-sm text-muted-foreground'>営業時間</p>
-                  <p className='mt-1'>平日 10:00 - 18:00</p>
+                  <p className='mt-1'>{SITE_INFO.businessHours.display}</p>
                   <p className='text-xs text-muted-foreground'>
                     土日祝日はお休みをいただいております
                   </p>

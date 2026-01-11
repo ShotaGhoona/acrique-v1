@@ -1,23 +1,24 @@
 'use client';
 
+import { SITE_INFO } from '@/shared/config/site-info';
+
 const lawItems = [
-  { label: '販売業者', value: '株式会社ACRIQUE' },
-  { label: '運営統括責任者', value: '代表取締役 山田 太郎' },
+  { label: '販売業者', value: SITE_INFO.company.name },
+  { label: '運営統括責任者', value: SITE_INFO.company.representative },
   {
     label: '所在地',
-    value: '〒150-0001 東京都渋谷区神宮前1-2-3 ACRIQUEビル 5F',
+    value: SITE_INFO.address.full,
   },
-  { label: '電話番号', value: '03-1234-5678（平日10:00〜18:00）' },
-  { label: 'メールアドレス', value: 'info@acrique.jp' },
-  { label: 'URL', value: 'https://acrique.jp' },
+  { label: '電話番号', value: SITE_INFO.contact.phoneDisplay },
+  { label: 'メールアドレス', value: SITE_INFO.contact.email },
+  { label: 'URL', value: SITE_INFO.website.url },
   {
     label: '商品の販売価格',
     value: '各商品ページに税込価格を表示しています。',
   },
   {
     label: '商品代金以外の必要料金',
-    value:
-      '送料：全国一律1,000円（税込）\n※30,000円以上のご注文で送料無料\n銀行振込の場合、振込手数料はお客様負担となります。',
+    value: `送料：${SITE_INFO.shipping.feeDisplay}\n${SITE_INFO.shipping.freeThresholdNote}\n銀行振込の場合、振込手数料はお客様負担となります。`,
   },
   {
     label: 'お支払い方法',

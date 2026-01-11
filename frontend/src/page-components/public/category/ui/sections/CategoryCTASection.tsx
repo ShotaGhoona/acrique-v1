@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Mail, Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
+import { SITE_INFO } from '@/shared/config/site-info';
 
 interface CategoryCTASectionProps {
   category: CategoryWithFeatures;
@@ -18,16 +19,16 @@ const contactMethods = [
   {
     icon: Phone,
     title: '電話で相談',
-    description: '平日 10:00-18:00',
-    action: '03-XXXX-XXXX',
-    href: 'tel:03-XXXX-XXXX',
+    description: SITE_INFO.businessHours.displayShort,
+    action: SITE_INFO.contact.phone,
+    href: SITE_INFO.contact.phoneTel,
   },
   {
     icon: MessageCircle,
     title: 'LINEで相談',
     description: 'お気軽にメッセージください',
     action: 'LINE公式アカウント',
-    href: 'https://line.me/',
+    href: SITE_INFO.social.line,
   },
 ];
 

@@ -50,11 +50,13 @@ export function HeroSection() {
             </Button>
             <Button
               asChild
-              variant='outline'
               size='lg'
-              className='border-background px-8 text-background hover:bg-background hover:text-foreground'
+              className='group bg-background px-8 text-foreground hover:bg-background/90'
             >
-              <Link href='/about'>ブランドストーリー</Link>
+              <Link href='/about'>
+                ブランドストーリー
+                <ArrowRight className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
+              </Link>
             </Button>
           </div>
 

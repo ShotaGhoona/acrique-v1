@@ -21,8 +21,8 @@ export function useLogin() {
     onSuccess: (data) => {
       // バックエンドレスポンス {access_token, user_id} からユーザーオブジェクトを生成
       dispatch(setUser({ id: data.user_id }));
-      // リダイレクト先があればそこへ、なければマイページへ
-      const redirect = searchParams.get('redirect') || '/mypage';
+      // リダイレクト先があればそこへ、なければトップページへ（購買意欲を維持）
+      const redirect = searchParams.get('redirect') || '/';
       router.push(redirect);
     },
     onError: (error: any) => {

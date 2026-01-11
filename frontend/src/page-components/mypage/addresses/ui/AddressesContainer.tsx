@@ -1,9 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
   MapPin,
   Plus,
@@ -16,167 +13,13 @@ import {
 import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
 import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { Input } from '@/shared/ui/shadcn/ui/input';
-import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/shared/ui/shadcn/ui/dialog';
 import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
-import { useCreateAddress } from '@/features/address/create-address/lib/use-create-address';
-import { useUpdateAddress } from '@/features/address/update-address/lib/use-update-address';
 import { useDeleteAddress } from '@/features/address/delete-address/lib/use-delete-address';
 import { useSetDefaultAddress } from '@/features/address/set-default-address/lib/use-set-default-address';
+import { AddressFormModal } from '@/widgets/adress/address-form-modal/ui/AddressFormModal';
 import { AddressesListSkeleton } from './skeleton/AddressesListSkeleton';
 import type { Address } from '@/entities/address/model/types';
-
-const addressSchema = z.object({
-  label: z.string().optional(),
-  name: z.string().min(1, 'お名前を入力してください'),
-  postal_code: z.string().min(1, '郵便番号を入力してください'),
-  prefecture: z.string().min(1, '都道府県を入力してください'),
-  city: z.string().min(1, '市区町村を入力してください'),
-  address1: z.string().min(1, '番地を入力してください'),
-  address2: z.string().optional(),
-  phone: z.string().min(1, '電話番号を入力してください'),
-  is_default: z.boolean().optional(),
-});
-
-type AddressFormData = z.infer<typeof addressSchema>;
-
-interface AddressFormProps {
-  defaultValues?: Partial<AddressFormData>;
-  onSubmit: (data: AddressFormData) => void;
-  isLoading: boolean;
-  submitLabel: string;
-}
-
-function AddressForm({
-  defaultValues,
-  onSubmit,
-  isLoading,
-  submitLabel,
-}: AddressFormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<AddressFormData>({
-    resolver: zodResolver(addressSchema),
-    defaultValues: {
-      label: '',
-      name: '',
-      postal_code: '',
-      prefecture: '',
-      city: '',
-      address1: '',
-      address2: '',
-      phone: '',
-      is_default: false,
-      ...defaultValues,
-    },
-  });
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div className='space-y-2'>
-        <Label htmlFor='label'>ラベル（任意）</Label>
-        <Input id='label' placeholder='自宅、会社など' {...register('label')} />
-      </div>
-
-      <div className='space-y-2'>
-        <Label htmlFor='name'>
-          お名前 <span className='text-accent'>*</span>
-        </Label>
-        <Input id='name' {...register('name')} />
-        {errors.name && (
-          <p className='text-xs text-destructive'>{errors.name.message}</p>
-        )}
-      </div>
-
-      <div className='grid gap-4 sm:grid-cols-2'>
-        <div className='space-y-2'>
-          <Label htmlFor='postal_code'>
-            郵便番号 <span className='text-accent'>*</span>
-          </Label>
-          <Input
-            id='postal_code'
-            placeholder='000-0000'
-            {...register('postal_code')}
-          />
-          {errors.postal_code && (
-            <p className='text-xs text-destructive'>
-              {errors.postal_code.message}
-            </p>
-          )}
-        </div>
-        <div className='space-y-2'>
-          <Label htmlFor='prefecture'>
-            都道府県 <span className='text-accent'>*</span>
-          </Label>
-          <Input id='prefecture' {...register('prefecture')} />
-          {errors.prefecture && (
-            <p className='text-xs text-destructive'>
-              {errors.prefecture.message}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className='space-y-2'>
-        <Label htmlFor='city'>
-          市区町村 <span className='text-accent'>*</span>
-        </Label>
-        <Input id='city' {...register('city')} />
-        {errors.city && (
-          <p className='text-xs text-destructive'>{errors.city.message}</p>
-        )}
-      </div>
-
-      <div className='space-y-2'>
-        <Label htmlFor='address1'>
-          番地 <span className='text-accent'>*</span>
-        </Label>
-        <Input id='address1' {...register('address1')} />
-        {errors.address1 && (
-          <p className='text-xs text-destructive'>{errors.address1.message}</p>
-        )}
-      </div>
-
-      <div className='space-y-2'>
-        <Label htmlFor='address2'>建物名・部屋番号（任意）</Label>
-        <Input id='address2' {...register('address2')} />
-      </div>
-
-      <div className='space-y-2'>
-        <Label htmlFor='phone'>
-          電話番号 <span className='text-accent'>*</span>
-        </Label>
-        <Input id='phone' type='tel' {...register('phone')} />
-        {errors.phone && (
-          <p className='text-xs text-destructive'>{errors.phone.message}</p>
-        )}
-      </div>
-
-      <div className='flex justify-end pt-4'>
-        <Button type='submit' disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-              保存中...
-            </>
-          ) : (
-            submitLabel
-          )}
-        </Button>
-      </div>
-    </form>
-  );
-}
 
 function AddressCard({
   address,
@@ -286,14 +129,12 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
 }
 
 export function AddressesPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [settingDefaultId, setSettingDefaultId] = useState<number | null>(null);
 
   const { data, isLoading, error } = useAddresses();
-  const createMutation = useCreateAddress();
-  const updateMutation = useUpdateAddress();
   const deleteMutation = useDeleteAddress();
   const setDefaultMutation = useSetDefaultAddress();
 
@@ -301,12 +142,12 @@ export function AddressesPage() {
 
   const handleAdd = () => {
     setEditingAddress(null);
-    setIsDialogOpen(true);
+    setIsModalOpen(true);
   };
 
   const handleEdit = (address: Address) => {
     setEditingAddress(address);
-    setIsDialogOpen(true);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id: number) => {
@@ -323,23 +164,6 @@ export function AddressesPage() {
       onSettled: () => setSettingDefaultId(null),
     });
   };
-
-  const handleSubmit = async (formData: AddressFormData) => {
-    if (editingAddress) {
-      updateMutation.mutate(
-        { id: editingAddress.id, data: formData },
-        {
-          onSuccess: () => setIsDialogOpen(false),
-        },
-      );
-    } else {
-      createMutation.mutate(formData, {
-        onSuccess: () => setIsDialogOpen(false),
-      });
-    }
-  };
-
-  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   return (
     <MypageLayout title='配送先管理' description='配送先の追加・編集ができます'>
@@ -390,40 +214,12 @@ export function AddressesPage() {
           </div>
         )}
 
-        {/* Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-lg'>
-            <DialogHeader>
-              <DialogTitle>
-                {editingAddress ? '配送先を編集' : '配送先を追加'}
-              </DialogTitle>
-              <DialogDescription>
-                {editingAddress
-                  ? '配送先情報を編集できます'
-                  : '新しい配送先を登録します'}
-              </DialogDescription>
-            </DialogHeader>
-            <AddressForm
-              defaultValues={
-                editingAddress
-                  ? {
-                      label: editingAddress.label ?? '',
-                      name: editingAddress.name,
-                      postal_code: editingAddress.postal_code,
-                      prefecture: editingAddress.prefecture,
-                      city: editingAddress.city,
-                      address1: editingAddress.address1,
-                      address2: editingAddress.address2 ?? '',
-                      phone: editingAddress.phone,
-                    }
-                  : undefined
-              }
-              onSubmit={handleSubmit}
-              isLoading={isSubmitting}
-              submitLabel={editingAddress ? '変更を保存' : '追加する'}
-            />
-          </DialogContent>
-        </Dialog>
+        {/* Address Form Modal */}
+        <AddressFormModal
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          editingAddress={editingAddress}
+        />
       </div>
     </MypageLayout>
   );

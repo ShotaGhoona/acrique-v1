@@ -88,10 +88,6 @@ export function AboutPhilosophySection() {
               className='object-cover'
             />
           </div>
-          {/* Caption */}
-          <p className='mt-4 text-center text-xs text-muted-foreground'>
-            光を捉え、鋭く反射するエッジの輝き
-          </p>
         </div>
       </div>
     </section>

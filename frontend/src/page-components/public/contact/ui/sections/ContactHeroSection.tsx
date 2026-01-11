@@ -1,7 +1,17 @@
+import Image from 'next/image';
+
 export function ContactHeroSection() {
   return (
-    <section className='bg-foreground py-32 text-background'>
-      <div className='mx-auto max-w-7xl px-6 lg:px-12'>
+    <section className='relative bg-foreground py-32 text-background'>
+      <Image
+        src='/IMG/contact-page/25-contact-hero-background.png'
+        alt=''
+        fill
+        className='object-cover'
+        priority
+      />
+      <div className='absolute inset-0 bg-foreground/60' />
+      <div className='relative mx-auto max-w-7xl px-6 lg:px-12'>
         <div className='mx-auto max-w-3xl text-center'>
           <p className='text-xs font-medium uppercase tracking-[0.3em] text-background/50'>
             Contact

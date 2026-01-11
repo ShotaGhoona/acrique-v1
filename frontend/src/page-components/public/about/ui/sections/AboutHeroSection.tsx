@@ -1,15 +1,6 @@
-'use client';
-
 import Image from 'next/image';
-import { ChevronDown } from 'lucide-react';
 
 export function AboutHeroSection() {
-  const scrollToContent = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth',
-    });
-  };
 
   return (
     <section className='relative min-h-screen'>
@@ -65,13 +56,12 @@ export function AboutHeroSection() {
       </div>
 
       {/* Scroll Indicator */}
-      <button
-        onClick={scrollToContent}
-        className='absolute bottom-12 left-1/2 -translate-x-1/2 text-background/50 transition-colors hover:text-background'
-        aria-label='スクロールして続きを読む'
-      >
-        <ChevronDown className='h-8 w-8 animate-bounce' />
-      </button>
+      <div className='absolute bottom-8 left-1/2 -translate-x-1/2'>
+        <div className='flex flex-col items-center gap-2 text-background/60'>
+          <span className='text-xs uppercase tracking-widest'>Scroll</span>
+          <div className='h-12 w-px bg-gradient-to-b from-background/60 to-transparent' />
+        </div>
+      </div>
     </section>
   );
 }

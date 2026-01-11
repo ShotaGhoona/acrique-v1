@@ -22,7 +22,7 @@ describe('useLogin', () => {
     jest.clearAllMocks();
   });
 
-  it('ログイン成功時にReduxストアを更新しマイページへ遷移', async () => {
+  it('ログイン成功時にReduxストアを更新しトップページへ遷移', async () => {
     const { result } = renderHook(() => useLogin(), {
       wrapper: ({ children }) => <TestProviders>{children}</TestProviders>,
     });
@@ -33,8 +33,8 @@ describe('useLogin', () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    // マイページへ遷移
-    expect(mockPush).toHaveBeenCalledWith('/mypage');
+    // トップページへ遷移（リダイレクト指定がない場合）
+    expect(mockPush).toHaveBeenCalledWith('/');
   });
 
   it('ログイン失敗時にisErrorがtrueになる', async () => {

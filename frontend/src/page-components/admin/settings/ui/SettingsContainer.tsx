@@ -10,6 +10,7 @@ import {
   Shield,
   Palette,
 } from 'lucide-react';
+import { SITE_INFO } from '@/shared/config/site-info';
 import {
   Card,
   CardContent,
@@ -30,13 +31,21 @@ import {
 } from '@/shared/ui/shadcn/ui/tabs';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 
+interface SiteSettings {
+  siteName: string;
+  siteDescription: string;
+  contactEmail: string;
+  phoneNumber: string;
+  address: string;
+}
+
 export function SettingsContainer() {
-  const [siteSettings, setSiteSettings] = useState({
-    siteName: 'ACRIQUE',
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>({
+    siteName: SITE_INFO.company.nameShort,
     siteDescription: 'オーダーメイドアクリル製品の専門店',
-    contactEmail: 'info@acrique.com',
-    phoneNumber: '03-1234-5678',
-    address: '東京都渋谷区xxx-xxx',
+    contactEmail: SITE_INFO.contact.email,
+    phoneNumber: SITE_INFO.contact.phone,
+    address: SITE_INFO.address.full,
   });
 
   const [notificationSettings, setNotificationSettings] = useState({

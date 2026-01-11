@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Instagram } from 'lucide-react';
+import { SITE_INFO } from '@/shared/config/site-info';
 
 // ギャラリーアイテム（施工事例・使用シーン）
 const galleryItems = [
@@ -114,12 +115,12 @@ export function GallerySection() {
             最新の施工事例は Instagram でもご覧いただけます
           </p>
           <a
-            href='https://instagram.com/acrique'
+            href={SITE_INFO.social.instagram}
             target='_blank'
             rel='noopener noreferrer'
             className='text-sm font-medium transition-colors hover:text-accent'
           >
-            @acrique
+            {SITE_INFO.social.instagramHandle}
           </a>
         </div>
       </div>

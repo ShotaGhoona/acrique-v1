@@ -1,5 +1,7 @@
 'use client';
 
+import { SITE_INFO } from '@/shared/config/site-info';
+
 const sections = [
   {
     title: '1. 個人情報の定義',
@@ -70,9 +72,9 @@ const sections = [
     title: '9. お問い合わせ',
     content: `本プライバシーポリシーに関するお問い合わせは、下記までご連絡ください。
 
-株式会社ACRIQUE
-〒150-0001 東京都渋谷区神宮前1-2-3
-Email: privacy@acrique.jp`,
+${SITE_INFO.company.name}
+${SITE_INFO.address.short}
+Email: ${SITE_INFO.contact.privacyEmail}`,
   },
 ];
 
@@ -98,7 +100,8 @@ export function PrivacyPage() {
       <section className='py-24 md:py-32'>
         <div className='mx-auto max-w-3xl px-6 lg:px-12'>
           <p className='mb-12 text-sm text-muted-foreground'>
-            株式会社ACRIQUE（以下「当社」）は、お客様の個人情報を適切に取り扱うことが社会的責務であると考え、以下のとおりプライバシーポリシーを定めます。
+            {SITE_INFO.company.name}
+            （以下「当社」）は、お客様の個人情報を適切に取り扱うことが社会的責務であると考え、以下のとおりプライバシーポリシーを定めます。
           </p>
 
           <div className='space-y-12'>

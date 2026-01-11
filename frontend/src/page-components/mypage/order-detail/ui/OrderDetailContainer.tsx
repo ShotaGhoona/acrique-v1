@@ -149,9 +149,6 @@ function OrderTimeline({ order }: { order: OrderDetail }) {
 function OrderItemRow({ item }: { item: OrderItem }) {
   return (
     <div className='flex items-start gap-4 py-4'>
-      {/* Product placeholder */}
-      <div className='h-16 w-16 shrink-0 rounded-sm bg-secondary/50' />
-
       <div className='min-w-0 flex-1'>
         <h4 className='font-medium'>{item.product_name}</h4>
         {item.product_name_ja && (

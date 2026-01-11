@@ -5,10 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck } from 'lucide-react';
 import { Elements } from '@stripe/react-stripe-js';
+import { useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import { getStripe } from '@/shared/lib/stripe';
 import { CardForm } from '@/widgets/payment/card-form/ui/CardForm';
-import { useOrder } from '@/features/order/get-order/lib/use-order';
+import { useOrder, ORDER_QUERY_KEY } from '@/features/order/get-order/lib/use-order';
 import { useCreatePaymentIntent } from '@/features/payment/create-payment-intent/lib/use-create-payment-intent';
 import { toast } from 'sonner';
 
@@ -19,6 +20,7 @@ function formatPrice(price: number): string {
 export function CheckoutConfirmContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const orderId = searchParams.get('orderId');
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -60,6 +62,8 @@ export function CheckoutConfirmContainer() {
   }, [orderId, order, clientSecret, isPending, createPaymentIntent, router]);
 
   const handleSuccess = () => {
+    // 注文キャッシュを無効化して最新のステータスを取得できるようにする
+    queryClient.invalidateQueries({ queryKey: ORDER_QUERY_KEY });
     router.push(`/checkout/complete?orderId=${orderId}`);
   };
 

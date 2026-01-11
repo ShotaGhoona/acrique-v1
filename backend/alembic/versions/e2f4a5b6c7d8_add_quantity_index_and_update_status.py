@@ -9,6 +9,7 @@ Create Date: 2026-01-11 00:00:00.000000
 from collections.abc import Sequence
 
 import sqlalchemy as sa
+
 from alembic import op
 
 # revision identifiers, used by Alembic.
@@ -34,9 +35,7 @@ def upgrade() -> None:
 
     # 3. orders テーブルのステータス値を移行
     # data_reviewing → reviewing
-    op.execute(
-        "UPDATE orders SET status = 'reviewing' WHERE status = 'data_reviewing'"
-    )
+    op.execute("UPDATE orders SET status = 'reviewing' WHERE status = 'data_reviewing'")
     # awaiting_payment, paid, awaiting_data → pending
     op.execute(
         "UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid', 'awaiting_data')"
@@ -51,6 +50,4 @@ def downgrade() -> None:
     op.drop_column('uploads', 'quantity_index')
 
     # ステータス値の復元（必要に応じて）
-    op.execute(
-        "UPDATE orders SET status = 'data_reviewing' WHERE status = 'reviewing'"
-    )
+    op.execute("UPDATE orders SET status = 'data_reviewing' WHERE status = 'reviewing'")

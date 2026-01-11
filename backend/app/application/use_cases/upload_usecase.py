@@ -14,12 +14,14 @@ from app.application.schemas.upload_schemas import (
     UploadDTO,
 )
 from app.domain.entities.upload import Upload
+from app.domain.entities.order import OrderStatus
 from app.domain.exceptions.upload import (
     InvalidContentTypeError,
     UploadNotDeletableError,
     UploadNotFoundError,
     UploadNotOwnedError,
 )
+from app.domain.repositories.order_repository import IOrderRepository
 from app.domain.repositories.upload_repository import IUploadRepository
 
 
@@ -37,9 +39,11 @@ class UploadUsecase:
         self,
         upload_repository: IUploadRepository,
         storage_service: IStorageService,
+        order_repository: IOrderRepository,
     ):
         self.upload_repository = upload_repository
         self.storage_service = storage_service
+        self.order_repository = order_repository
 
     def get_presigned_url(
         self,
@@ -144,6 +148,7 @@ class UploadUsecase:
         注文確定時またはマイページから呼び出される。
         - uploads.order_id と uploads.order_item_id を設定
         - uploads.status を pending → submitted に変更
+        - orders.status を awaiting_data → data_reviewing に変更
         """
         # 各upload_idが自分のものか確認
         for upload_id in input_dto.upload_ids:
@@ -159,6 +164,12 @@ class UploadUsecase:
             order_id=order_id,
             order_item_id=order_item_id,
         )
+
+        # 注文ステータスを data_reviewing に更新
+        order = self.order_repository.get_by_id(order_id)
+        if order and order.status == OrderStatus.AWAITING_DATA:
+            order.status = OrderStatus.DATA_REVIEWING
+            self.order_repository.update(order)
 
         return LinkUploadsOutputDTO(
             linked_count=linked_count,

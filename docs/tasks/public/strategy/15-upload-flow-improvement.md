@@ -245,11 +245,11 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 
 ### Phase 2: Backend API 修正
 
-1. [ ] `OrderItemDTO` に `requires_upload`, `upload_type` 追加
-2. [ ] `order_usecase.py` で商品の入稿情報を DTO に含める
-3. [ ] 紐付け API に `quantity_index` 対応
-4. [ ] `payment_usecase.py` のステータス決定ロジック更新
-5. [ ] Admin 審査 API 実装（approve/reject）
+1. ✅ `OrderItemDTO` に `requires_upload`, `upload_type` 追加
+2. ✅ `order_usecase.py` で商品の入稿情報を DTO に含める
+3. ✅ 紐付け API に `quantity_index` 対応
+4. ✅ `payment_usecase.py` のステータス決定ロジック確認（既に正しく実装済み）
+5. [ ] Admin 審査 API 実装（approve/reject）※新規API、別タスク
 
 ### Phase 3: Frontend 修正
 
@@ -402,11 +402,11 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 
 | タスク | 状況 |
 |--------|------|
-| OrderItemDTO に requires_upload 追加 | [ ] |
-| order_usecase.py 修正 | [ ] |
-| 紐付け API に quantity_index 対応 | [ ] |
-| payment_usecase.py ステータス決定ロジック更新 | [ ] |
-| Admin 審査 API（approve/reject） | [ ] |
+| OrderItemDTO に requires_upload 追加 | [x] |
+| order_usecase.py 修正 | [x] |
+| 紐付け API に quantity_index 対応 | [x] |
+| payment_usecase.py ステータス決定ロジック確認 | [x] |
+| Admin 審査 API（approve/reject） | [ ] ※新規API |
 
 ### Phase 3: Frontend
 

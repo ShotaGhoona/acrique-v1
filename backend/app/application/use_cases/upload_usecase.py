@@ -162,6 +162,7 @@ class UploadUsecase:
             upload_ids=input_dto.upload_ids,
             order_id=order_id,
             order_item_id=order_item_id,
+            quantity_index=input_dto.quantity_index,
         )
 
         # マイページからの再入稿時のみステータスを更新
@@ -188,5 +189,6 @@ class UploadUsecase:
             status=upload.status,
             order_id=upload.order_id,
             order_item_id=upload.order_item_id,
+            quantity_index=upload.quantity_index,
             created_at=upload.created_at,
         )

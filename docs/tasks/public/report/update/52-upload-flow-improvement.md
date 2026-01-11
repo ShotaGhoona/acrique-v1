@@ -175,6 +175,57 @@ export interface Upload {
 
 ---
 
+### 2026-01-11: Phase 2 - Backend API 修正
+
+**目的**: 注文明細に入稿情報を含め、紐付けAPIに `quantity_index` 対応
+
+#### 1. OrderItemDTO に入稿情報追加
+
+**変更ファイル**: `backend/app/application/schemas/order_schemas.py`
+
+```python
+class OrderItemDTO(BaseModel):
+    # ... 既存フィールド
+    requires_upload: bool = Field(False, description='入稿必須')
+    upload_type: str | None = Field(None, description='入稿タイプ (logo/qr/photo/text)')
+```
+
+**設計判断**: DB にカラム追加せず、商品マスタから動的に取得（冗長性回避）
+
+---
+
+#### 2. order_usecase.py 修正
+
+**変更ファイル**: `backend/app/application/use_cases/order_usecase.py`
+
+`_to_order_detail_dto` メソッドを修正し、各注文明細の商品情報を取得して `requires_upload`, `upload_type` を含めるように変更。
+
+---
+
+#### 3. 紐付け API に quantity_index 対応
+
+**変更ファイル**:
+
+| レイヤー | ファイル | 変更内容 |
+|----------|----------|----------|
+| Application | `app/application/schemas/upload_schemas.py` | `UploadDTO`, `LinkUploadsInputDTO` に `quantity_index` 追加 |
+| Application | `app/application/use_cases/upload_usecase.py` | `link_uploads_to_order_item` に `quantity_index` 渡し、`_to_dto` に追加 |
+| Domain | `app/domain/repositories/upload_repository.py` | `link_to_order_item` に `quantity_index` パラメータ追加 |
+| Infrastructure | `app/infrastructure/db/repositories/upload_repository_impl.py` | `link_to_order_item` 実装更新、`_to_entity` に `quantity_index` 追加 |
+| Presentation | `app/presentation/schemas/upload_schemas.py` | `UploadResponse`, `LinkUploadsRequest` に `quantity_index` 追加 |
+
+---
+
+#### 4. payment_usecase.py 確認
+
+`_check_requires_upload` メソッドが既に正しく実装済み：
+- 入稿必要商品あり → `REVIEWING`
+- 入稿不要 → `CONFIRMED`
+
+変更不要。
+
+---
+
 ## 次のステップ
 
 ### Phase 1: DB・ステータス
@@ -189,15 +240,15 @@ export interface Upload {
 | Frontend UI コンポーネント更新 | [x] |
 | ステータス定数リファクタリング | [x] |
 
-### Phase 2: Backend API（未実装）
+### Phase 2: Backend API
 
 | タスク | 状況 |
 |--------|------|
-| OrderItemDTO に requires_upload 追加 | [ ] |
-| order_usecase.py 修正 | [ ] |
-| 紐付け API に quantity_index 対応 | [ ] |
-| payment_usecase.py ステータス決定ロジック更新 | [ ] |
-| Admin 審査 API（approve/reject） | [ ] |
+| OrderItemDTO に requires_upload 追加 | [x] |
+| order_usecase.py 修正 | [x] |
+| 紐付け API に quantity_index 対応 | [x] |
+| payment_usecase.py ステータス決定ロジック確認 | [x] |
+| Admin 審査 API（approve/reject） | [ ] ※新規API、別タスク |
 
 ### Phase 3: Frontend（未実装）
 
@@ -216,6 +267,33 @@ export interface Upload {
 | マイページ再入稿画面 | [ ] |
 | Admin 審査画面の承認/差し戻し実装 | [ ] |
 | 差し戻し理由入力 | [ ] |
+
+---
+
+### 2026-01-11: APIテスト実施
+
+**目的**: Phase 1-2 の実装が正常に動作するかテスト
+
+#### テスト結果
+
+| テスト項目 | 結果 | 備考 |
+|-----------|------|------|
+| ログイン | ✅ | Cookie認証正常 |
+| 注文詳細取得 | ✅ | `requires_upload`, `upload_type` 含む |
+| presigned URL取得 | ✅ | S3署名付きURL発行 |
+| アップロードレコード作成 | ✅ | status: pending で作成 |
+| 注文明細への紐付け | ✅ | `quantity_index` 正常保存 |
+| 入稿必要商品 → reviewing | ✅ | 支払い成功時の遷移 |
+| 入稿不要商品 → confirmed | ✅ | 支払い成功時の遷移 |
+| revision_required → reviewing | ✅ | 再入稿時の自動遷移 |
+| ステータス全遷移 | ✅ | confirmed→processing→shipped→delivered |
+| 注文キャンセル | ✅ | cancel_reason 保存 |
+
+#### テスト中に発見・修正した問題
+
+| 問題 | 対処 |
+|------|------|
+| `OrderItemResponse` に `requires_upload`, `upload_type` フィールドが欠落 | `backend/app/presentation/schemas/order_schemas.py` を修正 |
 
 ---
 

@@ -213,7 +213,10 @@ class UploadRepositoryImpl(IUploadRepository):
 
         # ソート・ページネーション
         upload_models = (
-            query.order_by(UploadModel.created_at.desc()).offset(offset).limit(limit).all()
+            query.order_by(UploadModel.created_at.desc())
+            .offset(offset)
+            .limit(limit)
+            .all()
         )
 
         return [self._to_entity(m) for m in upload_models]

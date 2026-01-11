@@ -64,7 +64,7 @@ export function CheckoutContainer() {
       },
       {
         onSuccess: (data) => {
-          router.push(`/checkout/confirm?orderId=${data.order.id}`);
+          router.push(`/checkout/upload?orderId=${data.order.id}`);
         },
       },
     );

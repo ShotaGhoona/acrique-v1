@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Copy,
   ExternalLink,
+  Upload,
 } from 'lucide-react';
 import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
 import {
@@ -284,17 +285,27 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                 </div>
               </div>
 
-              {canCancel && (
-                <Button
-                  variant='outline'
-                  onClick={handleCancel}
-                  disabled={cancelMutation.isPending}
-                >
-                  {cancelMutation.isPending
-                    ? 'キャンセル中...'
-                    : '注文をキャンセル'}
-                </Button>
-              )}
+              <div className='flex gap-2'>
+                {['awaiting_data', 'data_reviewing'].includes(order.status) && (
+                  <Button asChild>
+                    <Link href={`/mypage/orders/${order.id}/upload`}>
+                      <Upload className='mr-2 h-4 w-4' />
+                      データを入稿する
+                    </Link>
+                  </Button>
+                )}
+                {canCancel && (
+                  <Button
+                    variant='outline'
+                    onClick={handleCancel}
+                    disabled={cancelMutation.isPending}
+                  >
+                    {cancelMutation.isPending
+                      ? 'キャンセル中...'
+                      : '注文をキャンセル'}
+                  </Button>
+                )}
+              </div>
             </div>
 
             {/* Timeline */}

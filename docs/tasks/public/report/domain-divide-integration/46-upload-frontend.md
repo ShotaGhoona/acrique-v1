@@ -3,7 +3,7 @@
 ## 概要
 
 消費者がロゴ・QRコード・写真等のデータを入稿する機能のフロントエンド実装。
-FSD（Feature-Sliced Design）に準拠し、Entity層とFeature層を実装。
+FSD（Feature-Sliced Design）に準拠し、Entity層、Feature層、Widgets層、Page-components層を実装。
 
 ---
 
@@ -24,6 +24,26 @@ FSD（Feature-Sliced Design）に準拠し、Entity層とFeature層を実装。
 | `src/features/upload/upload-file/lib/use-upload-file.ts` | ファイルアップロードフック |
 | `src/features/upload/delete-upload/lib/use-delete-upload.ts` | 削除フック |
 | `src/features/upload/link-uploads/lib/use-link-uploads.ts` | 注文明細紐付けフック |
+
+### Widgets層
+
+| ファイル | 説明 |
+|----------|------|
+| `src/widgets/upload/dropzone/ui/FileDropzone.tsx` | ドラッグ＆ドロップ対応ファイルアップロードコンポーネント |
+
+### Page-components層
+
+| ファイル | 説明 |
+|----------|------|
+| `src/page-components/purchase/checkout/upload/ui/CheckoutUploadContainer.tsx` | チェックアウト入稿UI |
+| `src/page-components/mypage/order-upload/ui/OrderUploadContainer.tsx` | マイページ入稿UI |
+
+### App層（ルーティング）
+
+| ファイル | 説明 |
+|----------|------|
+| `src/app/(purchase)/checkout/upload/page.tsx` | チェックアウト入稿ページ |
+| `src/app/(mypage)/mypage/orders/[id]/upload/page.tsx` | マイページ入稿ページ |
 
 ---
 
@@ -56,6 +76,66 @@ interface Upload {
   order_item_id: number | null;
   created_at: string | null;
 }
+```
+
+---
+
+## コンポーネント
+
+### FileDropzone
+
+ドラッグ＆ドロップ対応のファイルアップロードコンポーネント。
+
+```tsx
+import { FileDropzone } from '@/widgets/upload/dropzone/ui/FileDropzone';
+
+<FileDropzone
+  uploadType="logo"
+  label="ロゴデータ"
+  description="AI, EPS, PDF, SVG, PNG形式に対応"
+  onUploadComplete={(upload) => console.log('Uploaded:', upload)}
+  onFileRemove={(uploadId) => console.log('Removed:', uploadId)}
+  uploadedFiles={[]}
+/>
+```
+
+#### Props
+
+| Prop | 型 | 説明 |
+|------|-----|------|
+| `uploadType` | `UploadType` | アップロード種別（logo, qr, photo, text） |
+| `label` | `string` | ラベル表示 |
+| `description` | `string` | 説明文 |
+| `onUploadComplete` | `(upload: Upload) => void` | アップロード完了時のコールバック |
+| `onFileRemove` | `(uploadId: number) => void` | ファイル削除時のコールバック |
+| `uploadedFiles` | `UploadedFile[]` | アップロード済みファイル一覧 |
+| `maxSize` | `number` | 最大ファイルサイズ（デフォルト: 10MB） |
+| `accept` | `string` | 許可するファイル形式 |
+
+---
+
+## 画面フロー
+
+### チェックアウト時の入稿フロー
+
+```
+/checkout（配送先・支払い方法選択）
+    ↓
+/checkout/upload（データ入稿）← 新規追加
+    ↓
+/checkout/confirm（注文確認・決済）
+    ↓
+/checkout/complete（注文完了）
+```
+
+### マイページからの入稿フロー
+
+```
+/mypage/orders（注文一覧）
+    ↓
+/mypage/orders/[id]（注文詳細）
+    ↓ 「データを入稿する」ボタン
+/mypage/orders/[id]/upload（データ入稿）← 新規追加
 ```
 
 ---
@@ -157,11 +237,12 @@ function LinkUploadsButton() {
 
 ---
 
-## 次のステップ
+## 変更したファイル
 
-- [ ] Dropzoneコンポーネント（widgets層）
-- [ ] チェックアウト入稿UI（page-components層）
-- [ ] マイページ入稿UI（page-components層）
+| ファイル | 変更内容 |
+|----------|----------|
+| `src/page-components/purchase/checkout/home/ui/CheckoutContainer.tsx` | 注文作成後の遷移先を `/checkout/upload` に変更 |
+| `src/page-components/mypage/order-detail/ui/OrderDetailContainer.tsx` | 「データを入稿する」ボタンを追加 |
 
 ---
 
@@ -175,6 +256,15 @@ function LinkUploadsButton() {
 | useUploadFile | [x] |
 | useDeleteUpload | [x] |
 | useLinkUploads | [x] |
-| Dropzoneコンポーネント | [ ] |
-| チェックアウト入稿UI | [ ] |
-| マイページ入稿UI | [ ] |
+| Dropzoneコンポーネント | [x] |
+| チェックアウト入稿UI | [x] |
+| マイページ入稿UI | [x] |
+| フロー接続 | [x] |
+
+---
+
+## 備考
+
+- DESIGN.mdに準拠したデザイン実装
+- レスポンシブ対応済み
+- ビルド確認済み（`npm run build` 成功）

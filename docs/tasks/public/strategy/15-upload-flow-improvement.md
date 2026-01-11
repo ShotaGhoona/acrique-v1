@@ -253,14 +253,14 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 
 ### Phase 3: Frontend 修正
 
-1. [ ] `OrderItem` 型に `requires_upload`, `upload_type` 追加
-2. [ ] `CheckoutContainer` で入稿要否を判定して遷移先を分岐
-3. [ ] `CheckoutUploadContainer` を全面改修
+1. [x] `OrderItem` 型に `requires_upload`, `upload_type` 追加
+2. [x] `CheckoutContainer` で入稿要否を判定して遷移先を分岐
+3. [x] `CheckoutUploadContainer` を全面改修
    - 入稿必要な商品のみ表示
    - 数量分の入稿エリアを生成
    - 全入稿完了バリデーション
-4. [ ] `useLinkUploads` フックに `quantity_index` 対応
-5. [ ] マイページ再入稿画面実装
+4. [x] `useLinkUploads` フックに `quantity_index` 対応
+5. [ ] マイページ再入稿画面実装（Phase 4 へ移動）
 
 ### Phase 4: Admin 画面
 
@@ -412,16 +412,18 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 
 | タスク | 状況 |
 |--------|------|
-| OrderItem 型に requires_upload 追加 | [ ] |
-| CheckoutContainer 分岐ロジック | [ ] |
-| CheckoutUploadContainer 全面改修 | [ ] |
-| 入稿完了バリデーション | [ ] |
-| useLinkUploads フック修正 | [ ] |
+| OrderItem 型に requires_upload 追加 | [x] |
+| CheckoutContainer 分岐ロジック | [x] |
+| CheckoutUploadContainer 全面改修 | [x] |
+| 入稿完了バリデーション | [x] |
+| useLinkUploads フック修正 | [x] |
+| UploadType を shared に集約 | [x] |
 
 ### Phase 4: マイページ・Admin
 
 | タスク | 状況 |
 |--------|------|
-| マイページ再入稿画面 | [ ] |
+| マイページ再入稿画面（数量ベース対応） | [ ] |
+| Admin 審査 API（approve/reject） | [ ] |
 | Admin 審査画面の承認/差し戻し実装 | [ ] |
 | 差し戻し理由入力 | [ ] |

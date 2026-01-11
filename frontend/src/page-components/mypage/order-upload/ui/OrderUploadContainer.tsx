@@ -25,8 +25,13 @@ import { useOrder } from '@/features/order/get-order/lib/use-order';
 import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
 import { useDeleteUpload } from '@/features/upload/delete-upload/lib/use-delete-upload';
 import { useLinkUploads } from '@/features/upload/link-uploads/lib/use-link-uploads';
-import type { Upload as UploadEntity, UploadType } from '@/entities/upload/model/types';
+import type { Upload as UploadEntity } from '@/entities/upload/model/types';
 import { ORDER_STATUS_LABELS } from '@/shared/domain/order/model/types';
+import {
+  type UploadType,
+  getUploadTypeLabel,
+  getUploadDescription,
+} from '@/shared/domain/upload/model/types';
 import { toast } from 'sonner';
 
 interface OrderUploadPageProps {
@@ -45,23 +50,14 @@ function getUploadTypeFromProduct(productName: string): UploadType {
   if (lowerName.includes('qr') || lowerName.includes('キューアール')) {
     return 'qr';
   }
-  if (lowerName.includes('写真') || lowerName.includes('photo') || lowerName.includes('フォト')) {
+  if (
+    lowerName.includes('写真') ||
+    lowerName.includes('photo') ||
+    lowerName.includes('フォト')
+  ) {
     return 'photo';
   }
   return 'logo';
-}
-
-function getUploadDescription(uploadType: UploadType): string {
-  switch (uploadType) {
-    case 'logo':
-      return 'ロゴデータをアップロードしてください。AI, EPS, PDF, SVG, PNG形式に対応しています。';
-    case 'qr':
-      return 'QRコードの元となるURLまたは画像をアップロードしてください。';
-    case 'photo':
-      return '写真をアップロードしてください。300dpi以上の高解像度画像を推奨します。';
-    default:
-      return 'ファイルをアップロードしてください。';
-  }
 }
 
 function formatDate(dateString: string | null): string {
@@ -75,12 +71,18 @@ function formatDate(dateString: string | null): string {
 
 export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   const router = useRouter();
-  const { data: orderData, isLoading: isOrderLoading, error } = useOrder(orderId);
+  const {
+    data: orderData,
+    isLoading: isOrderLoading,
+    error,
+  } = useOrder(orderId);
   const { data: uploadsData, isLoading: isUploadsLoading } = useUploads();
   const { mutate: deleteUpload } = useDeleteUpload();
   const { mutate: linkUploads, isPending: isLinking } = useLinkUploads();
 
-  const [uploadedFileIds, setUploadedFileIds] = useState<Record<number, number[]>>({});
+  const [uploadedFileIds, setUploadedFileIds] = useState<
+    Record<number, number[]>
+  >({});
 
   const order = orderData?.order;
   const allUploads = uploadsData?.uploads ?? [];
@@ -129,7 +131,10 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   };
 
   const totalNewUploadedCount = useMemo(() => {
-    return Object.values(uploadedFileIds).reduce((sum, ids) => sum + ids.length, 0);
+    return Object.values(uploadedFileIds).reduce(
+      (sum, ids) => sum + ids.length,
+      0,
+    );
   }, [uploadedFileIds]);
 
   const handleSubmit = () => {
@@ -146,9 +151,15 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
       const itemUploadIds = uploadedFileIds[item.id] ?? [];
       if (itemUploadIds.length === 0) return Promise.resolve();
 
+      // TODO: Phase 4で数量ベースの再入稿に対応
       return new Promise<void>((resolve, reject) => {
         linkUploads(
-          { orderId: order.id, itemId: item.id, uploadIds: itemUploadIds },
+          {
+            orderId: order.id,
+            itemId: item.id,
+            uploadIds: itemUploadIds,
+            quantityIndex: 1,
+          },
           { onSuccess: () => resolve(), onError: reject },
         );
       });
@@ -214,7 +225,8 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
             <div className='text-sm'>
               <p className='font-medium'>入稿を受け付けていません</p>
               <p className='mt-1 text-muted-foreground'>
-                現在の注文ステータス（{ORDER_STATUS_LABELS[order.status]}）では、入稿を受け付けておりません。
+                現在の注文ステータス（{ORDER_STATUS_LABELS[order.status]}
+                ）では、入稿を受け付けておりません。
               </p>
             </div>
           </div>
@@ -282,11 +294,15 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
             <div className='flex items-start gap-3 rounded-sm bg-secondary/30 p-4'>
               <Info className='mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground' />
               <div className='text-sm text-muted-foreground'>
-                <p className='font-medium text-foreground'>入稿データについて</p>
+                <p className='font-medium text-foreground'>
+                  入稿データについて
+                </p>
                 <ul className='mt-2 space-y-1'>
                   <li>データの確認後、製作を開始いたします</li>
                   <li>データに問題がある場合は、メールでご連絡いたします</li>
-                  <li>追加のデータがある場合は、再度アップロードしてください</li>
+                  <li>
+                    追加のデータがある場合は、再度アップロードしてください
+                  </li>
                 </ul>
               </div>
             </div>
@@ -332,7 +348,10 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
                 const existingUploads = getExistingUploadsForItem(item.id);
 
                 return (
-                  <div key={item.id} className='border-b border-border py-4 last:border-0'>
+                  <div
+                    key={item.id}
+                    className='border-b border-border py-4 last:border-0'
+                  >
                     <h4 className='font-medium'>
                       {item.product_name_ja || item.product_name}
                     </h4>

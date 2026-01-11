@@ -250,23 +250,118 @@ class OrderItemDTO(BaseModel):
 | payment_usecase.py ステータス決定ロジック確認 | [x] |
 | Admin 審査 API（approve/reject） | [ ] ※新規API、別タスク |
 
-### Phase 3: Frontend（未実装）
+### Phase 3: Frontend
 
 | タスク | 状況 |
 |--------|------|
-| OrderItem 型に requires_upload 追加 | [ ] |
-| CheckoutContainer 分岐ロジック | [ ] |
-| CheckoutUploadContainer 全面改修 | [ ] |
-| 入稿完了バリデーション | [ ] |
-| useLinkUploads フック修正 | [ ] |
+| OrderItem 型に requires_upload 追加 | [x] |
+| CheckoutContainer 分岐ロジック | [x] |
+| CheckoutUploadContainer 全面改修 | [x] |
+| 入稿完了バリデーション | [x] |
+| useLinkUploads フック修正 | [x] |
 
 ### Phase 4: マイページ・Admin（未実装）
 
 | タスク | 状況 |
 |--------|------|
-| マイページ再入稿画面 | [ ] |
+| マイページ再入稿画面（数量ベース対応） | [ ] |
 | Admin 審査画面の承認/差し戻し実装 | [ ] |
 | 差し戻し理由入力 | [ ] |
+
+---
+
+### 2026-01-11: Phase 3 - Frontend 修正
+
+**目的**: チェックアウト時の入稿フローをフロントエンドで実装
+
+#### 1. OrderItem 型更新
+
+**変更ファイル**: `frontend/src/entities/order/model/types.ts`
+
+```typescript
+export type UploadType = 'logo' | 'qr' | 'photo' | 'text';
+
+export interface OrderItem {
+  // ... 既存フィールド
+  requires_upload: boolean;
+  upload_type: UploadType | null;
+}
+```
+
+---
+
+#### 2. CheckoutContainer 分岐ロジック
+
+**変更ファイル**: `frontend/src/page-components/purchase/checkout/home/ui/CheckoutContainer.tsx`
+
+```typescript
+onSuccess: (data) => {
+  const hasUploadRequired = data.order.items.some(
+    (item) => item.requires_upload,
+  );
+
+  if (hasUploadRequired) {
+    router.push(`/checkout/upload?orderId=${data.order.id}`);
+  } else {
+    router.push(`/checkout/confirm?orderId=${data.order.id}`);
+  }
+}
+```
+
+---
+
+#### 3. CheckoutUploadContainer 全面改修
+
+**変更ファイル**: `frontend/src/page-components/purchase/checkout/upload/ui/CheckoutUploadContainer.tsx`
+
+**主な変更点**:
+
+| Before | After |
+|--------|-------|
+| 全商品に入稿エリア表示 | `requires_upload: true` の商品のみ表示 |
+| 1商品=1スロット | 数量分のスロットを生成（例: 3個なら3スロット） |
+| スキップ可能 | 全スロット入稿完了まで進行不可 |
+| `quantity_index` なし | スロットごとに `quantity_index` を設定して紐付け |
+
+**新しい状態管理**:
+
+```typescript
+type SlotKey = `${number}-${number}`; // itemId-quantityIndex
+const [uploadedFileIds, setUploadedFileIds] = useState<Record<SlotKey, number[]>>({});
+```
+
+---
+
+#### 4. useLinkUploads フック修正
+
+**変更ファイル**: `frontend/src/features/upload/link-uploads/lib/use-link-uploads.ts`
+
+```typescript
+interface LinkUploadsParams {
+  orderId: number;
+  itemId: number;
+  uploadIds: number[];
+  quantityIndex: number;  // 追加
+}
+```
+
+**変更ファイル**: `frontend/src/entities/upload/model/types.ts`
+
+```typescript
+export interface LinkUploadsRequest {
+  upload_ids: number[];
+  quantity_index: number;  // 追加
+}
+```
+
+---
+
+#### 5. マイページ再入稿（暫定対応）
+
+**変更ファイル**: `frontend/src/page-components/mypage/order-upload/ui/OrderUploadContainer.tsx`
+
+- `quantityIndex: 1` を固定で渡す暫定対応
+- Phase 4 で数量ベースの再入稿UIに対応予定
 
 ---
 

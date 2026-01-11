@@ -1,9 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadApi } from '@/entities/upload/api/upload-api';
-import type {
-  CreateUploadResponse,
-  UploadType,
-} from '@/entities/upload/model/types';
+import type { CreateUploadResponse } from '@/entities/upload/model/types';
+import type { UploadType } from '@/shared/domain/upload/model/types';
 import { UPLOADS_QUERY_KEY } from '@/shared/api/query-keys';
 
 interface UploadFileParams {

@@ -1,3 +1,5 @@
+import type { UploadType } from '@/shared/domain/upload/model/types';
+
 // === アップロードステータス ===
 export type UploadStatus =
   | 'pending'
@@ -5,9 +7,6 @@ export type UploadStatus =
   | 'reviewing'
   | 'approved'
   | 'rejected';
-
-// === アップロード種別 ===
-export type UploadType = 'logo' | 'qr' | 'photo' | 'text';
 
 // === 入稿データ型 ===
 export interface Upload {
@@ -75,6 +74,7 @@ export interface DeleteUploadResponse {
 // === 注文明細への紐付け ===
 export interface LinkUploadsRequest {
   upload_ids: number[];
+  quantity_index: number;
 }
 
 export interface LinkUploadsResponse {

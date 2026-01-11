@@ -3,6 +3,7 @@ import type {
   OrderStatus,
   PaymentMethod,
 } from '@/shared/domain/order/model/types';
+import type { UploadType } from '@/shared/domain/upload/model/types';
 
 export type { OrderStatus, PaymentMethod };
 
@@ -16,6 +17,8 @@ export interface OrderItem {
   unit_price: number;
   options: Record<string, unknown> | null;
   subtotal: number;
+  requires_upload: boolean;
+  upload_type: UploadType | null;
 }
 
 // === 注文型 ===

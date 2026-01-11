@@ -5,7 +5,11 @@ import { Upload, X, FileImage, FileText, Loader2, AlertCircle } from 'lucide-rea
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { useUploadFile } from '@/features/upload/upload-file/lib/use-upload-file';
-import type { UploadType, Upload as UploadEntity } from '@/entities/upload/model/types';
+import type { Upload as UploadEntity } from '@/entities/upload/model/types';
+import {
+  type UploadType,
+  getUploadTypeLabelDetail,
+} from '@/shared/domain/upload/model/types';
 
 interface UploadedFile {
   id: number;
@@ -132,21 +136,6 @@ export function FileDropzone({
     [handleFile],
   );
 
-  const getUploadTypeLabel = (type: UploadType): string => {
-    switch (type) {
-      case 'logo':
-        return 'ロゴデータ';
-      case 'qr':
-        return 'QRコード';
-      case 'photo':
-        return '写真';
-      case 'text':
-        return 'テキストデータ';
-      default:
-        return 'ファイル';
-    }
-  };
-
   const getAcceptString = (): string => {
     return acceptedTypes.join(',');
   };
@@ -192,7 +181,7 @@ export function FileDropzone({
             </div>
             <div>
               <p className='text-sm font-medium'>
-                {getUploadTypeLabel(uploadType)}をドラッグ＆ドロップ
+                {getUploadTypeLabelDetail(uploadType)}をドラッグ＆ドロップ
               </p>
               <p className='mt-1 text-xs text-muted-foreground'>
                 または<span className='text-accent'>クリックして選択</span>
@@ -234,7 +223,7 @@ export function FileDropzone({
                   <div>
                     <p className='text-sm font-medium'>{file.file_name}</p>
                     <p className='text-xs text-muted-foreground'>
-                      {file.upload_type && getUploadTypeLabel(file.upload_type as UploadType)}
+                      {file.upload_type && getUploadTypeLabelDetail(file.upload_type as UploadType)}
                     </p>
                   </div>
                 </div>

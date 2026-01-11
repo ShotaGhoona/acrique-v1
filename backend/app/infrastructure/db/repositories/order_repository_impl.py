@@ -176,7 +176,6 @@ class OrderRepositoryImpl(IOrderRepository):
         """ユーザーの累計購入金額を取得（キャンセル・未払いを除く）"""
         excluded_statuses = [
             OrderStatus.PENDING.value,
-            OrderStatus.AWAITING_PAYMENT.value,
             OrderStatus.CANCELLED.value,
         ]
         result = (
@@ -270,7 +269,6 @@ class OrderRepositoryImpl(IOrderRepository):
         # キャンセル・未払いを除外
         excluded_statuses = [
             OrderStatus.PENDING.value,
-            OrderStatus.AWAITING_PAYMENT.value,
             OrderStatus.CANCELLED.value,
         ]
 
@@ -313,7 +311,6 @@ class OrderRepositoryImpl(IOrderRepository):
         # キャンセル・未払いを除外
         excluded_statuses = [
             OrderStatus.PENDING.value,
-            OrderStatus.AWAITING_PAYMENT.value,
             OrderStatus.CANCELLED.value,
         ]
 
@@ -334,11 +331,10 @@ class OrderRepositoryImpl(IOrderRepository):
         }
 
     def get_pending_count(self) -> int:
-        """対応待ち注文数を取得"""
+        """対応待ち注文数を取得（審査待ち・再入稿待ち）"""
         pending_statuses = [
-            OrderStatus.PAID.value,
-            OrderStatus.AWAITING_DATA.value,
-            OrderStatus.DATA_REVIEWING.value,
+            OrderStatus.REVIEWING.value,
+            OrderStatus.REVISION_REQUIRED.value,
         ]
         return (
             self.session.query(OrderModel)

@@ -15,6 +15,7 @@ class Upload(BaseModel):
     user_id: int = Field(..., description='ユーザーID')
     order_id: int | None = Field(None, description='注文ID（注文確定後に紐付け）')
     order_item_id: int | None = Field(None, description='注文明細ID')
+    quantity_index: int = Field(1, description='何個目の入稿か（1始まり）')
     file_name: str = Field(..., description='元ファイル名')
     s3_key: str = Field(..., description='S3オブジェクトキー')
     file_url: str = Field(..., description='CloudFront配信URL')

@@ -31,46 +31,19 @@ import type {
   OrderDetail,
   OrderItem,
 } from '@/entities/order/model/types';
+import {
+  ORDER_STATUS_LABELS,
+  ORDER_STATUS_VARIANTS,
+} from '@/shared/domain/order/model/types';
 
 interface OrderDetailPageProps {
   orderId: number;
 }
 
-const statusLabels: Record<OrderStatus, string> = {
-  pending: '確認中',
-  awaiting_payment: '支払い待ち',
-  paid: '支払い済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '製作準備中',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '完了',
-  cancelled: 'キャンセル',
-};
-
-const statusVariants: Record<
-  OrderStatus,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
-  pending: 'secondary',
-  awaiting_payment: 'default',
-  paid: 'secondary',
-  awaiting_data: 'default',
-  data_reviewing: 'secondary',
-  confirmed: 'secondary',
-  processing: 'default',
-  shipped: 'default',
-  delivered: 'outline',
-  cancelled: 'destructive',
-};
-
 const statusIcons: Record<OrderStatus, React.ElementType> = {
   pending: Clock,
-  awaiting_payment: AlertCircle,
-  paid: CheckCircle,
-  awaiting_data: Package,
-  data_reviewing: Clock,
+  reviewing: Clock,
+  revision_required: AlertCircle,
   confirmed: CheckCircle,
   processing: Package,
   shipped: Truck,
@@ -105,23 +78,16 @@ function OrderTimeline({ order }: { order: OrderDetail }) {
   const steps: TimelineStep[] = [
     {
       key: 'order',
-      label: '注文受付',
-      completedStatuses: ['awaiting_payment', 'paid', 'awaiting_data', 'data_reviewing', 'confirmed', 'processing', 'shipped', 'delivered'],
+      label: '注文・支払い',
+      completedStatuses: ['reviewing', 'revision_required', 'confirmed', 'processing', 'shipped', 'delivered'],
       activeStatuses: ['pending'],
     },
     {
-      key: 'payment',
-      label: '支払い',
-      activeLabel: '支払い待ち',
-      completedStatuses: ['paid', 'awaiting_data', 'data_reviewing', 'confirmed', 'processing', 'shipped', 'delivered'],
-      activeStatuses: ['awaiting_payment'],
-    },
-    {
       key: 'upload',
-      label: 'データ入稿',
-      activeLabel: order.status === 'data_reviewing' ? '確認中' : '入稿待ち',
+      label: 'データ確認',
+      activeLabel: order.status === 'reviewing' ? '確認中' : order.status === 'revision_required' ? '再入稿待ち' : undefined,
       completedStatuses: ['confirmed', 'processing', 'shipped', 'delivered'],
-      activeStatuses: ['awaiting_data', 'data_reviewing'],
+      activeStatuses: ['reviewing', 'revision_required'],
     },
     {
       key: 'production',
@@ -233,7 +199,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
 
   const canCancel =
     order &&
-    ['pending', 'awaiting_payment'].includes(order.status) &&
+    order.status === 'pending' &&
     !cancelMutation.isPending;
 
   const handleCancel = async () => {
@@ -312,10 +278,10 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                 <div>
                   <div className='flex items-center gap-2'>
                     <Badge
-                      variant={statusVariants[order.status]}
+                      variant={ORDER_STATUS_VARIANTS[order.status]}
                       className='text-sm'
                     >
-                      {statusLabels[order.status]}
+                      {ORDER_STATUS_LABELS[order.status]}
                     </Badge>
                   </div>
                   <p className='mt-1 text-sm text-muted-foreground'>
@@ -329,11 +295,11 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
               </div>
 
               <div className='flex gap-2'>
-                {['awaiting_data', 'data_reviewing'].includes(order.status) && (
+                {order.status === 'revision_required' && (
                   <Button asChild>
                     <Link href={`/mypage/orders/${order.id}/upload`}>
                       <Upload className='mr-2 h-4 w-4' />
-                      データを入稿する
+                      データを再入稿する
                     </Link>
                   </Button>
                 )}

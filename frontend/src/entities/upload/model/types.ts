@@ -20,6 +20,7 @@ export interface Upload {
   status: UploadStatus;
   order_id: number | null;
   order_item_id: number | null;
+  quantity_index: number;
   created_at: string | null;
 }
 

@@ -29,35 +29,10 @@ import { useAdminDashboard } from '@/features/admin-dashboard/get-dashboard/lib/
 import { useAdminOrders } from '@/features/admin-order/get-orders/lib/use-admin-orders';
 import { StatsChart } from './StatsChart';
 import type { OrderStatus } from '@/entities/admin-order/model/types';
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: '未処理',
-  awaiting_payment: '支払待ち',
-  paid: '支払済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '確定',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '配達完了',
-  cancelled: 'キャンセル',
-};
-
-const statusVariants: Record<
-  OrderStatus,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
-  pending: 'default',
-  awaiting_payment: 'default',
-  paid: 'secondary',
-  awaiting_data: 'secondary',
-  data_reviewing: 'secondary',
-  confirmed: 'secondary',
-  processing: 'secondary',
-  shipped: 'outline',
-  delivered: 'outline',
-  cancelled: 'destructive',
-};
+import {
+  ADMIN_ORDER_STATUS_LABELS,
+  ADMIN_ORDER_STATUS_VARIANTS,
+} from '@/shared/domain/order/model/types';
 
 export function DashboardContainer() {
   const { data: dashboardData, isLoading: isDashboardLoading } =
@@ -200,8 +175,8 @@ export function DashboardContainer() {
                       </TableCell>
                       <TableCell>{formatCurrency(order.total)}</TableCell>
                       <TableCell>
-                        <Badge variant={statusVariants[order.status]}>
-                          {statusLabels[order.status]}
+                        <Badge variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}>
+                          {ADMIN_ORDER_STATUS_LABELS[order.status]}
                         </Badge>
                       </TableCell>
                       <TableCell className='text-muted-foreground'>

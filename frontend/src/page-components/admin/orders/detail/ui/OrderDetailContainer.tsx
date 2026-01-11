@@ -35,36 +35,11 @@ import { useUpdateOrderStatus } from '@/features/admin-order/update-order-status
 import { useUpdateAdminOrder } from '@/features/admin-order/update-order/lib/use-update-admin-order';
 import { useShipOrder } from '@/features/admin-order/ship-order/lib/use-ship-order';
 import type { OrderStatus } from '@/entities/admin-order/model/types';
+import {
+  ADMIN_ORDER_STATUS_LABELS,
+  ADMIN_ORDER_STATUS_VARIANTS,
+} from '@/shared/domain/order/model/types';
 import { useState } from 'react';
-
-const orderStatusLabels: Record<OrderStatus, string> = {
-  pending: '未処理',
-  awaiting_payment: '支払待ち',
-  paid: '支払済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '確定',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '配達完了',
-  cancelled: 'キャンセル',
-};
-
-const orderStatusColors: Record<
-  OrderStatus,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
-  pending: 'default',
-  awaiting_payment: 'default',
-  paid: 'secondary',
-  awaiting_data: 'secondary',
-  data_reviewing: 'secondary',
-  confirmed: 'secondary',
-  processing: 'secondary',
-  shipped: 'outline',
-  delivered: 'outline',
-  cancelled: 'destructive',
-};
 
 interface OrderDetailContainerProps {
   orderId: string;
@@ -169,7 +144,7 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(orderStatusLabels).map(([key, label]) => (
+              {Object.entries(ADMIN_ORDER_STATUS_LABELS).map(([key, label]) => (
                 <SelectItem key={key} value={key}>
                   {label}
                 </SelectItem>
@@ -316,8 +291,8 @@ export function OrderDetailContainer({ orderId }: OrderDetailContainerProps) {
                   ステータス
                 </span>
                 <div className='mt-1'>
-                  <Badge variant={orderStatusColors[order.status]}>
-                    {orderStatusLabels[order.status]}
+                  <Badge variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}>
+                    {ADMIN_ORDER_STATUS_LABELS[order.status]}
                   </Badge>
                 </div>
               </div>

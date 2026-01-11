@@ -8,18 +8,28 @@ from pydantic import BaseModel, Field
 
 
 class OrderStatus(str, Enum):
-    """注文ステータス"""
+    """注文ステータス
 
-    PENDING = 'pending'
-    AWAITING_PAYMENT = 'awaiting_payment'
-    PAID = 'paid'
-    AWAITING_DATA = 'awaiting_data'
-    DATA_REVIEWING = 'data_reviewing'
-    CONFIRMED = 'confirmed'
-    PROCESSING = 'processing'
-    SHIPPED = 'shipped'
-    DELIVERED = 'delivered'
-    CANCELLED = 'cancelled'
+    ステータス遷移:
+        pending → confirmed (入稿不要商品のみ、支払い成功時)
+        pending → reviewing (入稿あり、支払い成功時)
+        reviewing → confirmed (Admin全承認)
+        reviewing → revision_required (Admin差し戻し)
+        revision_required → reviewing (ユーザー再入稿)
+        confirmed → processing (製作開始)
+        processing → shipped (発送)
+        shipped → delivered (配達完了)
+        pending → cancelled (キャンセル)
+    """
+
+    PENDING = 'pending'  # 支払い待ち（注文作成〜支払い完了）
+    REVIEWING = 'reviewing'  # 入稿審査中（Admin確認待ち）
+    REVISION_REQUIRED = 'revision_required'  # 再入稿待ち（Admin差し戻し後）
+    CONFIRMED = 'confirmed'  # 製作待ち（審査完了 or 入稿不要）
+    PROCESSING = 'processing'  # 製作中
+    SHIPPED = 'shipped'  # 発送済み
+    DELIVERED = 'delivered'  # 完了
+    CANCELLED = 'cancelled'  # キャンセル
 
 
 class PaymentMethod(str, Enum):
@@ -88,12 +98,9 @@ class Order(BaseModel):
 
     def can_cancel(self) -> bool:
         """キャンセル可能かどうか"""
-        # pending, awaiting_payment, paid の状態ならキャンセル可能
-        return self.status in [
-            OrderStatus.PENDING,
-            OrderStatus.AWAITING_PAYMENT,
-            OrderStatus.PAID,
-        ]
+        # pending の状態ならキャンセル可能
+        # 支払い後（reviewing以降）はキャンセル不可
+        return self.status == OrderStatus.PENDING
 
     def calculate_totals(self, tax_rate: float = 0.10) -> None:
         """合計金額を計算"""

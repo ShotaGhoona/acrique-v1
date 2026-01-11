@@ -26,7 +26,7 @@ import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
 import { useDeleteUpload } from '@/features/upload/delete-upload/lib/use-delete-upload';
 import { useLinkUploads } from '@/features/upload/link-uploads/lib/use-link-uploads';
 import type { Upload as UploadEntity, UploadType } from '@/entities/upload/model/types';
-import type { OrderStatus } from '@/entities/order/model/types';
+import { ORDER_STATUS_LABELS } from '@/shared/domain/order/model/types';
 import { toast } from 'sonner';
 
 interface OrderUploadPageProps {
@@ -39,19 +39,6 @@ interface UploadedFile {
   file_url: string;
   upload_type: string | null;
 }
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: '確認中',
-  awaiting_payment: '支払い待ち',
-  paid: '支払い済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '製作準備中',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '完了',
-  cancelled: 'キャンセル',
-};
 
 function getUploadTypeFromProduct(productName: string): UploadType {
   const lowerName = productName.toLowerCase();
@@ -98,7 +85,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   const order = orderData?.order;
   const allUploads = uploadsData?.uploads ?? [];
 
-  const canUpload = order && ['awaiting_data', 'data_reviewing'].includes(order.status);
+  const canUpload = order && order.status === 'revision_required';
 
   const handleUploadComplete = (itemId: number) => (upload: UploadEntity) => {
     setUploadedFileIds((prev) => ({
@@ -227,7 +214,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
             <div className='text-sm'>
               <p className='font-medium'>入稿を受け付けていません</p>
               <p className='mt-1 text-muted-foreground'>
-                現在の注文ステータス（{statusLabels[order.status]}）では、入稿を受け付けておりません。
+                現在の注文ステータス（{ORDER_STATUS_LABELS[order.status]}）では、入稿を受け付けておりません。
               </p>
             </div>
           </div>
@@ -242,7 +229,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
                 <p className='font-medium'>{formatDate(order.created_at)}</p>
               </div>
               <Badge variant={canUpload ? 'default' : 'secondary'}>
-                {statusLabels[order.status]}
+                {ORDER_STATUS_LABELS[order.status]}
               </Badge>
             </div>
           </CardContent>

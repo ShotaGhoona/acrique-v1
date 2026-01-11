@@ -237,10 +237,11 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 ### Phase 1: DB・ステータス変更
 
 1. ✅ 要件ドキュメント整合性確認（完了）
-2. [ ] `OrderStatus` enum を更新（order.py, order_model.py）
-3. [ ] マイグレーション作成（quantity_index 追加）
-4. [ ] マイグレーション作成（ステータス値移行）
-5. [ ] `Upload` エンティティに `quantity_index` 追加
+2. ✅ `OrderStatus` enum を更新（order.py, order_model.py）
+3. ✅ マイグレーション作成（quantity_index 追加 + ステータス値移行）
+4. ✅ `Upload` エンティティに `quantity_index` 追加
+5. ✅ Frontend 型定義・UI コンポーネント更新
+6. ✅ ステータス定数を shared に集約
 
 ### Phase 2: Backend API 修正
 
@@ -376,9 +377,11 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 
 ## 注意事項
 
-- 既存の注文データとの互換性を保つこと（`quantity_index` のデフォルト値は1）
-- ステータス移行はマイグレーションで一括実行
+- **後方互換性は不要**: ECサイトは未運用のため、レガシーコードは全て削除する
+- 古いステータス（`awaiting_payment`, `paid`, `awaiting_data`, `data_reviewing`）は完全削除
+- `quantity_index` のデフォルト値は1（既存データがあれば対応）
 - フロントエンドの型定義も忘れずに更新
+- 技術的負債を残さないよう、不要なコードは積極的に削除する
 
 ---
 
@@ -388,10 +391,12 @@ UPDATE orders SET status = 'pending' WHERE status IN ('awaiting_payment', 'paid'
 
 | タスク | 状況 |
 |--------|------|
-| OrderStatus enum 更新（Backend） | [ ] |
-| マイグレーション: quantity_index 追加 | [ ] |
-| マイグレーション: ステータス値移行 | [ ] |
-| Upload エンティティ修正 | [ ] |
+| OrderStatus enum 更新（Backend） | [x] |
+| マイグレーション: quantity_index 追加 | [x] |
+| マイグレーション: ステータス値移行 | [x] |
+| Upload エンティティ修正 | [x] |
+| Frontend 型定義・UI 更新 | [x] |
+| ステータス定数を shared に集約 | [x] |
 
 ### Phase 2: Backend API
 

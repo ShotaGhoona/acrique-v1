@@ -17,44 +17,20 @@ import {
 import { useOrders } from '@/features/order/get-orders/lib/use-orders';
 import { OrdersListSkeleton } from './skeleton/OrdersListSkeleton';
 import type { Order, OrderStatus } from '@/entities/order/model/types';
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: '確認中',
-  awaiting_payment: '支払い待ち',
-  paid: '支払い済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '製作準備中',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '完了',
-  cancelled: 'キャンセル',
-};
-
-const statusVariants: Record<
-  OrderStatus,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
-  pending: 'secondary',
-  awaiting_payment: 'default',
-  paid: 'secondary',
-  awaiting_data: 'default',
-  data_reviewing: 'secondary',
-  confirmed: 'secondary',
-  processing: 'default',
-  shipped: 'default',
-  delivered: 'outline',
-  cancelled: 'destructive',
-};
+import {
+  ORDER_STATUS_LABELS,
+  ORDER_STATUS_VARIANTS,
+} from '@/shared/domain/order/model/types';
 
 const filterOptions: { value: OrderStatus | 'all'; label: string }[] = [
   { value: 'all', label: 'すべて' },
-  { value: 'pending', label: '確認中' },
-  { value: 'awaiting_data', label: '入稿待ち' },
-  { value: 'processing', label: '製作中' },
-  { value: 'shipped', label: '発送済み' },
-  { value: 'delivered', label: '完了' },
-  { value: 'cancelled', label: 'キャンセル' },
+  { value: 'pending', label: ORDER_STATUS_LABELS.pending },
+  { value: 'reviewing', label: ORDER_STATUS_LABELS.reviewing },
+  { value: 'revision_required', label: ORDER_STATUS_LABELS.revision_required },
+  { value: 'processing', label: ORDER_STATUS_LABELS.processing },
+  { value: 'shipped', label: ORDER_STATUS_LABELS.shipped },
+  { value: 'delivered', label: ORDER_STATUS_LABELS.delivered },
+  { value: 'cancelled', label: ORDER_STATUS_LABELS.cancelled },
 ];
 
 function formatDate(dateString: string | null): string {
@@ -80,8 +56,8 @@ function OrderCard({ order }: { order: Order }) {
             <div className='min-w-0 flex-1 space-y-3'>
               <div className='flex flex-wrap items-center gap-3'>
                 <span className='font-medium'>{order.order_number}</span>
-                <Badge variant={statusVariants[order.status]}>
-                  {statusLabels[order.status]}
+                <Badge variant={ORDER_STATUS_VARIANTS[order.status]}>
+                  {ORDER_STATUS_LABELS[order.status]}
                 </Badge>
               </div>
 

@@ -27,35 +27,11 @@ import {
   AccountInfoSkeleton,
 } from './skeleton/MypageHomeSkeleton';
 import type { Order, OrderStatus } from '@/entities/order/model/types';
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: '確認中',
-  awaiting_payment: '支払い待ち',
-  paid: '支払い済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '製作準備中',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '完了',
-  cancelled: 'キャンセル',
-};
-
-const statusVariants: Record<
-  OrderStatus,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
-  pending: 'secondary',
-  awaiting_payment: 'default',
-  paid: 'secondary',
-  awaiting_data: 'default',
-  data_reviewing: 'secondary',
-  confirmed: 'secondary',
-  processing: 'default',
-  shipped: 'default',
-  delivered: 'outline',
-  cancelled: 'destructive',
-};
+import {
+  ORDER_STATUS_LABELS,
+  ORDER_STATUS_VARIANTS,
+  PROCESSING_STATUSES,
+} from '@/shared/domain/order/model/types';
 
 function formatDate(dateString: string | null): string {
   if (!dateString) return '-';
@@ -110,8 +86,8 @@ function RecentOrderItem({ order }: { order: Order }) {
       <div className='min-w-0 flex-1'>
         <div className='flex items-center gap-3'>
           <span className='text-sm font-medium'>{order.order_number}</span>
-          <Badge variant={statusVariants[order.status]}>
-            {statusLabels[order.status]}
+          <Badge variant={ORDER_STATUS_VARIANTS[order.status]}>
+            {ORDER_STATUS_LABELS[order.status]}
           </Badge>
         </div>
         <p className='mt-1 text-sm text-muted-foreground'>
@@ -128,15 +104,7 @@ function RecentOrderItem({ order }: { order: Order }) {
 
 function OrderStatusSummary({ orders }: { orders: Order[] }) {
   const processing = orders.filter((o) =>
-    [
-      'pending',
-      'awaiting_payment',
-      'paid',
-      'awaiting_data',
-      'data_reviewing',
-      'confirmed',
-      'processing',
-    ].includes(o.status),
+    PROCESSING_STATUSES.includes(o.status),
   ).length;
   const shipped = orders.filter((o) => o.status === 'shipped').length;
   const completed = orders.filter((o) => o.status === 'delivered').length;

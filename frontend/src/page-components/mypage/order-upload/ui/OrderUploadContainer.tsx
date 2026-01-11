@@ -25,8 +25,13 @@ import { useOrder } from '@/features/order/get-order/lib/use-order';
 import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
 import { useDeleteUpload } from '@/features/upload/delete-upload/lib/use-delete-upload';
 import { useLinkUploads } from '@/features/upload/link-uploads/lib/use-link-uploads';
-import type { Upload as UploadEntity, UploadType } from '@/entities/upload/model/types';
-import type { OrderStatus } from '@/entities/order/model/types';
+import type { Upload as UploadEntity } from '@/entities/upload/model/types';
+import { ORDER_STATUS_LABELS } from '@/shared/domain/order/model/types';
+import {
+  type UploadType,
+  getUploadTypeLabel,
+  getUploadDescription,
+} from '@/shared/domain/upload/model/types';
 import { toast } from 'sonner';
 
 interface OrderUploadPageProps {
@@ -38,43 +43,23 @@ interface UploadedFile {
   file_name: string;
   file_url: string;
   upload_type: string | null;
+  status?: string;
+  quantity_index?: number;
 }
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: '確認中',
-  awaiting_payment: '支払い待ち',
-  paid: '支払い済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '製作準備中',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '完了',
-  cancelled: 'キャンセル',
-};
 
 function getUploadTypeFromProduct(productName: string): UploadType {
   const lowerName = productName.toLowerCase();
   if (lowerName.includes('qr') || lowerName.includes('キューアール')) {
     return 'qr';
   }
-  if (lowerName.includes('写真') || lowerName.includes('photo') || lowerName.includes('フォト')) {
+  if (
+    lowerName.includes('写真') ||
+    lowerName.includes('photo') ||
+    lowerName.includes('フォト')
+  ) {
     return 'photo';
   }
   return 'logo';
-}
-
-function getUploadDescription(uploadType: UploadType): string {
-  switch (uploadType) {
-    case 'logo':
-      return 'ロゴデータをアップロードしてください。AI, EPS, PDF, SVG, PNG形式に対応しています。';
-    case 'qr':
-      return 'QRコードの元となるURLまたは画像をアップロードしてください。';
-    case 'photo':
-      return '写真をアップロードしてください。300dpi以上の高解像度画像を推奨します。';
-    default:
-      return 'ファイルをアップロードしてください。';
-  }
 }
 
 function formatDate(dateString: string | null): string {
@@ -88,17 +73,23 @@ function formatDate(dateString: string | null): string {
 
 export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   const router = useRouter();
-  const { data: orderData, isLoading: isOrderLoading, error } = useOrder(orderId);
+  const {
+    data: orderData,
+    isLoading: isOrderLoading,
+    error,
+  } = useOrder(orderId);
   const { data: uploadsData, isLoading: isUploadsLoading } = useUploads();
   const { mutate: deleteUpload } = useDeleteUpload();
   const { mutate: linkUploads, isPending: isLinking } = useLinkUploads();
 
-  const [uploadedFileIds, setUploadedFileIds] = useState<Record<number, number[]>>({});
+  const [uploadedFileIds, setUploadedFileIds] = useState<
+    Record<number, number[]>
+  >({});
 
   const order = orderData?.order;
   const allUploads = uploadsData?.uploads ?? [];
 
-  const canUpload = order && ['awaiting_data', 'data_reviewing'].includes(order.status);
+  const canUpload = order && order.status === 'revision_required';
 
   const handleUploadComplete = (itemId: number) => (upload: UploadEntity) => {
     setUploadedFileIds((prev) => ({
@@ -127,6 +118,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
         file_name: u.file_name,
         file_url: u.file_url,
         upload_type: u.upload_type,
+        status: u.status,
       }));
   };
 
@@ -138,11 +130,16 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
         file_name: u.file_name,
         file_url: u.file_url,
         upload_type: u.upload_type,
+        status: u.status,
+        quantity_index: u.quantity_index,
       }));
   };
 
   const totalNewUploadedCount = useMemo(() => {
-    return Object.values(uploadedFileIds).reduce((sum, ids) => sum + ids.length, 0);
+    return Object.values(uploadedFileIds).reduce(
+      (sum, ids) => sum + ids.length,
+      0,
+    );
   }, [uploadedFileIds]);
 
   const handleSubmit = () => {
@@ -159,9 +156,15 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
       const itemUploadIds = uploadedFileIds[item.id] ?? [];
       if (itemUploadIds.length === 0) return Promise.resolve();
 
+      // TODO: Phase 4で数量ベースの再入稿に対応
       return new Promise<void>((resolve, reject) => {
         linkUploads(
-          { orderId: order.id, itemId: item.id, uploadIds: itemUploadIds },
+          {
+            orderId: order.id,
+            itemId: item.id,
+            uploadIds: itemUploadIds,
+            quantityIndex: 1,
+          },
           { onSuccess: () => resolve(), onError: reject },
         );
       });
@@ -220,6 +223,19 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
           注文詳細に戻る
         </Link>
 
+        {/* Revision Required Alert */}
+        {canUpload && (
+          <div className='flex items-start gap-3 rounded-sm border-2 border-destructive bg-destructive/10 p-4'>
+            <AlertCircle className='mt-0.5 h-5 w-5 flex-shrink-0 text-destructive' />
+            <div className='text-sm'>
+              <p className='font-medium text-destructive'>再入稿が必要です</p>
+              <p className='mt-1 text-muted-foreground'>
+                入稿いただいたデータに問題がありました。差し戻しされた項目を確認のうえ、修正したデータを再度アップロードしてください。
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Status Alert */}
         {!canUpload && (
           <div className='flex items-start gap-3 rounded-sm border border-border bg-secondary/30 p-4'>
@@ -227,7 +243,8 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
             <div className='text-sm'>
               <p className='font-medium'>入稿を受け付けていません</p>
               <p className='mt-1 text-muted-foreground'>
-                現在の注文ステータス（{statusLabels[order.status]}）では、入稿を受け付けておりません。
+                現在の注文ステータス（{ORDER_STATUS_LABELS[order.status]}
+                ）では、入稿を受け付けておりません。
               </p>
             </div>
           </div>
@@ -242,7 +259,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
                 <p className='font-medium'>{formatDate(order.created_at)}</p>
               </div>
               <Badge variant={canUpload ? 'default' : 'secondary'}>
-                {statusLabels[order.status]}
+                {ORDER_STATUS_LABELS[order.status]}
               </Badge>
             </div>
           </CardContent>
@@ -253,9 +270,17 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
           <>
             {order.items.map((item) => {
               const uploadType = getUploadTypeFromProduct(item.product_name);
-              const newUploads = getUploadedFilesForItem(item.id);
               const existingUploads = getExistingUploadsForItem(item.id);
-              const allItemUploads = [...existingUploads, ...newUploads];
+
+              // quantity_indexごとにuploadを整理
+              const uploadsByIndex: Record<number, UploadedFile | undefined> = {};
+              existingUploads.forEach((u) => {
+                const idx = u.quantity_index ?? 1;
+                uploadsByIndex[idx] = u;
+              });
+
+              // 差し戻しがあるかどうか
+              const hasRejected = existingUploads.some((u) => u.status === 'rejected');
 
               return (
                 <Card key={item.id}>
@@ -269,23 +294,96 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
                           数量: {item.quantity}
                         </p>
                       </div>
-                      {existingUploads.length > 0 && (
-                        <Badge variant='outline' className='gap-1'>
+                      {!hasRejected && existingUploads.length > 0 && (
+                        <Badge variant='outline' className='gap-1 text-green-600 border-green-600'>
                           <CheckCircle className='h-3 w-3' />
-                          入稿済み
+                          すべて承認待ち
+                        </Badge>
+                      )}
+                      {hasRejected && (
+                        <Badge variant='destructive' className='gap-1'>
+                          <AlertCircle className='h-3 w-3' />
+                          再入稿が必要
                         </Badge>
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <FileDropzone
-                      uploadType={uploadType}
-                      label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
-                      description={getUploadDescription(uploadType)}
-                      onUploadComplete={handleUploadComplete(item.id)}
-                      onFileRemove={handleFileRemove(item.id)}
-                      uploadedFiles={allItemUploads}
-                    />
+                  <CardContent className='space-y-4'>
+                    {/* 数量分のスロットを表示 */}
+                    {Array.from({ length: item.quantity }, (_, i) => i + 1).map((quantityIndex) => {
+                      const existingUpload = uploadsByIndex[quantityIndex];
+                      const isRejected = existingUpload?.status === 'rejected';
+                      const isOk = existingUpload && existingUpload.status !== 'rejected';
+                      const newUploadsForSlot = getUploadedFilesForItem(item.id).filter(
+                        (_, idx) => idx === quantityIndex - 1
+                      );
+
+                      return (
+                        <div key={quantityIndex} className='rounded-sm border border-border p-4'>
+                          <div className='mb-3 flex items-center justify-between'>
+                            <p className='text-sm font-medium'>
+                              {item.quantity > 1 ? `${quantityIndex}個目` : '入稿データ'}
+                            </p>
+                            {isOk && (
+                              <Badge variant='outline' className='gap-1 text-green-600 border-green-600'>
+                                <CheckCircle className='h-3 w-3' />
+                                OK
+                              </Badge>
+                            )}
+                            {isRejected && (
+                              <Badge variant='destructive' className='gap-1'>
+                                <AlertCircle className='h-3 w-3' />
+                                差し戻し
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* OKの場合：ファイル情報のみ表示 */}
+                          {isOk && existingUpload && (
+                            <div className='flex items-center gap-3 rounded-sm bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 px-4 py-3'>
+                              <CheckCircle className='h-5 w-5 text-green-600' />
+                              <div>
+                                <p className='text-sm font-medium'>{existingUpload.file_name}</p>
+                                <p className='text-xs text-muted-foreground'>再入稿不要</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 差し戻しの場合：理由表示 + アップロードエリア */}
+                          {isRejected && (
+                            <>
+                              {/* TODO: Admin審査API実装後、existingUpload.admin_notesを表示 */}
+                              <div className='mb-3 rounded-sm border border-destructive/30 bg-destructive/5 p-3'>
+                                <p className='text-xs font-medium text-destructive'>差し戻し理由:</p>
+                                <p className='mt-1 text-sm text-muted-foreground'>
+                                  画像が不鮮明です。高解像度の画像を再アップロードしてください。
+                                </p>
+                              </div>
+                              <FileDropzone
+                                uploadType={uploadType}
+                                label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
+                                description={getUploadDescription(uploadType)}
+                                onUploadComplete={handleUploadComplete(item.id)}
+                                onFileRemove={handleFileRemove(item.id)}
+                                uploadedFiles={existingUpload ? [existingUpload, ...newUploadsForSlot] : newUploadsForSlot}
+                              />
+                            </>
+                          )}
+
+                          {/* 未入稿の場合（通常はないはず） */}
+                          {!existingUpload && (
+                            <FileDropzone
+                              uploadType={uploadType}
+                              label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
+                              description={getUploadDescription(uploadType)}
+                              onUploadComplete={handleUploadComplete(item.id)}
+                              onFileRemove={handleFileRemove(item.id)}
+                              uploadedFiles={newUploadsForSlot}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </CardContent>
                 </Card>
               );
@@ -295,11 +393,15 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
             <div className='flex items-start gap-3 rounded-sm bg-secondary/30 p-4'>
               <Info className='mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground' />
               <div className='text-sm text-muted-foreground'>
-                <p className='font-medium text-foreground'>入稿データについて</p>
+                <p className='font-medium text-foreground'>
+                  入稿データについて
+                </p>
                 <ul className='mt-2 space-y-1'>
                   <li>データの確認後、製作を開始いたします</li>
                   <li>データに問題がある場合は、メールでご連絡いたします</li>
-                  <li>追加のデータがある場合は、再度アップロードしてください</li>
+                  <li>
+                    追加のデータがある場合は、再度アップロードしてください
+                  </li>
                 </ul>
               </div>
             </div>
@@ -345,7 +447,10 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
                 const existingUploads = getExistingUploadsForItem(item.id);
 
                 return (
-                  <div key={item.id} className='border-b border-border py-4 last:border-0'>
+                  <div
+                    key={item.id}
+                    className='border-b border-border py-4 last:border-0'
+                  >
                     <h4 className='font-medium'>
                       {item.product_name_ja || item.product_name}
                     </h4>

@@ -147,7 +147,7 @@ class UploadUsecase:
         注文確定時またはマイページから呼び出される。
         - uploads.order_id と uploads.order_item_id を設定
         - uploads.status を pending → submitted に変更
-        - orders.status を awaiting_data → data_reviewing に変更
+        - マイページからの再入稿時（revision_required）のみ reviewing に変更
         """
         # 各upload_idが自分のものか確認
         for upload_id in input_dto.upload_ids:
@@ -162,12 +162,14 @@ class UploadUsecase:
             upload_ids=input_dto.upload_ids,
             order_id=order_id,
             order_item_id=order_item_id,
+            quantity_index=input_dto.quantity_index,
         )
 
-        # 注文ステータスを data_reviewing に更新
+        # マイページからの再入稿時のみステータスを更新
+        # （チェックアウト時は支払い成功時にまとめて判定）
         order = self.order_repository.get_by_id(order_id)
-        if order and order.status == OrderStatus.AWAITING_DATA:
-            order.status = OrderStatus.DATA_REVIEWING
+        if order and order.status == OrderStatus.REVISION_REQUIRED:
+            order.status = OrderStatus.REVIEWING
             self.order_repository.update(order)
 
         return LinkUploadsOutputDTO(
@@ -187,5 +189,6 @@ class UploadUsecase:
             status=upload.status,
             order_id=upload.order_id,
             order_item_id=upload.order_item_id,
+            quantity_index=upload.quantity_index,
             created_at=upload.created_at,
         )

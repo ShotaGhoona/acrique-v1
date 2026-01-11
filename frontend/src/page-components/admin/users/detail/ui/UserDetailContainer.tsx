@@ -30,19 +30,7 @@ import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useAdminUser } from '@/features/admin-user/get-user/lib/use-admin-user';
 import { useAdminUserOrders } from '@/features/admin-user/get-user-orders/lib/use-admin-user-orders';
 import type { OrderStatus } from '@/entities/admin-order/model/types';
-
-const orderStatusLabels: Record<OrderStatus, string> = {
-  pending: '未処理',
-  awaiting_payment: '支払待ち',
-  paid: '支払済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '確定',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '配達完了',
-  cancelled: 'キャンセル',
-};
+import { ADMIN_ORDER_STATUS_LABELS } from '@/shared/domain/order/model/types';
 
 interface UserDetailContainerProps {
   userId: string;
@@ -203,7 +191,7 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                         <TableCell>{formatCurrency(order.total)}</TableCell>
                         <TableCell>
                           <Badge variant='outline'>
-                            {orderStatusLabels[order.status as OrderStatus] ||
+                            {ADMIN_ORDER_STATUS_LABELS[order.status as OrderStatus] ||
                               order.status}
                           </Badge>
                         </TableCell>

@@ -1,17 +1,33 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, Upload, ArrowRight, Info } from 'lucide-react';
+import {
+  ChevronRight,
+  Upload,
+  ArrowRight,
+  Info,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
+import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { FileDropzone } from '@/widgets/upload/dropzone/ui/FileDropzone';
 import { useOrder } from '@/features/order/get-order/lib/use-order';
 import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
 import { useDeleteUpload } from '@/features/upload/delete-upload/lib/use-delete-upload';
 import { useLinkUploads } from '@/features/upload/link-uploads/lib/use-link-uploads';
-import type { Upload as UploadEntity, UploadType } from '@/entities/upload/model/types';
+import type { Upload as UploadEntity } from '@/entities/upload/model/types';
+import {
+  type UploadType,
+  getUploadTypeLabel,
+  getUploadDescription,
+} from '@/shared/domain/upload/model/types';
+
+// スロットキー（商品ID + 個数インデックス）
+type SlotKey = `${number}-${number}`;
 
 interface UploadedFile {
   id: number;
@@ -20,28 +36,19 @@ interface UploadedFile {
   upload_type: string | null;
 }
 
-function getUploadTypeFromProduct(productName: string): UploadType {
-  const lowerName = productName.toLowerCase();
-  if (lowerName.includes('qr') || lowerName.includes('キューアール')) {
-    return 'qr';
-  }
-  if (lowerName.includes('写真') || lowerName.includes('photo') || lowerName.includes('フォト')) {
-    return 'photo';
-  }
-  return 'logo';
+interface UploadSlot {
+  itemId: number;
+  quantityIndex: number;
+  slotKey: SlotKey;
+  productName: string;
+  uploadType: UploadType;
 }
 
-function getUploadDescription(uploadType: UploadType): string {
-  switch (uploadType) {
-    case 'logo':
-      return 'ロゴデータをアップロードしてください。AI, EPS, PDF, SVG, PNG形式に対応しています。';
-    case 'qr':
-      return 'QRコードの元となるURLまたは画像をアップロードしてください。';
-    case 'photo':
-      return '写真をアップロードしてください。300dpi以上の高解像度画像を推奨します。';
-    default:
-      return 'ファイルをアップロードしてください。';
+function mapUploadType(type: UploadType | null): UploadType {
+  if (type === 'logo' || type === 'qr' || type === 'photo' || type === 'text') {
+    return type;
   }
+  return 'logo'; // デフォルト
 }
 
 export function CheckoutUploadContainer() {
@@ -54,81 +61,111 @@ export function CheckoutUploadContainer() {
   );
   const { data: uploadsData, isLoading: isUploadsLoading } = useUploads();
   const { mutate: deleteUpload } = useDeleteUpload();
-  const { mutate: linkUploads, isPending: isLinking } = useLinkUploads();
+  const { mutateAsync: linkUploadsAsync, isPending: isLinking } =
+    useLinkUploads();
 
-  const [uploadedFileIds, setUploadedFileIds] = useState<Record<number, number[]>>({});
+  // スロットごとのアップロードIDを管理
+  const [uploadedFileIds, setUploadedFileIds] = useState<
+    Record<SlotKey, number[]>
+  >({});
 
   const order = orderData?.order;
   const allUploads = uploadsData?.uploads ?? [];
 
-  const handleUploadComplete = (itemId: number) => (upload: UploadEntity) => {
-    setUploadedFileIds((prev) => ({
-      ...prev,
-      [itemId]: [...(prev[itemId] ?? []), upload.id],
-    }));
-  };
+  // 入稿が必要な商品のみをフィルタ
+  const itemsRequiringUpload = useMemo(() => {
+    if (!order) return [];
+    return order.items.filter((item) => item.requires_upload);
+  }, [order]);
 
-  const handleFileRemove = (itemId: number) => (uploadId: number) => {
-    deleteUpload(uploadId, {
-      onSuccess: () => {
-        setUploadedFileIds((prev) => ({
-          ...prev,
-          [itemId]: (prev[itemId] ?? []).filter((id) => id !== uploadId),
-        }));
-      },
-    });
-  };
-
-  const getUploadedFilesForItem = (itemId: number): UploadedFile[] => {
-    const ids = uploadedFileIds[itemId] ?? [];
-    return allUploads
-      .filter((u) => ids.includes(u.id))
-      .map((u) => ({
-        id: u.id,
-        file_name: u.file_name,
-        file_url: u.file_url,
-        upload_type: u.upload_type,
-      }));
-  };
-
-  const totalUploadedCount = useMemo(() => {
-    return Object.values(uploadedFileIds).reduce((sum, ids) => sum + ids.length, 0);
-  }, [uploadedFileIds]);
-
-  const handleProceed = () => {
-    if (!order) return;
-
-    const allUploadIds = Object.values(uploadedFileIds).flat();
-
-    if (allUploadIds.length === 0) {
-      router.push(`/checkout/confirm?orderId=${orderId}`);
-      return;
+  // 全スロットを生成（商品 × 数量）
+  const uploadSlots = useMemo<UploadSlot[]>(() => {
+    const slots: UploadSlot[] = [];
+    for (const item of itemsRequiringUpload) {
+      for (let i = 1; i <= item.quantity; i++) {
+        slots.push({
+          itemId: item.id,
+          quantityIndex: i,
+          slotKey: `${item.id}-${i}`,
+          productName: item.product_name_ja || item.product_name,
+          uploadType: mapUploadType(item.upload_type),
+        });
+      }
     }
+    return slots;
+  }, [itemsRequiringUpload]);
 
-    const linkPromises = order.items.map((item) => {
-      const itemUploadIds = uploadedFileIds[item.id] ?? [];
-      if (itemUploadIds.length === 0) return Promise.resolve();
+  // 入稿完了しているスロット数
+  const completedSlotCount = useMemo(() => {
+    return uploadSlots.filter(
+      (slot) => (uploadedFileIds[slot.slotKey]?.length ?? 0) > 0,
+    ).length;
+  }, [uploadSlots, uploadedFileIds]);
 
-      return new Promise<void>((resolve, reject) => {
-        linkUploads(
-          { orderId: order.id, itemId: item.id, uploadIds: itemUploadIds },
-          { onSuccess: () => resolve(), onError: reject },
-        );
+  // 全スロット入稿完了しているか
+  const isAllUploadsComplete = completedSlotCount === uploadSlots.length;
+
+  const handleUploadComplete = useCallback(
+    (slotKey: SlotKey) => (upload: UploadEntity) => {
+      setUploadedFileIds((prev) => ({
+        ...prev,
+        [slotKey]: [...(prev[slotKey] ?? []), upload.id],
+      }));
+    },
+    [],
+  );
+
+  const handleFileRemove = useCallback(
+    (slotKey: SlotKey) => (uploadId: number) => {
+      deleteUpload(uploadId, {
+        onSuccess: () => {
+          setUploadedFileIds((prev) => ({
+            ...prev,
+            [slotKey]: (prev[slotKey] ?? []).filter((id) => id !== uploadId),
+          }));
+        },
       });
-    });
+    },
+    [deleteUpload],
+  );
 
-    Promise.all(linkPromises)
-      .then(() => {
-        router.push(`/checkout/confirm?orderId=${orderId}`);
-      })
-      .catch(() => {
-        // Continue anyway
-        router.push(`/checkout/confirm?orderId=${orderId}`);
-      });
-  };
+  const getUploadedFilesForSlot = useCallback(
+    (slotKey: SlotKey): UploadedFile[] => {
+      const ids = uploadedFileIds[slotKey] ?? [];
+      return allUploads
+        .filter((u) => ids.includes(u.id))
+        .map((u) => ({
+          id: u.id,
+          file_name: u.file_name,
+          file_url: u.file_url,
+          upload_type: u.upload_type,
+        }));
+    },
+    [uploadedFileIds, allUploads],
+  );
 
-  const handleSkip = () => {
-    router.push(`/checkout/confirm?orderId=${orderId}`);
+  const handleProceed = async () => {
+    if (!order || !isAllUploadsComplete) return;
+
+    try {
+      // 各スロットのアップロードを紐付け
+      for (const slot of uploadSlots) {
+        const slotUploadIds = uploadedFileIds[slot.slotKey] ?? [];
+        if (slotUploadIds.length === 0) continue;
+
+        await linkUploadsAsync({
+          orderId: order.id,
+          itemId: slot.itemId,
+          uploadIds: slotUploadIds,
+          quantityIndex: slot.quantityIndex,
+        });
+      }
+
+      router.push(`/checkout/confirm?orderId=${orderId}`);
+    } catch {
+      // エラーが発生しても確認画面へ遷移（サーバー側で後から修正可能）
+      router.push(`/checkout/confirm?orderId=${orderId}`);
+    }
   };
 
   if (!orderId) {
@@ -153,6 +190,18 @@ export function CheckoutUploadContainer() {
     );
   }
 
+  // 入稿が必要な商品がない場合（通常はCheckoutContainerでスキップされる）
+  if (itemsRequiringUpload.length === 0) {
+    router.push(`/checkout/confirm?orderId=${orderId}`);
+    return null;
+  }
+
+  // 商品ごとにグループ化して表示
+  const groupedByItem = itemsRequiringUpload.map((item) => ({
+    item,
+    slots: uploadSlots.filter((slot) => slot.itemId === item.id),
+  }));
+
   return (
     <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
       {/* Breadcrumb */}
@@ -165,7 +214,10 @@ export function CheckoutUploadContainer() {
           カート
         </Link>
         <ChevronRight className='h-3 w-3' />
-        <Link href='/checkout' className='transition-colors hover:text-foreground'>
+        <Link
+          href='/checkout'
+          className='transition-colors hover:text-foreground'
+        >
           購入手続き
         </Link>
         <ChevronRight className='h-3 w-3' />
@@ -174,50 +226,92 @@ export function CheckoutUploadContainer() {
 
       {/* Page Header */}
       <div className='mb-8'>
-        <h1 className='text-2xl font-light tracking-tight md:text-3xl'>データ入稿</h1>
+        <h1 className='text-2xl font-light tracking-tight md:text-3xl'>
+          データ入稿
+        </h1>
         <p className='mt-2 text-muted-foreground'>
-          商品に使用するデータをアップロードしてください
+          入稿が必要な商品のデータをアップロードしてください
         </p>
       </div>
 
       <div className='grid gap-8 lg:grid-cols-3'>
         {/* Main Content */}
         <div className='space-y-8 lg:col-span-2'>
-          {/* Upload Sections for Each Item */}
-          {order.items.map((item) => {
-            const uploadType = getUploadTypeFromProduct(item.product_name);
-            const uploadedFiles = getUploadedFilesForItem(item.id);
-
-            return (
-              <section
-                key={item.id}
-                className='rounded-sm border border-border bg-background p-6'
-              >
-                <div className='mb-6 flex items-start justify-between'>
-                  <div>
-                    <h2 className='text-lg font-medium'>
-                      {item.product_name_ja || item.product_name}
-                    </h2>
-                    <p className='mt-1 text-sm text-muted-foreground'>
-                      数量: {item.quantity}
-                    </p>
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    <Upload className='h-5 w-5 text-muted-foreground' />
-                  </div>
+          {/* 商品ごとにセクション表示 */}
+          {groupedByItem.map(({ item, slots }) => (
+            <section
+              key={item.id}
+              className='rounded-sm border border-border bg-background p-6'
+            >
+              <div className='mb-6 flex items-start justify-between'>
+                <div>
+                  <h2 className='text-lg font-medium'>
+                    {item.product_name_ja || item.product_name}
+                  </h2>
+                  <p className='mt-1 text-sm text-muted-foreground'>
+                    {item.quantity}個 ×{' '}
+                    {getUploadTypeLabel(mapUploadType(item.upload_type))}
+                    データ
+                  </p>
                 </div>
+                <Badge variant='secondary' className='flex items-center gap-1'>
+                  <Upload className='h-3 w-3' />
+                  {
+                    slots.filter(
+                      (s) => (uploadedFileIds[s.slotKey]?.length ?? 0) > 0,
+                    ).length
+                  }
+                  /{slots.length}
+                </Badge>
+              </div>
 
-                <FileDropzone
-                  uploadType={uploadType}
-                  label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
-                  description={getUploadDescription(uploadType)}
-                  onUploadComplete={handleUploadComplete(item.id)}
-                  onFileRemove={handleFileRemove(item.id)}
-                  uploadedFiles={uploadedFiles}
-                />
-              </section>
-            );
-          })}
+              {/* 数量分のスロットを表示 */}
+              <div className='space-y-6'>
+                {slots.map((slot) => {
+                  const uploadedFiles = getUploadedFilesForSlot(slot.slotKey);
+                  const isSlotComplete = uploadedFiles.length > 0;
+
+                  return (
+                    <div
+                      key={slot.slotKey}
+                      className={`rounded-sm border p-4 ${
+                        isSlotComplete
+                          ? 'border-green-200 bg-green-50/50'
+                          : 'border-border'
+                      }`}
+                    >
+                      <div className='mb-3 flex items-center justify-between'>
+                        <span className='font-medium'>
+                          {item.quantity > 1
+                            ? `${slot.quantityIndex}個目`
+                            : '入稿データ'}
+                        </span>
+                        {isSlotComplete ? (
+                          <span className='flex items-center gap-1 text-sm text-green-600'>
+                            <CheckCircle2 className='h-4 w-4' />
+                            入稿済み
+                          </span>
+                        ) : (
+                          <span className='flex items-center gap-1 text-sm text-muted-foreground'>
+                            <AlertCircle className='h-4 w-4' />
+                            未入稿
+                          </span>
+                        )}
+                      </div>
+                      <FileDropzone
+                        uploadType={slot.uploadType}
+                        label={`${getUploadTypeLabel(slot.uploadType)}データ`}
+                        description={getUploadDescription(slot.uploadType)}
+                        onUploadComplete={handleUploadComplete(slot.slotKey)}
+                        onFileRemove={handleFileRemove(slot.slotKey)}
+                        uploadedFiles={uploadedFiles}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
 
           {/* Info Section */}
           <div className='flex items-start gap-3 rounded-sm bg-secondary/30 p-4'>
@@ -225,9 +319,11 @@ export function CheckoutUploadContainer() {
             <div className='text-sm text-muted-foreground'>
               <p className='font-medium text-foreground'>入稿データについて</p>
               <ul className='mt-2 space-y-1'>
-                <li>入稿は注文後でも可能です</li>
+                <li>すべての入稿が完了するまで次の画面に進めません</li>
                 <li>データの確認後、製作を開始いたします</li>
-                <li>データに問題がある場合は、メールでご連絡いたします</li>
+                <li>
+                  データに問題がある場合は、マイページから再入稿いただきます
+                </li>
               </ul>
             </div>
           </div>
@@ -239,9 +335,11 @@ export function CheckoutUploadContainer() {
             <h3 className='font-medium'>入稿状況</h3>
 
             <div className='mt-4 space-y-3'>
-              {order.items.map((item) => {
-                const uploadedFiles = getUploadedFilesForItem(item.id);
-                const hasUpload = uploadedFiles.length > 0;
+              {groupedByItem.map(({ item, slots }) => {
+                const completedCount = slots.filter(
+                  (s) => (uploadedFileIds[s.slotKey]?.length ?? 0) > 0,
+                ).length;
+                const isComplete = completedCount === slots.length;
 
                 return (
                   <div
@@ -252,9 +350,11 @@ export function CheckoutUploadContainer() {
                       {item.product_name_ja || item.product_name}
                     </span>
                     <span
-                      className={hasUpload ? 'text-green-600' : 'text-muted-foreground'}
+                      className={
+                        isComplete ? 'text-green-600' : 'text-amber-600'
+                      }
                     >
-                      {hasUpload ? `${uploadedFiles.length}件` : '未入稿'}
+                      {completedCount}/{slots.length}
                     </span>
                   </div>
                 );
@@ -262,15 +362,27 @@ export function CheckoutUploadContainer() {
             </div>
 
             <div className='mt-6 border-t border-border pt-6'>
-              <p className='text-sm text-muted-foreground'>
-                合計 {totalUploadedCount} 件のファイルをアップロード済み
-              </p>
+              <div className='flex items-center justify-between'>
+                <span className='text-sm text-muted-foreground'>入稿進捗</span>
+                <span
+                  className={`text-lg font-medium ${
+                    isAllUploadsComplete ? 'text-green-600' : 'text-foreground'
+                  }`}
+                >
+                  {completedSlotCount}/{uploadSlots.length}
+                </span>
+              </div>
+              {!isAllUploadsComplete && (
+                <p className='mt-2 text-xs text-amber-600'>
+                  すべての入稿を完了してください
+                </p>
+              )}
             </div>
 
-            <div className='mt-6 space-y-3'>
+            <div className='mt-6'>
               <Button
                 onClick={handleProceed}
-                disabled={isLinking}
+                disabled={!isAllUploadsComplete || isLinking}
                 className='w-full'
                 size='lg'
               >
@@ -283,21 +395,14 @@ export function CheckoutUploadContainer() {
                   </>
                 )}
               </Button>
-
-              {totalUploadedCount === 0 && (
-                <Button
-                  variant='ghost'
-                  onClick={handleSkip}
-                  className='w-full text-muted-foreground'
-                >
-                  入稿をスキップして進む
-                </Button>
-              )}
             </div>
 
-            <p className='mt-4 text-xs text-muted-foreground'>
-              入稿は注文完了後、マイページからも可能です
-            </p>
+            {!isAllUploadsComplete && (
+              <p className='mt-4 text-center text-xs text-muted-foreground'>
+                残り {uploadSlots.length - completedSlotCount}{' '}
+                件の入稿が必要です
+              </p>
+            )}
           </div>
         </div>
       </div>

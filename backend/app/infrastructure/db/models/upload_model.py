@@ -26,6 +26,7 @@ class UploadModel(Base):
     order_item_id = Column(
         Integer, ForeignKey('order_items.id'), nullable=True, index=True
     )
+    quantity_index = Column(Integer, nullable=False, default=1)
     file_name = Column(String(255), nullable=False)
     s3_key = Column(String(500), nullable=False)
     file_url = Column(String(500), nullable=False)

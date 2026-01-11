@@ -33,6 +33,7 @@ class UploadResponse(BaseModel):
     status: str = Field(..., description='ステータス')
     order_id: int | None = Field(None, description='注文ID')
     order_item_id: int | None = Field(None, description='注文明細ID')
+    quantity_index: int = Field(1, description='何個目の入稿か（1始まり）')
     created_at: datetime | None = Field(None, description='作成日時')
 
     @classmethod
@@ -151,6 +152,7 @@ class LinkUploadsRequest(BaseModel):
     """注文明細への紐付けリクエスト"""
 
     upload_ids: list[int] = Field(..., description='紐付ける入稿データIDリスト')
+    quantity_index: int = Field(1, ge=1, description='何個目の入稿か（1始まり）')
 
     def to_dto(self) -> LinkUploadsInputDTO:
         """Request → DTO 変換"""

@@ -80,10 +80,11 @@ class PaymentUsecase:
             raise PermissionDeniedError('この注文の決済を行う')
 
         # 2. 注文ステータス確認
-        if order.stripe_payment_intent_id and order.status == OrderStatus.PAID:
+        # 既に支払い済み（reviewing以降）の場合はエラー
+        if order.paid_at is not None:
             raise PaymentAlreadyProcessedError()
 
-        if order.status not in [OrderStatus.PENDING, OrderStatus.AWAITING_PAYMENT]:
+        if order.status != OrderStatus.PENDING:
             raise OrderNotPendingError()
 
         # ユーザー情報取得（Stripe Customer ID用）
@@ -103,8 +104,8 @@ class PaymentUsecase:
         )
 
         # 4. 注文にPaymentIntent IDを紐付け
+        # ステータスはPENDINGのまま（支払い成功時にREVIEWINGまたはCONFIRMEDに遷移）
         order.stripe_payment_intent_id = result.payment_intent_id
-        order.status = OrderStatus.AWAITING_PAYMENT
         self.order_repository.update(order)
 
         logger.info(
@@ -171,9 +172,12 @@ class PaymentUsecase:
 
         # 既に処理済みの場合はスキップ
         if order.status in [
-            OrderStatus.PAID,
-            OrderStatus.AWAITING_DATA,
+            OrderStatus.REVIEWING,
+            OrderStatus.REVISION_REQUIRED,
             OrderStatus.CONFIRMED,
+            OrderStatus.PROCESSING,
+            OrderStatus.SHIPPED,
+            OrderStatus.DELIVERED,
         ]:
             logger.info(f'Order {order.order_number} already processed, skipping')
             return
@@ -184,11 +188,13 @@ class PaymentUsecase:
         # ステータスを更新
         order.paid_at = datetime.now()
         if requires_upload:
-            order.status = OrderStatus.AWAITING_DATA
+            # 入稿必要商品あり → 審査待ち（入稿は支払い前に完了している前提）
+            order.status = OrderStatus.REVIEWING
             logger.info(
-                f'Order {order.order_number} marked as awaiting_data (upload required)'
+                f'Order {order.order_number} marked as reviewing (upload required)'
             )
         else:
+            # 入稿不要 → 製作待ち
             order.status = OrderStatus.CONFIRMED
             order.confirmed_at = datetime.now()
             logger.info(

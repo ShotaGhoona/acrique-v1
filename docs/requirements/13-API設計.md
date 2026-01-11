@@ -118,9 +118,11 @@ RESTful API原則に従い、ドメインごとに整理。
 ### POST `/api/payments/webhook`
 
 Stripeからのイベント通知を受信。処理するイベント:
-- `payment_intent.succeeded` - 決済成功 → 注文ステータスを`paid`に更新
+- `payment_intent.succeeded` - 決済成功 → 入稿状況に応じてステータス更新
+  - 入稿不要商品のみ → `confirmed`
+  - 入稿あり → `reviewing`
 - `payment_intent.payment_failed` - 決済失敗 → ログ記録
-- `charge.refunded` - 返金 → 注文ステータスを`refunded`に更新
+- `charge.refunded` - 返金 → 注文ステータスを`cancelled`に更新
 
 ---
 

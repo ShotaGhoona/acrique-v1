@@ -64,7 +64,18 @@ export function CheckoutContainer() {
       },
       {
         onSuccess: (data) => {
-          router.push(`/checkout/upload?orderId=${data.order.id}`);
+          // 入稿が必要な商品があるかチェック
+          const hasUploadRequired = data.order.items.some(
+            (item) => item.requires_upload,
+          );
+
+          if (hasUploadRequired) {
+            // 入稿が必要な場合は入稿画面へ
+            router.push(`/checkout/upload?orderId=${data.order.id}`);
+          } else {
+            // 入稿不要の場合は確認画面へ直接遷移
+            router.push(`/checkout/confirm?orderId=${data.order.id}`);
+          }
         },
       },
     );

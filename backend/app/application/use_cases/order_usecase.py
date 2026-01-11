@@ -255,6 +255,25 @@ class OrderUsecase:
 
     def _to_order_detail_dto(self, order: Order) -> OrderDetailDTO:
         """OrderエンティティをOrderDetailDTOに変換"""
+        # 商品情報を取得して入稿情報を含める
+        item_dtos = []
+        for item in order.items:
+            product = self.product_repository.get_by_id(item.product_id)
+            item_dtos.append(
+                OrderItemDTO(
+                    id=item.id,
+                    product_id=item.product_id,
+                    product_name=item.product_name,
+                    product_name_ja=item.product_name_ja,
+                    quantity=item.quantity,
+                    unit_price=item.unit_price,
+                    options=item.options,
+                    subtotal=item.subtotal,
+                    requires_upload=product.requires_upload if product else False,
+                    upload_type=product.upload_type if product else None,
+                )
+            )
+
         return OrderDetailDTO(
             id=order.id,
             order_number=order.order_number,
@@ -273,17 +292,5 @@ class OrderUsecase:
             cancel_reason=order.cancel_reason,
             notes=order.notes,
             created_at=order.created_at,
-            items=[
-                OrderItemDTO(
-                    id=item.id,
-                    product_id=item.product_id,
-                    product_name=item.product_name,
-                    product_name_ja=item.product_name_ja,
-                    quantity=item.quantity,
-                    unit_price=item.unit_price,
-                    options=item.options,
-                    subtotal=item.subtotal,
-                )
-                for item in order.items
-            ],
+            items=item_dtos,
         )

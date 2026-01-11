@@ -59,6 +59,7 @@ class IUploadRepository(ABC):
         upload_ids: list[int],
         order_id: int,
         order_item_id: int,
+        quantity_index: int = 1,
     ) -> int:
         """入稿データを注文明細に紐付け
 
@@ -66,6 +67,7 @@ class IUploadRepository(ABC):
             upload_ids: 紐付ける入稿データIDのリスト
             order_id: 注文ID
             order_item_id: 注文明細ID
+            quantity_index: 何個目の入稿か（1始まり）
 
         Returns:
             int: 更新された件数

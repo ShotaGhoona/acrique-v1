@@ -7,6 +7,7 @@ interface LinkUploadsParams {
   orderId: number;
   itemId: number;
   uploadIds: number[];
+  quantityIndex: number;
 }
 
 /**
@@ -16,9 +17,10 @@ export function useLinkUploads() {
   const queryClient = useQueryClient();
 
   return useMutation<LinkUploadsResponse, Error, LinkUploadsParams>({
-    mutationFn: ({ orderId, itemId, uploadIds }) =>
+    mutationFn: ({ orderId, itemId, uploadIds, quantityIndex }) =>
       uploadApi.linkUploadsToOrderItem(orderId, itemId, {
         upload_ids: uploadIds,
+        quantity_index: quantityIndex,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: UPLOADS_QUERY_KEY });

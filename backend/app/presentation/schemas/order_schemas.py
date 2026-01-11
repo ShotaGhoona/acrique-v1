@@ -34,6 +34,8 @@ class OrderItemResponse(BaseModel):
     unit_price: int = Field(..., description='単価')
     options: dict[str, Any] | None = Field(None, description='選択オプション')
     subtotal: int = Field(..., description='小計')
+    requires_upload: bool = Field(False, description='入稿必須')
+    upload_type: str | None = Field(None, description='入稿タイプ (logo/qr/photo/text)')
 
     @classmethod
     def from_dto(cls, dto: OrderItemDTO) -> OrderItemResponse:

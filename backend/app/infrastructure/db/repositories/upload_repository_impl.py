@@ -122,6 +122,7 @@ class UploadRepositoryImpl(IUploadRepository):
         upload_ids: list[int],
         order_id: int,
         order_item_id: int,
+        quantity_index: int = 1,
     ) -> int:
         """入稿データを注文明細に紐付け
 
@@ -129,6 +130,7 @@ class UploadRepositoryImpl(IUploadRepository):
             upload_ids: 紐付ける入稿データIDのリスト
             order_id: 注文ID
             order_item_id: 注文明細ID
+            quantity_index: 何個目の入稿か（1始まり）
 
         Returns:
             int: 更新された件数
@@ -146,6 +148,7 @@ class UploadRepositoryImpl(IUploadRepository):
                 {
                     UploadModel.order_id: order_id,
                     UploadModel.order_item_id: order_item_id,
+                    UploadModel.quantity_index: quantity_index,
                     UploadModel.status: 'submitted',
                 },
                 synchronize_session='fetch',
@@ -161,6 +164,7 @@ class UploadRepositoryImpl(IUploadRepository):
             user_id=upload_model.user_id,
             order_id=upload_model.order_id,
             order_item_id=upload_model.order_item_id,
+            quantity_index=upload_model.quantity_index,
             file_name=upload_model.file_name,
             s3_key=upload_model.s3_key,
             file_url=upload_model.file_url,

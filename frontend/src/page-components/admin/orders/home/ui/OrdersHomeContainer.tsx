@@ -37,35 +37,10 @@ import {
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
 import { useAdminOrders } from '@/features/admin-order/get-orders/lib/use-admin-orders';
 import type { OrderStatus } from '@/entities/admin-order/model/types';
-
-const orderStatusLabels: Record<OrderStatus, string> = {
-  pending: '未処理',
-  awaiting_payment: '支払待ち',
-  paid: '支払済み',
-  awaiting_data: '入稿待ち',
-  data_reviewing: '入稿確認中',
-  confirmed: '確定',
-  processing: '製作中',
-  shipped: '発送済み',
-  delivered: '配達完了',
-  cancelled: 'キャンセル',
-};
-
-const orderStatusColors: Record<
-  OrderStatus,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
-  pending: 'default',
-  awaiting_payment: 'default',
-  paid: 'secondary',
-  awaiting_data: 'secondary',
-  data_reviewing: 'secondary',
-  confirmed: 'secondary',
-  processing: 'secondary',
-  shipped: 'outline',
-  delivered: 'outline',
-  cancelled: 'destructive',
-};
+import {
+  ADMIN_ORDER_STATUS_LABELS,
+  ADMIN_ORDER_STATUS_VARIANTS,
+} from '@/shared/domain/order/model/types';
 
 export function OrdersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -112,7 +87,7 @@ export function OrdersHomeContainer() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='all'>すべて</SelectItem>
-                  {Object.entries(orderStatusLabels).map(([key, label]) => (
+                  {Object.entries(ADMIN_ORDER_STATUS_LABELS).map(([key, label]) => (
                     <SelectItem key={key} value={key}>
                       {label}
                     </SelectItem>
@@ -150,8 +125,8 @@ export function OrdersHomeContainer() {
                       </TableCell>
                       <TableCell>{formatCurrency(order.total)}</TableCell>
                       <TableCell>
-                        <Badge variant={orderStatusColors[order.status]}>
-                          {orderStatusLabels[order.status]}
+                        <Badge variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}>
+                          {ADMIN_ORDER_STATUS_LABELS[order.status]}
                         </Badge>
                       </TableCell>
                       <TableCell>

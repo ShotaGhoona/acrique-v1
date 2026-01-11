@@ -54,7 +54,7 @@ ORDERS = [
     {
         'user_email': 'user@example.com',
         'order_number': 'ORD-20250103-0002',
-        'status': 'awaiting_payment',
+        'status': 'pending',
         'shipping_address_index': 0,
         'subtotal': 8000,
         'shipping_fee': 500,

@@ -96,9 +96,7 @@ class AdminOrderUsecase:
 
         # ステータスに応じたタイムスタンプ更新
         now = datetime.now()
-        if input_dto.status == OrderStatus.PAID:
-            order.paid_at = now
-        elif input_dto.status == OrderStatus.CONFIRMED:
+        if input_dto.status == OrderStatus.CONFIRMED:
             order.confirmed_at = now
         elif input_dto.status == OrderStatus.SHIPPED:
             order.shipped_at = now
@@ -141,20 +139,24 @@ class AdminOrderUsecase:
         )
 
     def _validate_status_transition(self, current: OrderStatus, new: OrderStatus) -> None:
-        """ステータス遷移をバリデーション"""
+        """ステータス遷移をバリデーション
+
+        ステータス遷移:
+            pending → cancelled
+            reviewing → confirmed (Admin全承認)
+            reviewing → revision_required (Admin差し戻し)
+            revision_required → reviewing (ユーザー再入稿)
+            confirmed → processing (製作開始)
+            processing → shipped (発送)
+            shipped → delivered (配達完了)
+        """
         allowed_transitions: dict[OrderStatus, list[OrderStatus]] = {
-            OrderStatus.PENDING: [OrderStatus.AWAITING_PAYMENT, OrderStatus.CANCELLED],
-            OrderStatus.AWAITING_PAYMENT: [OrderStatus.PAID, OrderStatus.CANCELLED],
-            OrderStatus.PAID: [
-                OrderStatus.AWAITING_DATA,
+            OrderStatus.PENDING: [OrderStatus.CANCELLED],
+            OrderStatus.REVIEWING: [
                 OrderStatus.CONFIRMED,
-                OrderStatus.CANCELLED,
+                OrderStatus.REVISION_REQUIRED,
             ],
-            OrderStatus.AWAITING_DATA: [OrderStatus.DATA_REVIEWING],
-            OrderStatus.DATA_REVIEWING: [
-                OrderStatus.CONFIRMED,
-                OrderStatus.AWAITING_DATA,
-            ],
+            OrderStatus.REVISION_REQUIRED: [OrderStatus.REVIEWING],
             OrderStatus.CONFIRMED: [OrderStatus.PROCESSING],
             OrderStatus.PROCESSING: [OrderStatus.SHIPPED],
             OrderStatus.SHIPPED: [OrderStatus.DELIVERED],

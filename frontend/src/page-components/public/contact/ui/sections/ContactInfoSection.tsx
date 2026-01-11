@@ -1,29 +1,30 @@
 import { MapPin, Clock, Mail, Building2 } from 'lucide-react';
+import { SITE_INFO } from '@/shared/config/site-info';
 
 const infoItems = [
   {
     icon: Building2,
     title: '運営会社',
-    content: 'ACRIQUE',
+    content: SITE_INFO.company.nameShort,
     note: null,
   },
   {
     icon: MapPin,
     title: '所在地',
-    content: '〒XXX-XXXX 東京都XX区XX町X-X-X',
+    content: SITE_INFO.address.full,
     note: null,
   },
   {
     icon: Mail,
     title: 'メール',
-    content: 'info@acrique.jp',
-    note: '2営業日以内に返信いたします',
+    content: SITE_INFO.contact.email,
+    note: SITE_INFO.responseTime.emailNote,
   },
   {
     icon: Clock,
     title: '営業時間',
-    content: '平日 10:00 - 18:00',
-    note: '土日祝日休業',
+    content: SITE_INFO.businessHours.display,
+    note: SITE_INFO.businessHours.note,
   },
 ];
 

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
+import { SITE_INFO } from '@/shared/config/site-info';
 
 export function AboutCTASection() {
   return (
@@ -19,8 +20,12 @@ export function AboutCTASection() {
 
           {/* Signature */}
           <div className='mt-12'>
-            <p className='text-sm text-muted-foreground'>ACRIQUE 代表</p>
-            <p className='mt-2 font-medium'>山下 翔大</p>
+            <p className='text-sm text-muted-foreground'>
+              {SITE_INFO.company.nameShort} 代表
+            </p>
+            <p className='mt-2 font-medium'>
+              {SITE_INFO.company.representativeName}
+            </p>
           </div>
 
           {/* CTA Buttons */}

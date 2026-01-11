@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Instagram, Mail } from 'lucide-react';
 import { getAllCategories } from '@/shared/domain/category/data/categories';
+import { SITE_INFO } from '@/shared/config/site-info';
 
 const companyLinks = [
   { label: 'About', href: '/about' },
@@ -44,7 +45,7 @@ export function Footer() {
             {/* Social Links */}
             <div className='mt-6 flex items-center gap-4'>
               <a
-                href='https://instagram.com'
+                href={SITE_INFO.social.instagram}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground'
@@ -53,7 +54,7 @@ export function Footer() {
                 <Instagram className='h-4 w-4' />
               </a>
               <a
-                href='mailto:info@acrique.jp'
+                href={`mailto:${SITE_INFO.contact.email}`}
                 className='flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground'
                 aria-label='Email'
               >
@@ -129,7 +130,8 @@ export function Footer() {
         <div className='mx-auto w-full max-w-7xl px-6 py-6 lg:px-12'>
           <div className='flex flex-col items-center justify-between gap-4 text-xs text-muted-foreground sm:flex-row'>
             <p>
-              &copy; {new Date().getFullYear()} ACRIQUE. All rights reserved.
+              &copy; {new Date().getFullYear()} {SITE_INFO.company.nameShort}.
+              All rights reserved.
             </p>
             <p>Made with precision in Japan.</p>
           </div>

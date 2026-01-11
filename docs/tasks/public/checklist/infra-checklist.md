@@ -7,7 +7,7 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 ## 凡例
 
 - [ ] 未着手
-- [x] 完了
+- ✅ 完了
 
 ---
 
@@ -15,12 +15,12 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| AWSアカウント作成 | [x] |
-| IAMユーザー作成（acrique-deploy） | [x] |
-| AWS CLI インストール | [x] |
-| AWS CLI 設定（credentials） | [x] |
-| CDK CLI インストール | [x] |
-| CDK Bootstrap | [x] |
+| AWSアカウント作成 | ✅ |
+| IAMユーザー作成（acrique-deploy） | ✅ |
+| AWS CLI インストール | ✅ |
+| AWS CLI 設定（credentials） | ✅ |
+| CDK CLI インストール | ✅ |
+| CDK Bootstrap | ✅ |
 
 ---
 
@@ -30,12 +30,12 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| VPC作成 | [x] |
-| パブリックサブネット | [x] |
-| プライベートサブネット | [x] |
-| NAT Gateway | [x] |
-| Internet Gateway | [x] |
-| Bastion Host（踏み台） | [x] |
+| VPC作成 | ✅ |
+| パブリックサブネット | ✅ |
+| プライベートサブネット | ✅ |
+| NAT Gateway | ✅ |
+| Internet Gateway | ✅ |
+| Bastion Host（踏み台） | ✅ |
 
 ---
 
@@ -43,9 +43,9 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| IAMロール | [x] |
-| Cognito User Pool | [x] |
-| Secrets Manager | [x] |
+| IAMロール | ✅ |
+| Cognito User Pool | ✅ |
+| Secrets Manager | ✅ |
 
 ---
 
@@ -53,11 +53,11 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| RDS PostgreSQL | [x] |
-| DB認証情報（Secrets Manager） | [x] |
-| セキュリティグループ | [x] |
-| マイグレーション実行 | [x] |
-| 初期データ投入 | [x] |
+| RDS PostgreSQL | ✅ |
+| DB認証情報（Secrets Manager） | ✅ |
+| セキュリティグループ | ✅ |
+| マイグレーション実行 | ✅ |
+| 初期データ投入 | ✅ |
 
 ---
 
@@ -65,10 +65,10 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| S3バケット作成 | [x] |
-| ライフサイクルポリシー | [x] |
-| CORS設定 | [x] |
-| CloudFront連携（OAC） | [x] |
+| S3バケット作成 | ✅ |
+| ライフサイクルポリシー | ✅ |
+| CORS設定 | ✅ |
+| CloudFront連携（OAC） | ✅ |
 
 ---
 
@@ -76,9 +76,9 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| SQS キュー | [x] |
-| SNS トピック | [x] |
-| Dead Letter Queue | [x] |
+| SQS キュー | ✅ |
+| SNS トピック | ✅ |
+| Dead Letter Queue | ✅ |
 
 ---
 
@@ -86,14 +86,14 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| ECRリポジトリ | [x] |
-| ECSクラスター | [x] |
-| ECS Fargateサービス | [x] |
-| タスク定義 | [x] |
-| ALB（ロードバランサー） | [x] |
-| ヘルスチェック設定 | [x] |
-| 環境変数設定（POSTGRES_*） | [x] |
-| CORS設定（Amplify URL追加） | [x] |
+| ECRリポジトリ | ✅ |
+| ECSクラスター | ✅ |
+| ECS Fargateサービス | ✅ |
+| タスク定義 | ✅ |
+| ALB（ロードバランサー） | ✅ |
+| ヘルスチェック設定 | ✅ |
+| 環境変数設定（POSTGRES_*） | ✅ |
+| CORS設定（Amplify URL追加） | ✅ |
 | Auto Scaling | [ ] |
 | WAF設定 | [ ] |
 
@@ -104,10 +104,10 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 | タスク | 状況 | 備考 |
 |--------|------|------|
 | Amplify App作成（CDK） | [ ] | GitHub連携の認証が必要 |
-| Amplify App作成（コンソール） | [x] | 手動設定で対応 |
-| GitHub連携 | [x] |
-| 環境変数設定 | [x] |
-| 自動ビルド＆デプロイ | [x] |
+| Amplify App作成（コンソール） | ✅ | 手動設定で対応 |
+| GitHub連携 | ✅ |
+| 環境変数設定 | ✅ |
+| 自動ビルド＆デプロイ | ✅ |
 | カスタムドメイン | [ ] |
 
 ---
@@ -116,10 +116,10 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | タスク | 状況 |
 |--------|------|
-| CloudWatch Dashboard | [x] |
-| ECS CPU アラーム | [x] |
-| RDS CPU アラーム | [x] |
-| ALB メトリクス | [x] |
+| CloudWatch Dashboard | ✅ |
+| ECS CPU アラーム | ✅ |
+| RDS CPU アラーム | ✅ |
+| ALB メトリクス | ✅ |
 | SNS通知設定 | [ ] |
 
 ---
@@ -164,22 +164,22 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 | ドキュメント | 状況 |
 |-------------|------|
-| 01-インフラ入門 | [x] |
-| 02-Docker入門 | [x] |
-| 03-AWS基礎 | [x] |
-| 04-CDK入門 | [x] |
-| 04-1-CDKデプロイログの読み方 | [x] |
-| 12-AWSの制約と落とし穴 | [x] |
-| 13-AWSコスト最適化 | [x] |
-| 14-セキュリティベストプラクティス | [x] |
-| 15-CloudFormation | [x] |
-| 16-CloudFront | [x] |
-| 17-Route53 | [x] |
-| 18-Lambda | [x] |
-| 19-API Gateway | [x] |
-| 21-AWSサービス全体マップ | [x] |
-| 21-1-Dockerマルチアーキテクチャ問題 | [x] |
-| 22-RDSマイグレーション手順 | [x] |
+| 01-インフラ入門 | ✅ |
+| 02-Docker入門 | ✅ |
+| 03-AWS基礎 | ✅ |
+| 04-CDK入門 | ✅ |
+| 04-1-CDKデプロイログの読み方 | ✅ |
+| 12-AWSの制約と落とし穴 | ✅ |
+| 13-AWSコスト最適化 | ✅ |
+| 14-セキュリティベストプラクティス | ✅ |
+| 15-CloudFormation | ✅ |
+| 16-CloudFront | ✅ |
+| 17-Route53 | ✅ |
+| 18-Lambda | ✅ |
+| 19-API Gateway | ✅ |
+| 21-AWSサービス全体マップ | ✅ |
+| 21-1-Dockerマルチアーキテクチャ問題 | ✅ |
+| 22-RDSマイグレーション手順 | ✅ |
 
 ---
 
@@ -195,8 +195,8 @@ AWS CDK による ACRIQUE インフラ構築の進捗管理
 
 # 次のマイルストーン
 
-1. [x] RDSマイグレーション実行
-2. [x] 初期データ投入
-3. [x] フロントエンド動作確認（CORS修正済み）
+1. ✅ RDSマイグレーション実行
+2. ✅ 初期データ投入
+3. ✅ フロントエンド動作確認（CORS修正済み）
 4. [ ] CI/CD構築
 5. [ ] カスタムドメイン＆HTTPS化

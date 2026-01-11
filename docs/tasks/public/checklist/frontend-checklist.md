@@ -7,7 +7,7 @@
 ## 凡例
 
 - [ ] 未着手
-- [x] 完了
+- ✅ 完了
 
 **Design**: UIコンポーネント実装
 **API**: バックエンド接続
@@ -18,24 +18,24 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/` | トップ | [x] | [x] |
-| `/about` | About | [x] | - |
-| `/contact` | お問い合わせ | [x] | [ ] |
-| `/shop` | 店舗向け | [x] | [x] |
-| `/office` | オフィス向け | [x] | [x] |
-| `/you` | 個人向け | [x] | [x] |
-| `/[category]/[id]` | 商品詳細 | [x] | [x] |
-| `/guide` | ご利用ガイド | [x] | - |
-| `/faq` | FAQ | [x] | - |
-| `/privacy` | プライバシーポリシー | [x] | - |
-| `/terms` | 利用規約 | [x] | - |
-| `/law` | 特商法表記 | [x] | - |
-| `/login` | ログイン | [x] | [x] |
-| `/register` | 会員登録 | [x] | [x] |
-| `/register/complete` | 登録完了 | [x] | - |
-| `/verify-email` | メール認証 | [x] | [x] |
-| `/password-reset` | パスワードリセット依頼 | [x] | [x] |
-| `/password-reset/confirm` | パスワード再設定 | [x] | [x] |
+| `/` | トップ | ✅ | ✅ |
+| `/about` | About | ✅ | - |
+| `/contact` | お問い合わせ | ✅ | [ ] |
+| `/shop` | 店舗向け | ✅ | ✅ |
+| `/office` | オフィス向け | ✅ | ✅ |
+| `/you` | 個人向け | ✅ | ✅ |
+| `/[category]/[id]` | 商品詳細 | ✅ | ✅ |
+| `/guide` | ご利用ガイド | ✅ | - |
+| `/faq` | FAQ | ✅ | - |
+| `/privacy` | プライバシーポリシー | ✅ | - |
+| `/terms` | 利用規約 | ✅ | - |
+| `/law` | 特商法表記 | ✅ | - |
+| `/login` | ログイン | ✅ | ✅ |
+| `/register` | 会員登録 | ✅ | ✅ |
+| `/register/complete` | 登録完了 | ✅ | - |
+| `/verify-email` | メール認証 | ✅ | ✅ |
+| `/password-reset` | パスワードリセット依頼 | ✅ | ✅ |
+| `/password-reset/confirm` | パスワード再設定 | ✅ | ✅ |
 
 ---
 
@@ -43,17 +43,17 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/mypage` | マイページ | [x] | [x] |
-| `/mypage/orders` | 注文履歴 | [x] | [x] |
-| `/mypage/orders/[id]` | 注文詳細 | [x] | [x] |
-| `/mypage/orders/[id]/upload` | データ入稿 | [x] | [x] |
-| `/mypage/profile` | プロフィール | [x] | [x] |
-| `/mypage/addresses` | 配送先管理 | [x] | [x] |
-| `/cart` | カート | [x] | [x] |
-| `/checkout` | 購入手続き | [x] | [x] |
-| `/checkout/upload` | データ入稿 | [x] | [x] |
-| `/checkout/confirm` | 注文確認・決済 | [x] | [x] |
-| `/checkout/complete` | 注文完了 | [x] | [x] |
+| `/mypage` | マイページ | ✅ | ✅ |
+| `/mypage/orders` | 注文履歴 | ✅ | ✅ |
+| `/mypage/orders/[id]` | 注文詳細 | ✅ | ✅ |
+| `/mypage/orders/[id]/upload` | データ入稿 | ✅ | ✅ |
+| `/mypage/profile` | プロフィール | ✅ | ✅ |
+| `/mypage/addresses` | 配送先管理 | ✅ | ✅ |
+| `/cart` | カート | ✅ | ✅ |
+| `/checkout` | 購入手続き | ✅ | ✅ |
+| `/checkout/upload` | データ入稿 | ✅ | ✅ |
+| `/checkout/confirm` | 注文確認・決済 | ✅ | ✅ |
+| `/checkout/complete` | 注文完了 | ✅ | ✅ |
 
 ---
 
@@ -61,20 +61,20 @@
 
 | Path | ページ名 | Design | API |
 |------|---------|--------|-----|
-| `/admin/login` | 管理者ログイン | [x] | [x] |
-| `/admin` | ダッシュボード | [x] | [x] |
-| `/admin/orders` | 注文一覧 | [x] | [x] |
-| `/admin/orders/[id]` | 注文詳細・編集 | [x] | [x] |
-| `/admin/products` | 商品一覧 | [x] | [x] |
-| `/admin/products/new` | 商品追加 | [x] | [x] |
-| `/admin/products/[id]` | 商品編集 | [x] | [x] |
-| `/admin/uploads` | 入稿データ一覧 | [x] | [ ] |
-| `/admin/uploads/[id]` | 入稿確認・承認 | [x] | [ ] |
-| `/admin/users` | 顧客一覧 | [x] | [x] |
-| `/admin/users/[id]` | 顧客詳細 | [x] | [x] |
-| `/admin/admins` | 管理者一覧 | [x] | [x] |
-| `/admin/logs` | 操作ログ | [x] | [x] |
-| `/admin/settings` | サイト設定 | [x] | [ ] |
+| `/admin/login` | 管理者ログイン | ✅ | ✅ |
+| `/admin` | ダッシュボード | ✅ | ✅ |
+| `/admin/orders` | 注文一覧 | ✅ | ✅ |
+| `/admin/orders/[id]` | 注文詳細・編集 | ✅ | ✅ |
+| `/admin/products` | 商品一覧 | ✅ | ✅ |
+| `/admin/products/new` | 商品追加 | ✅ | ✅ |
+| `/admin/products/[id]` | 商品編集 | ✅ | ✅ |
+| `/admin/uploads` | 入稿データ一覧 | ✅ | ✅ |
+| `/admin/uploads/[id]` | 入稿確認・承認 | ✅ | ✅ |
+| `/admin/users` | 顧客一覧 | ✅ | ✅ |
+| `/admin/users/[id]` | 顧客詳細 | ✅ | ✅ |
+| `/admin/admins` | 管理者一覧 | ✅ | ✅ |
+| `/admin/logs` | 操作ログ | ✅ | ✅ |
+| `/admin/settings` | サイト設定 | ✅ | [ ] |
 
 ---
 
@@ -82,18 +82,18 @@
 
 | コンポーネント | 状況 |
 |---------------|------|
-| Header | [x] |
-| Footer | [x] |
-| 認証プロバイダー | [x] |
-| カート状態管理 | [x] |
-| API クライアント設定 | [x] |
+| Header | ✅ |
+| Footer | ✅ |
+| 認証プロバイダー | ✅ |
+| カート状態管理 | ✅ |
+| API クライアント設定 | ✅ |
 | エラーハンドリング | [ ] |
 | ローディング状態 | [ ] |
 | ローディングをスケルトンに置き換え | [ ] |
 | トースト通知 | [ ] |
 | モーダル共通 | [ ] |
 | ページネーション | [ ] |
-| フォームバリデーション | [x] |
+| フォームバリデーション | ✅ |
 
 ---
 
@@ -103,12 +103,12 @@
 
 | タスク | 状況 |
 |--------|------|
-| ログインフォーム | [x] |
-| 会員登録フォーム | [x] |
-| メール認証 | [x] |
-| パスワードリセット | [x] |
-| ログアウト処理 | [x] |
-| 認証状態管理 | [x] |
+| ログインフォーム | ✅ |
+| 会員登録フォーム | ✅ |
+| メール認証 | ✅ |
+| パスワードリセット | ✅ |
+| ログアウト処理 | ✅ |
+| 認証状態管理 | ✅ |
 | 保護ルート | [ ] |
 | トークンリフレッシュ | [ ] |
 
@@ -116,86 +116,99 @@
 
 | タスク | 状況 |
 |--------|------|
-| entities/cart | [x] |
-| features/cart/get-cart | [x] |
-| features/cart/add-to-cart | [x] |
-| features/cart/update-cart-item | [x] |
-| features/cart/delete-cart-item | [x] |
-| features/cart/clear-cart | [x] |
-| カート一覧UI | [x] |
-| カート追加ボタン | [x] |
-| 数量変更UI | [x] |
-| 小計計算表示 | [x] |
+| entities/cart | ✅ |
+| features/cart/get-cart | ✅ |
+| features/cart/add-to-cart | ✅ |
+| features/cart/update-cart-item | ✅ |
+| features/cart/delete-cart-item | ✅ |
+| features/cart/clear-cart | ✅ |
+| カート一覧UI | ✅ |
+| カート追加ボタン | ✅ |
+| 数量変更UI | ✅ |
+| 小計計算表示 | ✅ |
 
 ## 決済機能
 
 | タスク | 状況 |
 |--------|------|
-| shared/lib/stripe.ts | [x] |
-| entities/payment | [x] |
-| features/payment/create-payment-intent | [x] |
-| widgets/payment/card-form | [x] |
-| Stripe Elements導入 | [x] |
-| カード入力フォーム | [x] |
-| 決済処理 | [x] |
-| エラーハンドリング | [x] |
-| 購入手続きUI | [x] |
-| 注文確認・決済UI | [x] |
-| 注文完了UI | [x] |
+| shared/lib/stripe.ts | ✅ |
+| entities/payment | ✅ |
+| features/payment/create-payment-intent | ✅ |
+| widgets/payment/card-form | ✅ |
+| Stripe Elements導入 | ✅ |
+| カード入力フォーム | ✅ |
+| 決済処理 | ✅ |
+| エラーハンドリング | ✅ |
+| 購入手続きUI | ✅ |
+| 注文確認・決済UI | ✅ |
+| 注文完了UI | ✅ |
 
 ## ファイルアップロード
 
 | タスク | 状況 |
 |--------|------|
-| entities/upload | [x] |
-| features/upload/upload-file | [x] |
-| features/upload/get-uploads | [x] |
-| features/upload/delete-upload | [x] |
-| features/upload/link-uploads | [x] |
-| widgets/upload/dropzone | [x] |
-| ドラッグ&ドロップ | [x] |
-| プレビュー表示 | [x] |
-| ファイル形式バリデーション | [x] |
-| アップロード進捗 | [x] |
-| チェックアウト入稿UI | [x] |
-| マイページ入稿UI | [x] |
+| entities/upload | ✅ |
+| features/upload/upload-file | ✅ |
+| features/upload/get-uploads | ✅ |
+| features/upload/delete-upload | ✅ |
+| features/upload/link-uploads | ✅ |
+| widgets/upload/dropzone | ✅ |
+| ドラッグ&ドロップ | ✅ |
+| プレビュー表示 | ✅ |
+| ファイル形式バリデーション | ✅ |
+| アップロード進捗 | ✅ |
+| チェックアウト入稿UI | ✅ |
+| マイページ入稿UI | ✅ |
 
 ## ユーザー機能
 
 | タスク | 状況 |
 |--------|------|
-| entities/user | [x] |
-| features/user/get-me | [x] |
-| features/user/update-me | [x] |
-| features/user/change-password | [x] |
-| プロフィール編集UI | [x] |
-| パスワード変更UI | [x] |
+| entities/user | ✅ |
+| features/user/get-me | ✅ |
+| features/user/update-me | ✅ |
+| features/user/change-password | ✅ |
+| プロフィール編集UI | ✅ |
+| パスワード変更UI | ✅ |
 
 ## 配送先機能
 
 | タスク | 状況 |
 |--------|------|
-| entities/address | [x] |
-| features/address/get-addresses | [x] |
-| features/address/create-address | [x] |
-| features/address/update-address | [x] |
-| features/address/delete-address | [x] |
-| features/address/set-default-address | [x] |
-| 配送先一覧UI | [x] |
-| 配送先追加・編集フォーム | [x] |
+| entities/address | ✅ |
+| features/address/get-addresses | ✅ |
+| features/address/create-address | ✅ |
+| features/address/update-address | ✅ |
+| features/address/delete-address | ✅ |
+| features/address/set-default-address | ✅ |
+| 配送先一覧UI | ✅ |
+| 配送先追加・編集フォーム | ✅ |
 
 ## 注文機能
 
 | タスク | 状況 |
 |--------|------|
-| entities/order | [x] |
-| features/order/get-orders | [x] |
-| features/order/get-order | [x] |
-| features/order/create-order | [x] |
-| features/order/cancel-order | [x] |
-| 注文一覧UI | [x] |
-| 注文詳細UI | [x] |
-| チェックアウトUI | [x] |
+| entities/order | ✅ |
+| features/order/get-orders | ✅ |
+| features/order/get-order | ✅ |
+| features/order/create-order | ✅ |
+| features/order/cancel-order | ✅ |
+| 注文一覧UI | ✅ |
+| 注文詳細UI | ✅ |
+| チェックアウトUI | ✅ |
+
+## Admin入稿管理機能
+
+| タスク | 状況 |
+|--------|------|
+| entities/admin-upload | ✅ |
+| features/admin-upload/get-uploads | ✅ |
+| features/admin-upload/get-upload | ✅ |
+| features/admin-upload/approve-upload | ✅ |
+| features/admin-upload/reject-upload | ✅ |
+| 入稿一覧UI | ✅ |
+| 入稿詳細・承認UI | ✅ |
+| マイページ差し戻し理由表示 | ✅ |
 
 ---
 

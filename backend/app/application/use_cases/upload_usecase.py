@@ -187,6 +187,7 @@ class UploadUsecase:
             file_size=upload.file_size,
             upload_type=upload.upload_type,
             status=upload.status,
+            admin_notes=upload.admin_notes,
             order_id=upload.order_id,
             order_item_id=upload.order_item_id,
             quantity_index=upload.quantity_index,

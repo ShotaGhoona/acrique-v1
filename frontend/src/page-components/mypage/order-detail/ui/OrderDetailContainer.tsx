@@ -25,6 +25,7 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
 import { useOrder } from '@/features/order/get-order/lib/use-order';
 import { useCancelOrder } from '@/features/order/cancel-order/lib/use-cancel-order';
+import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
 import { OrderDetailSkeleton } from './skeleton/OrderDetailSkeleton';
 import type {
   OrderStatus,
@@ -79,13 +80,25 @@ function OrderTimeline({ order }: { order: OrderDetail }) {
     {
       key: 'order',
       label: '注文・支払い',
-      completedStatuses: ['reviewing', 'revision_required', 'confirmed', 'processing', 'shipped', 'delivered'],
+      completedStatuses: [
+        'reviewing',
+        'revision_required',
+        'confirmed',
+        'processing',
+        'shipped',
+        'delivered',
+      ],
       activeStatuses: ['pending'],
     },
     {
       key: 'upload',
       label: 'データ確認',
-      activeLabel: order.status === 'reviewing' ? '確認中' : order.status === 'revision_required' ? '再入稿待ち' : undefined,
+      activeLabel:
+        order.status === 'reviewing'
+          ? '確認中'
+          : order.status === 'revision_required'
+            ? '再入稿待ち'
+            : undefined,
       completedStatuses: ['confirmed', 'processing', 'shipped', 'delivered'],
       activeStatuses: ['reviewing', 'revision_required'],
     },
@@ -110,7 +123,8 @@ function OrderTimeline({ order }: { order: OrderDetail }) {
       {steps.map((step, index) => {
         const isCompleted = step.completedStatuses.includes(order.status);
         const isActive = step.activeStatuses.includes(order.status);
-        const displayLabel = isActive && step.activeLabel ? step.activeLabel : step.label;
+        const displayLabel =
+          isActive && step.activeLabel ? step.activeLabel : step.label;
 
         return (
           <div key={step.key} className='flex flex-1 items-center'>
@@ -136,7 +150,11 @@ function OrderTimeline({ order }: { order: OrderDetail }) {
               </div>
               <span
                 className={`mt-2 text-center text-xs ${
-                  isActive ? 'font-medium text-foreground' : isCompleted ? 'text-foreground' : 'text-muted-foreground'
+                  isActive
+                    ? 'font-medium text-foreground'
+                    : isCompleted
+                      ? 'text-foreground'
+                      : 'text-muted-foreground'
                 }`}
               >
                 {displayLabel}
@@ -145,7 +163,9 @@ function OrderTimeline({ order }: { order: OrderDetail }) {
             {index < steps.length - 1 && (
               <div
                 className={`mx-2 h-px flex-1 ${
-                  step.completedStatuses.includes(order.status) ? 'bg-foreground' : 'bg-border'
+                  step.completedStatuses.includes(order.status)
+                    ? 'bg-foreground'
+                    : 'bg-border'
                 }`}
               />
             )}
@@ -193,14 +213,19 @@ function OrderItemRow({ item }: { item: OrderItem }) {
 export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
   const router = useRouter();
   const { data, isLoading, error } = useOrder(orderId);
+  const { data: uploadsData } = useUploads();
   const cancelMutation = useCancelOrder();
 
   const order = data?.order;
+  const allUploads = uploadsData?.uploads ?? [];
+
+  // この注文に紐づくrejectedのuploadを取得
+  const rejectedUploads = allUploads.filter(
+    (u) => u.order_id === orderId && u.status === 'rejected',
+  );
 
   const canCancel =
-    order &&
-    order.status === 'pending' &&
-    !cancelMutation.isPending;
+    order && order.status === 'pending' && !cancelMutation.isPending;
 
   const handleCancel = async () => {
     if (!order || !canCancel) return;
@@ -280,21 +305,41 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                   入稿いただいたデータに問題がありました。以下の差し戻し項目を確認のうえ、修正したデータを再度アップロードしてください。
                 </p>
 
-                {/* TODO: Admin審査API実装後、useUploadsで取得したrejectedデータを表示 */}
-                <div className='mt-4 space-y-2'>
-                  {/* ダミーの差し戻し項目リスト */}
-                  <div className='rounded-sm border border-destructive/30 bg-background/50 p-3'>
-                    <div className='flex items-start justify-between'>
-                      <div>
-                        <p className='text-sm font-medium'>フローティングウォールサイン - 1個目</p>
-                        <p className='mt-1 text-xs text-muted-foreground'>
-                          差し戻し理由: 画像が不鮮明です。高解像度の画像を再アップロードしてください。
-                        </p>
-                      </div>
-                      <Badge variant='destructive' className='text-xs'>要対応</Badge>
-                    </div>
+                {rejectedUploads.length > 0 && (
+                  <div className='mt-4 space-y-2'>
+                    {rejectedUploads.map((upload) => {
+                      const item = order.items.find(
+                        (i) => i.id === upload.order_item_id,
+                      );
+                      return (
+                        <div
+                          key={upload.id}
+                          className='rounded-sm border border-destructive/30 bg-background/50 p-3'
+                        >
+                          <div className='flex items-start justify-between'>
+                            <div>
+                              <p className='text-sm font-medium'>
+                                {item?.product_name_ja ||
+                                  item?.product_name ||
+                                  upload.file_name}
+                                {' - '}
+                                {upload.quantity_index}個目
+                              </p>
+                              {upload.admin_notes && (
+                                <p className='mt-1 text-xs text-muted-foreground'>
+                                  差し戻し理由: {upload.admin_notes}
+                                </p>
+                              )}
+                            </div>
+                            <Badge variant='destructive' className='text-xs'>
+                              要対応
+                            </Badge>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
+                )}
 
                 <Button asChild className='mt-4' size='lg'>
                   <Link href={`/mypage/orders/${order.id}/upload`}>

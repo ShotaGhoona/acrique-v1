@@ -13,3 +13,5 @@ export const ADMINS_QUERY_KEY = ['admins'];
 export const ADMIN_LOGS_QUERY_KEY = ['admin-logs'];
 export const ADMIN_PRODUCTS_QUERY_KEY = ['admin-products'];
 export const ADMIN_PRODUCT_QUERY_KEY = ['admin-product'];
+export const ADMIN_UPLOADS_QUERY_KEY = ['admin-uploads'];
+export const ADMIN_UPLOAD_QUERY_KEY = ['admin-upload'];

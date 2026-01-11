@@ -1,6 +1,7 @@
 """入稿データリポジトリのインターフェース"""
 
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 from app.domain.entities.upload import Upload
 
@@ -72,4 +73,32 @@ class IUploadRepository(ABC):
         Returns:
             int: 更新された件数
         """
+        pass
+
+    # === Admin用メソッド ===
+
+    @abstractmethod
+    def get_all_paginated(
+        self,
+        status: str | None = None,
+        user_id: int | None = None,
+        order_id: int | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[Upload]:
+        """Admin用: 入稿データ一覧を取得（フィルタ・ページネーション対応）"""
+        pass
+
+    @abstractmethod
+    def count_all_by_filters(
+        self,
+        status: str | None = None,
+        user_id: int | None = None,
+        order_id: int | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+    ) -> int:
+        """Admin用: フィルタ条件に合致する件数を取得"""
         pass

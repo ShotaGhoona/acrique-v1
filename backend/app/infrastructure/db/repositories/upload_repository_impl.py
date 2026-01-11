@@ -1,5 +1,7 @@
 """入稿データリポジトリの実装"""
 
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from app.domain.entities.upload import Upload
@@ -178,3 +180,71 @@ class UploadRepositoryImpl(IUploadRepository):
             reviewed_at=upload_model.reviewed_at,
             created_at=upload_model.created_at,
         )
+
+    # === Admin用メソッド ===
+
+    def get_all_paginated(
+        self,
+        status: str | None = None,
+        user_id: int | None = None,
+        order_id: int | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[Upload]:
+        """Admin用: 入稿データ一覧を取得（フィルタ・ページネーション対応）"""
+        query = self.session.query(UploadModel)
+
+        # フィルタ適用
+        if status is not None:
+            query = query.filter(UploadModel.status == status)
+        if user_id is not None:
+            query = query.filter(UploadModel.user_id == user_id)
+        if order_id is not None:
+            query = query.filter(UploadModel.order_id == order_id)
+        if date_from is not None:
+            query = query.filter(UploadModel.created_at >= date_from)
+        if date_to is not None:
+            query = query.filter(UploadModel.created_at <= date_to)
+
+        # 注文に紐付いたもののみ（pending除外）
+        query = query.filter(UploadModel.order_id.isnot(None))
+
+        # ソート・ページネーション
+        upload_models = (
+            query.order_by(UploadModel.created_at.desc())
+            .offset(offset)
+            .limit(limit)
+            .all()
+        )
+
+        return [self._to_entity(m) for m in upload_models]
+
+    def count_all_by_filters(
+        self,
+        status: str | None = None,
+        user_id: int | None = None,
+        order_id: int | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+    ) -> int:
+        """Admin用: フィルタ条件に合致する件数を取得"""
+        query = self.session.query(UploadModel)
+
+        # フィルタ適用
+        if status is not None:
+            query = query.filter(UploadModel.status == status)
+        if user_id is not None:
+            query = query.filter(UploadModel.user_id == user_id)
+        if order_id is not None:
+            query = query.filter(UploadModel.order_id == order_id)
+        if date_from is not None:
+            query = query.filter(UploadModel.created_at >= date_from)
+        if date_to is not None:
+            query = query.filter(UploadModel.created_at <= date_to)
+
+        # 注文に紐付いたもののみ（pending除外）
+        query = query.filter(UploadModel.order_id.isnot(None))
+
+        return query.count()

@@ -13,6 +13,7 @@ from app.presentation.api.admin_dashboard_api import router as admin_dashboard_r
 from app.presentation.api.admin_log_api import router as admin_log_router
 from app.presentation.api.admin_order_api import router as admin_order_router
 from app.presentation.api.admin_product_api import router as admin_product_router
+from app.presentation.api.admin_upload_api import router as admin_upload_router
 from app.presentation.api.admin_user_api import router as admin_user_router
 from app.presentation.api.auth_api import router as auth_router
 from app.presentation.api.cart_api import router as cart_router
@@ -86,6 +87,7 @@ app.include_router(admin_user_router, prefix='/api')
 app.include_router(admin_admin_router, prefix='/api')
 app.include_router(admin_order_router, prefix='/api')
 app.include_router(admin_product_router, prefix='/api')
+app.include_router(admin_upload_router, prefix='/api')
 app.include_router(admin_dashboard_router, prefix='/api')
 app.include_router(admin_log_router, prefix='/api')
 

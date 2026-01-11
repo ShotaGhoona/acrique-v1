@@ -43,6 +43,8 @@ interface UploadedFile {
   file_name: string;
   file_url: string;
   upload_type: string | null;
+  status?: string;
+  quantity_index?: number;
 }
 
 function getUploadTypeFromProduct(productName: string): UploadType {
@@ -116,6 +118,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
         file_name: u.file_name,
         file_url: u.file_url,
         upload_type: u.upload_type,
+        status: u.status,
       }));
   };
 
@@ -127,6 +130,8 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
         file_name: u.file_name,
         file_url: u.file_url,
         upload_type: u.upload_type,
+        status: u.status,
+        quantity_index: u.quantity_index,
       }));
   };
 
@@ -218,6 +223,19 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
           注文詳細に戻る
         </Link>
 
+        {/* Revision Required Alert */}
+        {canUpload && (
+          <div className='flex items-start gap-3 rounded-sm border-2 border-destructive bg-destructive/10 p-4'>
+            <AlertCircle className='mt-0.5 h-5 w-5 flex-shrink-0 text-destructive' />
+            <div className='text-sm'>
+              <p className='font-medium text-destructive'>再入稿が必要です</p>
+              <p className='mt-1 text-muted-foreground'>
+                入稿いただいたデータに問題がありました。差し戻しされた項目を確認のうえ、修正したデータを再度アップロードしてください。
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Status Alert */}
         {!canUpload && (
           <div className='flex items-start gap-3 rounded-sm border border-border bg-secondary/30 p-4'>
@@ -252,9 +270,17 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
           <>
             {order.items.map((item) => {
               const uploadType = getUploadTypeFromProduct(item.product_name);
-              const newUploads = getUploadedFilesForItem(item.id);
               const existingUploads = getExistingUploadsForItem(item.id);
-              const allItemUploads = [...existingUploads, ...newUploads];
+
+              // quantity_indexごとにuploadを整理
+              const uploadsByIndex: Record<number, UploadedFile | undefined> = {};
+              existingUploads.forEach((u) => {
+                const idx = u.quantity_index ?? 1;
+                uploadsByIndex[idx] = u;
+              });
+
+              // 差し戻しがあるかどうか
+              const hasRejected = existingUploads.some((u) => u.status === 'rejected');
 
               return (
                 <Card key={item.id}>
@@ -268,23 +294,96 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
                           数量: {item.quantity}
                         </p>
                       </div>
-                      {existingUploads.length > 0 && (
-                        <Badge variant='outline' className='gap-1'>
+                      {!hasRejected && existingUploads.length > 0 && (
+                        <Badge variant='outline' className='gap-1 text-green-600 border-green-600'>
                           <CheckCircle className='h-3 w-3' />
-                          入稿済み
+                          すべて承認待ち
+                        </Badge>
+                      )}
+                      {hasRejected && (
+                        <Badge variant='destructive' className='gap-1'>
+                          <AlertCircle className='h-3 w-3' />
+                          再入稿が必要
                         </Badge>
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <FileDropzone
-                      uploadType={uploadType}
-                      label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
-                      description={getUploadDescription(uploadType)}
-                      onUploadComplete={handleUploadComplete(item.id)}
-                      onFileRemove={handleFileRemove(item.id)}
-                      uploadedFiles={allItemUploads}
-                    />
+                  <CardContent className='space-y-4'>
+                    {/* 数量分のスロットを表示 */}
+                    {Array.from({ length: item.quantity }, (_, i) => i + 1).map((quantityIndex) => {
+                      const existingUpload = uploadsByIndex[quantityIndex];
+                      const isRejected = existingUpload?.status === 'rejected';
+                      const isOk = existingUpload && existingUpload.status !== 'rejected';
+                      const newUploadsForSlot = getUploadedFilesForItem(item.id).filter(
+                        (_, idx) => idx === quantityIndex - 1
+                      );
+
+                      return (
+                        <div key={quantityIndex} className='rounded-sm border border-border p-4'>
+                          <div className='mb-3 flex items-center justify-between'>
+                            <p className='text-sm font-medium'>
+                              {item.quantity > 1 ? `${quantityIndex}個目` : '入稿データ'}
+                            </p>
+                            {isOk && (
+                              <Badge variant='outline' className='gap-1 text-green-600 border-green-600'>
+                                <CheckCircle className='h-3 w-3' />
+                                OK
+                              </Badge>
+                            )}
+                            {isRejected && (
+                              <Badge variant='destructive' className='gap-1'>
+                                <AlertCircle className='h-3 w-3' />
+                                差し戻し
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* OKの場合：ファイル情報のみ表示 */}
+                          {isOk && existingUpload && (
+                            <div className='flex items-center gap-3 rounded-sm bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 px-4 py-3'>
+                              <CheckCircle className='h-5 w-5 text-green-600' />
+                              <div>
+                                <p className='text-sm font-medium'>{existingUpload.file_name}</p>
+                                <p className='text-xs text-muted-foreground'>再入稿不要</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 差し戻しの場合：理由表示 + アップロードエリア */}
+                          {isRejected && (
+                            <>
+                              {/* TODO: Admin審査API実装後、existingUpload.admin_notesを表示 */}
+                              <div className='mb-3 rounded-sm border border-destructive/30 bg-destructive/5 p-3'>
+                                <p className='text-xs font-medium text-destructive'>差し戻し理由:</p>
+                                <p className='mt-1 text-sm text-muted-foreground'>
+                                  画像が不鮮明です。高解像度の画像を再アップロードしてください。
+                                </p>
+                              </div>
+                              <FileDropzone
+                                uploadType={uploadType}
+                                label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
+                                description={getUploadDescription(uploadType)}
+                                onUploadComplete={handleUploadComplete(item.id)}
+                                onFileRemove={handleFileRemove(item.id)}
+                                uploadedFiles={existingUpload ? [existingUpload, ...newUploadsForSlot] : newUploadsForSlot}
+                              />
+                            </>
+                          )}
+
+                          {/* 未入稿の場合（通常はないはず） */}
+                          {!existingUpload && (
+                            <FileDropzone
+                              uploadType={uploadType}
+                              label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
+                              description={getUploadDescription(uploadType)}
+                              onUploadComplete={handleUploadComplete(item.id)}
+                              onFileRemove={handleFileRemove(item.id)}
+                              uploadedFiles={newUploadsForSlot}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </CardContent>
                 </Card>
               );

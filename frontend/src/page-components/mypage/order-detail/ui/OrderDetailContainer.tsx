@@ -267,6 +267,46 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
           注文履歴に戻る
         </Link>
 
+        {/* Revision Required Alert */}
+        {order.status === 'revision_required' && (
+          <div className='rounded-sm border-2 border-destructive bg-destructive/10 p-6'>
+            <div className='flex items-start gap-4'>
+              <AlertCircle className='mt-0.5 h-6 w-6 flex-shrink-0 text-destructive' />
+              <div className='flex-1'>
+                <h3 className='text-lg font-semibold text-destructive'>
+                  再入稿が必要です
+                </h3>
+                <p className='mt-1 text-sm text-muted-foreground'>
+                  入稿いただいたデータに問題がありました。以下の差し戻し項目を確認のうえ、修正したデータを再度アップロードしてください。
+                </p>
+
+                {/* TODO: Admin審査API実装後、useUploadsで取得したrejectedデータを表示 */}
+                <div className='mt-4 space-y-2'>
+                  {/* ダミーの差し戻し項目リスト */}
+                  <div className='rounded-sm border border-destructive/30 bg-background/50 p-3'>
+                    <div className='flex items-start justify-between'>
+                      <div>
+                        <p className='text-sm font-medium'>フローティングウォールサイン - 1個目</p>
+                        <p className='mt-1 text-xs text-muted-foreground'>
+                          差し戻し理由: 画像が不鮮明です。高解像度の画像を再アップロードしてください。
+                        </p>
+                      </div>
+                      <Badge variant='destructive' className='text-xs'>要対応</Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <Button asChild className='mt-4' size='lg'>
+                  <Link href={`/mypage/orders/${order.id}/upload`}>
+                    <Upload className='mr-2 h-4 w-4' />
+                    データを再入稿する
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Status Card */}
         <Card>
           <CardContent className='p-6'>
@@ -295,14 +335,6 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
               </div>
 
               <div className='flex gap-2'>
-                {order.status === 'revision_required' && (
-                  <Button asChild>
-                    <Link href={`/mypage/orders/${order.id}/upload`}>
-                      <Upload className='mr-2 h-4 w-4' />
-                      データを再入稿する
-                    </Link>
-                  </Button>
-                )}
                 {canCancel && (
                   <Button
                     variant='outline'

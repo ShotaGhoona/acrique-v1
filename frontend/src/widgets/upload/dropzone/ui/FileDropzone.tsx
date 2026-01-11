@@ -16,6 +16,7 @@ interface UploadedFile {
   file_name: string;
   file_url: string;
   upload_type: string | null;
+  status?: string;
 }
 
 interface FileDropzoneProps {
@@ -209,37 +210,54 @@ export function FileDropzone({
             アップロード済み
           </p>
           <div className='space-y-2'>
-            {uploadedFiles.map((file) => (
-              <div
-                key={file.id}
-                className='flex items-center justify-between rounded-sm border border-border bg-secondary/30 px-4 py-3'
-              >
-                <div className='flex items-center gap-3'>
-                  {file.file_url?.match(/\.(jpg|jpeg|png|gif|svg)$/i) ? (
-                    <FileImage className='h-5 w-5 text-muted-foreground' />
-                  ) : (
-                    <FileText className='h-5 w-5 text-muted-foreground' />
+            {uploadedFiles.map((file) => {
+              const isRejected = file.status === 'rejected';
+              return (
+                <div
+                  key={file.id}
+                  className={cn(
+                    'flex items-center justify-between rounded-sm border px-4 py-3',
+                    isRejected
+                      ? 'border-destructive bg-destructive/10'
+                      : 'border-border bg-secondary/30',
                   )}
-                  <div>
-                    <p className='text-sm font-medium'>{file.file_name}</p>
-                    <p className='text-xs text-muted-foreground'>
-                      {file.upload_type && getUploadTypeLabelDetail(file.upload_type as UploadType)}
-                    </p>
+                >
+                  <div className='flex items-center gap-3'>
+                    {isRejected ? (
+                      <AlertCircle className='h-5 w-5 text-destructive' />
+                    ) : file.file_url?.match(/\.(jpg|jpeg|png|gif|svg)$/i) ? (
+                      <FileImage className='h-5 w-5 text-muted-foreground' />
+                    ) : (
+                      <FileText className='h-5 w-5 text-muted-foreground' />
+                    )}
+                    <div>
+                      <p className={cn('text-sm font-medium', isRejected && 'text-destructive')}>
+                        {file.file_name}
+                        {isRejected && (
+                          <span className='ml-2 rounded bg-destructive px-1.5 py-0.5 text-xs text-destructive-foreground'>
+                            差し戻し
+                          </span>
+                        )}
+                      </p>
+                      <p className='text-xs text-muted-foreground'>
+                        {file.upload_type && getUploadTypeLabelDetail(file.upload_type as UploadType)}
+                      </p>
+                    </div>
                   </div>
+                  {onFileRemove && (
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      className='h-8 w-8'
+                      onClick={() => onFileRemove(file.id)}
+                    >
+                      <X className='h-4 w-4' />
+                      <span className='sr-only'>削除</span>
+                    </Button>
+                  )}
                 </div>
-                {onFileRemove && (
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='h-8 w-8'
-                    onClick={() => onFileRemove(file.id)}
-                  >
-                    <X className='h-4 w-4' />
-                    <span className='sr-only'>削除</span>
-                  </Button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

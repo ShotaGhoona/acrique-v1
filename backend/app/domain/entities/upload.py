@@ -43,5 +43,5 @@ class Upload(BaseModel):
 
     @property
     def is_deletable(self) -> bool:
-        """削除可能かどうか（pendingの場合のみ）"""
-        return self.status == 'pending'
+        """削除可能かどうか（pending または rejected の場合）"""
+        return self.status in ('pending', 'rejected')

@@ -20,7 +20,9 @@ class Upload(BaseModel):
     file_url: str = Field(..., description='CloudFront配信URL')
     file_type: str | None = Field(None, description='MIMEタイプ')
     file_size: int | None = Field(None, description='ファイルサイズ（bytes）')
-    upload_type: str | None = Field(None, description='アップロード種別（logo/qr/photo/text）')
+    upload_type: str | None = Field(
+        None, description='アップロード種別（logo/qr/photo/text）'
+    )
     text_content: str | None = Field(None, description='テキスト入稿の場合の内容')
     status: str = Field('pending', description='ステータス')
     admin_notes: str | None = Field(None, description='管理者メモ')

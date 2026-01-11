@@ -170,7 +170,11 @@ class PaymentUsecase:
             return
 
         # 既に処理済みの場合はスキップ
-        if order.status in [OrderStatus.PAID, OrderStatus.AWAITING_DATA, OrderStatus.CONFIRMED]:
+        if order.status in [
+            OrderStatus.PAID,
+            OrderStatus.AWAITING_DATA,
+            OrderStatus.CONFIRMED,
+        ]:
             logger.info(f'Order {order.order_number} already processed, skipping')
             return
 
@@ -181,11 +185,15 @@ class PaymentUsecase:
         order.paid_at = datetime.now()
         if requires_upload:
             order.status = OrderStatus.AWAITING_DATA
-            logger.info(f'Order {order.order_number} marked as awaiting_data (upload required)')
+            logger.info(
+                f'Order {order.order_number} marked as awaiting_data (upload required)'
+            )
         else:
             order.status = OrderStatus.CONFIRMED
             order.confirmed_at = datetime.now()
-            logger.info(f'Order {order.order_number} marked as confirmed (no upload required)')
+            logger.info(
+                f'Order {order.order_number} marked as confirmed (no upload required)'
+            )
 
         self.order_repository.update(order)
 

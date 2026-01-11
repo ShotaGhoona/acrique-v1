@@ -62,9 +62,7 @@ class UploadRepositoryImpl(IUploadRepository):
     def count_by_user_id(self, user_id: int) -> int:
         """ユーザーの入稿データ数を取得"""
         return (
-            self.session.query(UploadModel)
-            .filter(UploadModel.user_id == user_id)
-            .count()
+            self.session.query(UploadModel).filter(UploadModel.user_id == user_id).count()
         )
 
     def create(self, upload: Upload) -> Upload:

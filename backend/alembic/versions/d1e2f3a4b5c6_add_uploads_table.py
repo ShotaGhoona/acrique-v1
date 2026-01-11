@@ -34,7 +34,9 @@ def upgrade() -> None:
         sa.Column('file_size', sa.Integer(), nullable=True),
         sa.Column('upload_type', sa.String(length=50), nullable=True),
         sa.Column('text_content', sa.Text(), nullable=True),
-        sa.Column('status', sa.String(length=30), nullable=False, server_default='pending'),
+        sa.Column(
+            'status', sa.String(length=30), nullable=False, server_default='pending'
+        ),
         sa.Column('admin_notes', sa.Text(), nullable=True),
         sa.Column('reviewed_by', sa.Integer(), nullable=True),
         sa.Column('reviewed_at', sa.DateTime(), nullable=True),

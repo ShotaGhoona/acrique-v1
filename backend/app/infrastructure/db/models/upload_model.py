@@ -23,7 +23,9 @@ class UploadModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     order_id = Column(Integer, ForeignKey('orders.id'), nullable=True, index=True)
-    order_item_id = Column(Integer, ForeignKey('order_items.id'), nullable=True, index=True)
+    order_item_id = Column(
+        Integer, ForeignKey('order_items.id'), nullable=True, index=True
+    )
     file_name = Column(String(255), nullable=False)
     s3_key = Column(String(500), nullable=False)
     file_url = Column(String(500), nullable=False)

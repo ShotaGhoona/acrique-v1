@@ -11,6 +11,9 @@ from app.infrastructure.db.repositories.address_repository_impl import (
 from app.infrastructure.db.repositories.order_repository_impl import (
     OrderRepositoryImpl,
 )
+from app.infrastructure.db.repositories.product_repository_impl import (
+    ProductRepositoryImpl,
+)
 from app.infrastructure.db.repositories.user_repository_impl import (
     UserRepositoryImpl,
 )
@@ -25,6 +28,7 @@ def get_payment_usecase(session: Session = Depends(get_db)) -> PaymentUsecase:
     user_repository = UserRepositoryImpl(session)
     email_service = ResendEmailService()
     address_repository = AddressRepositoryImpl(session)
+    product_repository = ProductRepositoryImpl(session)
 
     return PaymentUsecase(
         stripe_service=stripe_service,
@@ -32,4 +36,5 @@ def get_payment_usecase(session: Session = Depends(get_db)) -> PaymentUsecase:
         user_repository=user_repository,
         email_service=email_service,
         address_repository=address_repository,
+        product_repository=product_repository,
     )

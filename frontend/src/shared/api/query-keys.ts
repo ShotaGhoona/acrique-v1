@@ -1,3 +1,6 @@
+// === Consumer Query Keys ===
+export const UPLOADS_QUERY_KEY = ['uploads'];
+
 // === Admin Query Keys ===
 export const ADMIN_ORDERS_QUERY_KEY = ['admin-orders'];
 export const ADMIN_ORDER_QUERY_KEY = ['admin-order'];

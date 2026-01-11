@@ -22,6 +22,7 @@ from app.domain.exceptions.payment import (
 )
 from app.domain.repositories.address_repository import IAddressRepository
 from app.domain.repositories.order_repository import IOrderRepository
+from app.domain.repositories.product_repository import IProductRepository
 from app.domain.repositories.user_repository import IUserRepository
 
 logger = logging.getLogger(__name__)
@@ -37,12 +38,14 @@ class PaymentUsecase:
         user_repository: IUserRepository,
         email_service: IEmailService,
         address_repository: IAddressRepository,
+        product_repository: IProductRepository,
     ):
         self.stripe_service = stripe_service
         self.order_repository = order_repository
         self.user_repository = user_repository
         self.email_service = email_service
         self.address_repository = address_repository
+        self.product_repository = product_repository
 
     def create_payment_intent(
         self, user_id: int, input_dto: CreatePaymentIntentInputDTO
@@ -167,16 +170,32 @@ class PaymentUsecase:
             return
 
         # 既に処理済みの場合はスキップ
-        if order.status == OrderStatus.PAID:
-            logger.info(f'Order {order.order_number} already paid, skipping')
+        if order.status in [
+            OrderStatus.PAID,
+            OrderStatus.AWAITING_DATA,
+            OrderStatus.CONFIRMED,
+        ]:
+            logger.info(f'Order {order.order_number} already processed, skipping')
             return
 
-        # ステータスを更新
-        order.status = OrderStatus.PAID
-        order.paid_at = datetime.now()
-        self.order_repository.update(order)
+        # 入稿が必要な商品があるかチェック
+        requires_upload = self._check_requires_upload(order)
 
-        logger.info(f'Order {order.order_number} marked as paid')
+        # ステータスを更新
+        order.paid_at = datetime.now()
+        if requires_upload:
+            order.status = OrderStatus.AWAITING_DATA
+            logger.info(
+                f'Order {order.order_number} marked as awaiting_data (upload required)'
+            )
+        else:
+            order.status = OrderStatus.CONFIRMED
+            order.confirmed_at = datetime.now()
+            logger.info(
+                f'Order {order.order_number} marked as confirmed (no upload required)'
+            )
+
+        self.order_repository.update(order)
 
         # 注文確認メールを送信
         self._send_order_confirmation_email(order)
@@ -260,3 +279,18 @@ class PaymentUsecase:
         payment_intent_id = charge.get('payment_intent')
 
         logger.info(f'Refund processed for PaymentIntent {payment_intent_id}')
+
+    def _check_requires_upload(self, order) -> bool:
+        """注文に入稿が必要な商品が含まれているかチェック
+
+        Args:
+            order: 注文エンティティ
+
+        Returns:
+            入稿が必要な商品が1つでもあればTrue
+        """
+        for item in order.items:
+            product = self.product_repository.get_by_id(item.product_id)
+            if product and product.requires_upload:
+                return True
+        return False

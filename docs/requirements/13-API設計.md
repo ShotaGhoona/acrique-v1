@@ -81,11 +81,12 @@ RESTful API原則に従い、ドメインごとに整理。
 
 | Method | Endpoint | 説明 |
 |--------|----------|------|
+| POST | `/api/uploads/presigned` | Presigned URL取得 |
+| POST | `/api/uploads` | S3 URL登録（アップロード完了後） |
 | GET | `/api/uploads` | 入稿データ一覧 |
-| POST | `/api/uploads` | ファイルアップロード |
 | GET | `/api/uploads/{id}` | 入稿データ詳細 |
 | DELETE | `/api/uploads/{id}` | 入稿データ削除 |
-| POST | `/api/orders/{order_id}/uploads` | 注文への入稿 |
+| PUT | `/api/orders/{order_id}/items/{item_id}/uploads` | 注文明細への入稿紐付け |
 
 ---
 

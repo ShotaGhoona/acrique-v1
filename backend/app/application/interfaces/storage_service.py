@@ -14,6 +14,9 @@ class PresignedUrlResult:
     file_url: str
     """アップロード後のファイルURL"""
 
+    s3_key: str
+    """S3オブジェクトキー"""
+
     expires_in: int
     """URLの有効期限（秒）"""
 

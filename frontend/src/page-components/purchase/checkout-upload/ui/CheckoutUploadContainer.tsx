@@ -12,7 +12,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
+import { CheckoutUploadSkeleton } from './skeleton/CheckoutUploadSkeleton';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { FileDropzone } from '@/widgets/upload/dropzone/ui/FileDropzone';
 import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
@@ -21,35 +21,17 @@ import { useDeleteUpload } from '@/features/checkout-domain/upload/delete-upload
 import { useLinkUploads } from '@/features/checkout-domain/upload/link-uploads/lib/use-link-uploads';
 import type { Upload as UploadEntity } from '@/entities/checkout-domain/upload/model/types';
 import {
-  type UploadType,
   getUploadTypeLabel,
   getUploadDescription,
 } from '@/shared/domain/upload/model/types';
-
-// スロットキー（商品ID + 個数インデックス）
-type SlotKey = `${number}-${number}`;
-
-interface UploadedFile {
-  id: number;
-  file_name: string;
-  file_url: string;
-  upload_type: string | null;
-}
-
-interface UploadSlot {
-  itemId: number;
-  quantityIndex: number;
-  slotKey: SlotKey;
-  productName: string;
-  uploadType: UploadType;
-}
-
-function mapUploadType(type: UploadType | null): UploadType {
-  if (type === 'logo' || type === 'qr' || type === 'photo' || type === 'text') {
-    return type;
-  }
-  return 'logo'; // デフォルト
-}
+import type { SlotKey } from '../lib/types';
+import {
+  mapUploadType,
+  createUploadSlots,
+  countCompletedSlots,
+  getUploadedFilesForSlot,
+  groupSlotsByItem,
+} from '../lib/upload-slot-utils';
 
 export function CheckoutUploadContainer() {
   const router = useRouter();
@@ -79,28 +61,16 @@ export function CheckoutUploadContainer() {
   }, [order]);
 
   // 全スロットを生成（商品 × 数量）
-  const uploadSlots = useMemo<UploadSlot[]>(() => {
-    const slots: UploadSlot[] = [];
-    for (const item of itemsRequiringUpload) {
-      for (let i = 1; i <= item.quantity; i++) {
-        slots.push({
-          itemId: item.id,
-          quantityIndex: i,
-          slotKey: `${item.id}-${i}`,
-          productName: item.product_name_ja || item.product_name,
-          uploadType: mapUploadType(item.upload_type),
-        });
-      }
-    }
-    return slots;
-  }, [itemsRequiringUpload]);
+  const uploadSlots = useMemo(
+    () => createUploadSlots(itemsRequiringUpload),
+    [itemsRequiringUpload],
+  );
 
   // 入稿完了しているスロット数
-  const completedSlotCount = useMemo(() => {
-    return uploadSlots.filter(
-      (slot) => (uploadedFileIds[slot.slotKey]?.length ?? 0) > 0,
-    ).length;
-  }, [uploadSlots, uploadedFileIds]);
+  const completedSlotCount = useMemo(
+    () => countCompletedSlots(uploadSlots, uploadedFileIds),
+    [uploadSlots, uploadedFileIds],
+  );
 
   // 全スロット入稿完了しているか
   const isAllUploadsComplete = completedSlotCount === uploadSlots.length;
@@ -127,21 +97,6 @@ export function CheckoutUploadContainer() {
       });
     },
     [deleteUpload],
-  );
-
-  const getUploadedFilesForSlot = useCallback(
-    (slotKey: SlotKey): UploadedFile[] => {
-      const ids = uploadedFileIds[slotKey] ?? [];
-      return allUploads
-        .filter((u) => ids.includes(u.id))
-        .map((u) => ({
-          id: u.id,
-          file_name: u.file_name,
-          file_url: u.file_url,
-          upload_type: u.upload_type,
-        }));
-    },
-    [uploadedFileIds, allUploads],
   );
 
   const handleProceed = async () => {
@@ -174,7 +129,7 @@ export function CheckoutUploadContainer() {
   }
 
   if (isOrderLoading || isUploadsLoading) {
-    return <UploadSkeleton />;
+    return <CheckoutUploadSkeleton />;
   }
 
   if (!order) {
@@ -197,10 +152,7 @@ export function CheckoutUploadContainer() {
   }
 
   // 商品ごとにグループ化して表示
-  const groupedByItem = itemsRequiringUpload.map((item) => ({
-    item,
-    slots: uploadSlots.filter((slot) => slot.itemId === item.id),
-  }));
+  const groupedByItem = groupSlotsByItem(itemsRequiringUpload, uploadSlots);
 
   return (
     <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
@@ -268,7 +220,11 @@ export function CheckoutUploadContainer() {
               {/* 数量分のスロットを表示 */}
               <div className='space-y-6'>
                 {slots.map((slot) => {
-                  const uploadedFiles = getUploadedFilesForSlot(slot.slotKey);
+                  const uploadedFiles = getUploadedFilesForSlot(
+                    slot.slotKey,
+                    uploadedFileIds,
+                    allUploads,
+                  );
                   const isSlotComplete = uploadedFiles.length > 0;
 
                   return (
@@ -405,23 +361,6 @@ export function CheckoutUploadContainer() {
             )}
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function UploadSkeleton() {
-  return (
-    <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
-      <Skeleton className='mb-8 h-4 w-64' />
-      <Skeleton className='mb-2 h-8 w-32' />
-      <Skeleton className='mb-8 h-4 w-48' />
-      <div className='grid gap-8 lg:grid-cols-3'>
-        <div className='space-y-8 lg:col-span-2'>
-          <Skeleton className='h-64 w-full' />
-          <Skeleton className='h-64 w-full' />
-        </div>
-        <Skeleton className='h-80 w-full' />
       </div>
     </div>
   );

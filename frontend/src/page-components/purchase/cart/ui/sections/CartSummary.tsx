@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
+import { formatPrice } from '@/shared/utils/format/price';
 
 interface CartSummaryProps {
   subtotal: number;
@@ -10,10 +11,6 @@ interface CartSummaryProps {
   total: number;
   itemCount: number;
   isLoading?: boolean;
-}
-
-function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}`;
 }
 
 export function CartSummary({

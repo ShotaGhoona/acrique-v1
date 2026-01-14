@@ -4,12 +4,10 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
+import { CheckoutCompleteSkeleton } from './skeleton/CheckoutCompleteSkeleton';
 import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
-
-function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}`;
-}
+import { formatPrice } from '@/shared/utils/format/price';
+import { formatDate } from '@/shared/utils/format/date';
 
 export function CheckoutCompleteContainer() {
   const searchParams = useSearchParams();
@@ -37,7 +35,7 @@ export function CheckoutCompleteContainer() {
   }
 
   if (isLoading) {
-    return <CompleteSkeleton />;
+    return <CheckoutCompleteSkeleton />;
   }
 
   return (
@@ -72,11 +70,7 @@ export function CheckoutCompleteContainer() {
             </div>
             <div className='flex justify-between'>
               <span className='text-muted-foreground'>ご注文日</span>
-              <span>
-                {order.created_at
-                  ? new Date(order.created_at).toLocaleDateString('ja-JP')
-                  : '-'}
-              </span>
+              <span>{formatDate(order.created_at, 'long')}</span>
             </div>
             <div className='flex justify-between'>
               <span className='text-muted-foreground'>お支払い金額</span>
@@ -154,16 +148,3 @@ export function CheckoutCompleteContainer() {
   );
 }
 
-function CompleteSkeleton() {
-  return (
-    <div className='mx-auto max-w-3xl px-6 py-12 lg:px-12'>
-      <div className='flex flex-col items-center'>
-        <Skeleton className='h-20 w-20 rounded-full' />
-        <Skeleton className='mt-6 h-8 w-64' />
-        <Skeleton className='mt-4 h-4 w-96' />
-      </div>
-      <Skeleton className='mt-12 h-64 w-full' />
-      <Skeleton className='mt-8 h-48 w-full' />
-    </div>
-  );
-}

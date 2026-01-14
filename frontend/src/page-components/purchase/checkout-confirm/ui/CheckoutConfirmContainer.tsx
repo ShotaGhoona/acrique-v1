@@ -1,21 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck } from 'lucide-react';
 import { Elements } from '@stripe/react-stripe-js';
 import { useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
+import { CheckoutConfirmSkeleton } from './skeleton/CheckoutConfirmSkeleton';
 import { getStripe } from '@/shared/lib/stripe';
 import { CardForm } from '@/widgets/payment/card-form/ui/CardForm';
-import { useOrder, ORDER_QUERY_KEY } from '@/features/checkout-domain/order/get-order/lib/use-order';
-import { useCreatePaymentIntent } from '@/features/checkout-domain/payment/create-payment-intent/lib/use-create-payment-intent';
+import {
+  useOrder,
+  ORDER_QUERY_KEY,
+} from '@/features/checkout-domain/order/get-order/lib/use-order';
 import { toast } from 'sonner';
-
-function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}`;
-}
+import { formatPrice } from '@/shared/utils/format/price';
+import { usePaymentIntent } from '../lib/use-payment-intent';
 
 export function CheckoutConfirmContainer() {
   const router = useRouter();
@@ -23,43 +22,13 @@ export function CheckoutConfirmContainer() {
   const queryClient = useQueryClient();
   const orderId = searchParams.get('orderId');
 
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [paymentAmount, setPaymentAmount] = useState<number>(0);
-  const paymentIntentCreated = useRef(false);
-
   const { data: orderData, isLoading: isOrderLoading } = useOrder(
     orderId ? Number(orderId) : 0,
   );
-  const { mutate: createPaymentIntent, isPending } = useCreatePaymentIntent();
 
   const order = orderData?.order;
 
-  useEffect(() => {
-    if (!orderId) {
-      router.push('/checkout');
-      return;
-    }
-
-    // 既にclientSecretがある、リクエスト中、または既に作成済みの場合はスキップ
-    if (clientSecret || isPending || paymentIntentCreated.current) {
-      return;
-    }
-
-    if (order) {
-      paymentIntentCreated.current = true;
-      createPaymentIntent(Number(orderId), {
-        onSuccess: (data) => {
-          setClientSecret(data.client_secret);
-          setPaymentAmount(data.amount);
-        },
-        onError: () => {
-          paymentIntentCreated.current = false;
-          toast.error('決済の準備に失敗しました');
-          router.push('/checkout');
-        },
-      });
-    }
-  }, [orderId, order, clientSecret, isPending, createPaymentIntent, router]);
+  const { clientSecret, paymentAmount } = usePaymentIntent(orderId, order);
 
   const handleSuccess = () => {
     // 注文キャッシュを無効化して最新のステータスを取得できるようにする
@@ -76,7 +45,7 @@ export function CheckoutConfirmContainer() {
   }
 
   if (isOrderLoading || !order) {
-    return <ConfirmSkeleton />;
+    return <CheckoutConfirmSkeleton />;
   }
 
   return (
@@ -207,22 +176,6 @@ export function CheckoutConfirmContainer() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function ConfirmSkeleton() {
-  return (
-    <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
-      <Skeleton className='mb-8 h-4 w-64' />
-      <Skeleton className='mb-8 h-8 w-48' />
-      <div className='grid gap-8 lg:grid-cols-3'>
-        <div className='space-y-8 lg:col-span-2'>
-          <Skeleton className='h-64 w-full' />
-          <Skeleton className='h-48 w-full' />
-        </div>
-        <Skeleton className='h-48 w-full' />
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ import {
 } from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { FileDropzone } from '@/widgets/upload/dropzone/ui/FileDropzone';
+import { FileDropzone } from '@/widgets/purchase/dropzone/ui/FileDropzone';
 import { OrderUploadSkeleton } from './skeleton/OrderUploadSkeleton';
 import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
 import { useUploads } from '@/features/checkout-domain/upload/get-uploads/lib/use-uploads';

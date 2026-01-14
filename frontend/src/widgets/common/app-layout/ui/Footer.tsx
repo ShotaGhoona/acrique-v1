@@ -3,19 +3,7 @@ import Image from 'next/image';
 import { Instagram, Mail } from 'lucide-react';
 import { getAllCategories } from '@/shared/domain/category/data/categories';
 import { SITE_INFO } from '@/shared/config/site-info';
-
-const companyLinks = [
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
-
-const supportLinks = [
-  { label: 'ご利用ガイド', href: '/guide' },
-  { label: 'よくある質問', href: '/faq' },
-  { label: '利用規約', href: '/terms' },
-  { label: '特定商取引法に基づく表記', href: '/law' },
-  { label: 'プライバシーポリシー', href: '/privacy' },
-];
+import { companyLinks, supportLinks } from '../config/footer-links';
 
 export function Footer() {
   const categories = getAllCategories();

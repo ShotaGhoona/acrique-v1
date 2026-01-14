@@ -7,7 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/shared/ui/shadcn/ui/sheet';
-import { ProductPage } from '@/widgets/product-page/ui/ProductPage';
+import { ProductPage } from '@/widgets/storefront/product-page/ui/ProductPage';
 import type { ProductDetail } from '@/entities/catalog-domain/product/model/types';
 import type { AdminProductDetail } from '@/entities/admin-domain/admin-product/model/types';
 import type { CategoryId } from '@/shared/domain/category/model/types';

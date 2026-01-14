@@ -1,7 +1,14 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Upload, X, FileImage, FileText, Loader2, AlertCircle } from 'lucide-react';
+import {
+  Upload,
+  X,
+  FileImage,
+  FileText,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { useUploadFile } from '@/features/checkout-domain/upload/upload-file/lib/use-upload-file';
@@ -10,6 +17,11 @@ import {
   type UploadType,
   getUploadTypeLabelDetail,
 } from '@/shared/domain/upload/model/types';
+import {
+  getAcceptedTypes,
+  formatFileSize,
+  validateFile,
+} from '../lib/file-utils';
 
 interface UploadedFile {
   id: number;
@@ -31,28 +43,6 @@ interface FileDropzoneProps {
   className?: string;
 }
 
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml'];
-const ACCEPTED_DOCUMENT_TYPES = ['application/pdf', 'application/postscript', 'image/svg+xml'];
-
-function getAcceptedTypes(uploadType: UploadType): string[] {
-  switch (uploadType) {
-    case 'logo':
-      return [...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_DOCUMENT_TYPES];
-    case 'qr':
-      return ACCEPTED_IMAGE_TYPES;
-    case 'photo':
-      return ACCEPTED_IMAGE_TYPES;
-    default:
-      return [...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_DOCUMENT_TYPES];
-  }
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 export function FileDropzone({
   uploadType,
   accept,
@@ -68,24 +58,20 @@ export function FileDropzone({
   const [error, setError] = useState<string | null>(null);
   const { mutateAsync: uploadFile, isPending } = useUploadFile();
 
-  const acceptedTypes = accept ? accept.split(',').map((t) => t.trim()) : getAcceptedTypes(uploadType);
+  const acceptedTypes = accept
+    ? accept.split(',').map((t) => t.trim())
+    : getAcceptedTypes(uploadType);
 
-  const validateFile = useCallback(
+  const handleValidateFile = useCallback(
     (file: File): string | null => {
-      if (!acceptedTypes.some((type) => file.type === type || file.name.endsWith(type.replace('*', '')))) {
-        return '対応していないファイル形式です';
-      }
-      if (file.size > maxSize) {
-        return `ファイルサイズは${formatFileSize(maxSize)}以下にしてください`;
-      }
-      return null;
+      return validateFile(file, acceptedTypes, maxSize);
     },
     [acceptedTypes, maxSize],
   );
 
   const handleFile = useCallback(
     async (file: File) => {
-      const validationError = validateFile(file);
+      const validationError = handleValidateFile(file);
       if (validationError) {
         setError(validationError);
         return;
@@ -100,7 +86,7 @@ export function FileDropzone({
         setError('アップロードに失敗しました。もう一度お試しください。');
       }
     },
-    [validateFile, uploadFile, uploadType, onUploadComplete],
+    [handleValidateFile, uploadFile, uploadType, onUploadComplete],
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -147,7 +133,9 @@ export function FileDropzone({
       {label && (
         <div>
           <p className='text-sm font-medium'>{label}</p>
-          {description && <p className='mt-1 text-xs text-muted-foreground'>{description}</p>}
+          {description && (
+            <p className='mt-1 text-xs text-muted-foreground'>{description}</p>
+          )}
         </div>
       )}
 
@@ -158,7 +146,9 @@ export function FileDropzone({
         onDrop={handleDrop}
         className={cn(
           'relative flex min-h-[160px] cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-dashed transition-colors',
-          isDragging ? 'border-accent bg-accent/5' : 'border-border hover:border-foreground/30',
+          isDragging
+            ? 'border-accent bg-accent/5'
+            : 'border-border hover:border-foreground/30',
           isPending && 'pointer-events-none opacity-50',
         )}
       >
@@ -189,7 +179,8 @@ export function FileDropzone({
               </p>
             </div>
             <p className='text-xs text-muted-foreground'>
-              最大{formatFileSize(maxSize)} / {uploadType === 'photo' ? 'JPG, PNG' : 'AI, EPS, PDF, SVG, PNG'}
+              最大{formatFileSize(maxSize)} /{' '}
+              {uploadType === 'photo' ? 'JPG, PNG' : 'AI, EPS, PDF, SVG, PNG'}
             </p>
           </div>
         )}
@@ -231,7 +222,12 @@ export function FileDropzone({
                       <FileText className='h-5 w-5 text-muted-foreground' />
                     )}
                     <div>
-                      <p className={cn('text-sm font-medium', isRejected && 'text-destructive')}>
+                      <p
+                        className={cn(
+                          'text-sm font-medium',
+                          isRejected && 'text-destructive',
+                        )}
+                      >
                         {file.file_name}
                         {isRejected && (
                           <span className='ml-2 rounded bg-destructive px-1.5 py-0.5 text-xs text-destructive-foreground'>
@@ -240,7 +236,10 @@ export function FileDropzone({
                         )}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        {file.upload_type && getUploadTypeLabelDetail(file.upload_type as UploadType)}
+                        {file.upload_type &&
+                          getUploadTypeLabelDetail(
+                            file.upload_type as UploadType,
+                          )}
                       </p>
                     </div>
                   </div>

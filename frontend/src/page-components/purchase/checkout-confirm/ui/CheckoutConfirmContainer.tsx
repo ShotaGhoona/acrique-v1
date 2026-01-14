@@ -7,7 +7,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useQueryClient } from '@tanstack/react-query';
 import { CheckoutConfirmSkeleton } from './skeleton/CheckoutConfirmSkeleton';
 import { getStripe } from '@/shared/lib/stripe';
-import { CardForm } from '@/widgets/payment/card-form/ui/CardForm';
+import { CardForm } from '@/widgets/purchase/card-form/ui/CardForm';
 import {
   useOrder,
   ORDER_QUERY_KEY,

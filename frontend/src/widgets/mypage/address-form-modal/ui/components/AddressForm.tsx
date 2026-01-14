@@ -3,80 +3,22 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Loader2, Search } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/shared/ui/shadcn/ui/dialog';
-import { useCreateAddress } from '@/features/account-domain/address/create-address/lib/use-create-address';
-import { useUpdateAddress } from '@/features/account-domain/address/update-address/lib/use-update-address';
-import type { Address } from '@/entities/account-domain/address/model/types';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
-
-export const addressSchema = z.object({
-  label: z.string().optional(),
-  name: z.string().min(1, 'お名前を入力してください'),
-  postal_code: z.string().min(1, '郵便番号を入力してください'),
-  prefecture: z.string().min(1, '都道府県を入力してください'),
-  city: z.string().min(1, '市区町村を入力してください'),
-  address1: z.string().min(1, '番地を入力してください'),
-  address2: z.string().optional(),
-  phone: z.string().min(1, '電話番号を入力してください'),
-  is_default: z.boolean().optional(),
-});
-
-export type AddressFormData = z.infer<typeof addressSchema>;
+import {
+  addressSchema,
+  searchAddressByPostalCode,
+  type AddressFormData,
+} from '../../lib/address-schema';
 
 interface AddressFormProps {
   defaultValues?: Partial<AddressFormData>;
   onSubmit: (data: AddressFormData) => void;
   isLoading: boolean;
   submitLabel: string;
-}
-
-interface ZipcloudResponse {
-  status: number;
-  message: string | null;
-  results: {
-    zipcode: string;
-    prefcode: string;
-    address1: string; // 都道府県
-    address2: string; // 市区町村
-    address3: string; // 町域
-  }[] | null;
-}
-
-async function searchAddressByPostalCode(postalCode: string): Promise<{
-  prefecture: string;
-  city: string;
-} | null> {
-  const cleanedCode = postalCode.replace(/-/g, '');
-  if (cleanedCode.length !== 7) return null;
-
-  try {
-    const response = await fetch(
-      `https://zipcloud.ibsnet.co.jp/api/search?zipcode=${cleanedCode}`,
-    );
-    const data: ZipcloudResponse = await response.json();
-
-    if (data.status === 200 && data.results && data.results.length > 0) {
-      const result = data.results[0];
-      return {
-        prefecture: result.address1,
-        city: result.address2 + result.address3,
-      };
-    }
-    return null;
-  } catch {
-    return null;
-  }
 }
 
 export function AddressForm({
@@ -233,81 +175,5 @@ export function AddressForm({
         </Button>
       </div>
     </form>
-  );
-}
-
-interface AddressFormModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  editingAddress?: Address | null;
-  onSuccess?: (address: Address) => void;
-}
-
-export function AddressFormModal({
-  open,
-  onOpenChange,
-  editingAddress,
-  onSuccess,
-}: AddressFormModalProps) {
-  const createMutation = useCreateAddress();
-  const updateMutation = useUpdateAddress();
-
-  const isSubmitting = createMutation.isPending || updateMutation.isPending;
-
-  const handleSubmit = async (formData: AddressFormData) => {
-    if (editingAddress) {
-      updateMutation.mutate(
-        { id: editingAddress.id, data: formData },
-        {
-          onSuccess: (data) => {
-            onOpenChange(false);
-            onSuccess?.(data.address);
-          },
-        },
-      );
-    } else {
-      createMutation.mutate(formData, {
-        onSuccess: (data) => {
-          onOpenChange(false);
-          onSuccess?.(data.address);
-        },
-      });
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-lg'>
-        <DialogHeader>
-          <DialogTitle>
-            {editingAddress ? '配送先を編集' : '配送先を追加'}
-          </DialogTitle>
-          <DialogDescription>
-            {editingAddress
-              ? '配送先情報を編集できます'
-              : '新しい配送先を登録します'}
-          </DialogDescription>
-        </DialogHeader>
-        <AddressForm
-          defaultValues={
-            editingAddress
-              ? {
-                  label: editingAddress.label ?? '',
-                  name: editingAddress.name,
-                  postal_code: editingAddress.postal_code,
-                  prefecture: editingAddress.prefecture,
-                  city: editingAddress.city,
-                  address1: editingAddress.address1,
-                  address2: editingAddress.address2 ?? '',
-                  phone: editingAddress.phone,
-                }
-              : undefined
-          }
-          onSubmit={handleSubmit}
-          isLoading={isSubmitting}
-          submitLabel={editingAddress ? '変更を保存' : '追加する'}
-        />
-      </DialogContent>
-    </Dialog>
   );
 }

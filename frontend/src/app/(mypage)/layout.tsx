@@ -4,10 +4,10 @@
  */
 import { generateAuthenticatedMetadata } from '@/shared/lib/global-metadata';
 import type { Metadata } from 'next';
-import { Header } from '@/widgets/layout/app-layout/ui/Header';
-import { Footer } from '@/widgets/layout/app-layout/ui/Footer';
+import { Header } from '@/widgets/common/app-layout/ui/Header';
+import { Footer } from '@/widgets/common/app-layout/ui/Footer';
 import { MypageProvider } from '@/shared/contexts/MypageContext';
-import { MypageInnerLayout } from '@/widgets/layout/mypage-inner-layout/ui/MypageInnerLayout';
+import { MypageInnerLayout } from '@/widgets/mypage/inner-layout/ui/MypageInnerLayout';
 
 export const metadata: Metadata = generateAuthenticatedMetadata();
 

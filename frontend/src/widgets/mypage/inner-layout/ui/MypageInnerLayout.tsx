@@ -2,35 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Package, MapPin, User, ChevronRight, LogOut } from 'lucide-react';
+import { ChevronRight, LogOut } from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { useLogout } from '@/features/account-domain/auth/logout/lib/use-logout';
 import { useMypageContext } from '@/shared/contexts/MypageContext';
-
-const menuItems = [
-  {
-    href: '/mypage',
-    label: '概要',
-    icon: User,
-    exact: true,
-  },
-  {
-    href: '/mypage/orders',
-    label: '注文履歴',
-    icon: Package,
-  },
-  {
-    href: '/mypage/addresses',
-    label: '配送先管理',
-    icon: MapPin,
-  },
-  {
-    href: '/mypage/profile',
-    label: 'アカウント設定',
-    icon: User,
-  },
-];
+import { menuItems } from '../config/menu-items';
 
 export function MypageInnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

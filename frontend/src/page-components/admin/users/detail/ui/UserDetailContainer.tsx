@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/ui/shadcn/ui/table';
-import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
 import { useAdminUser } from '@/features/admin-domain/admin-user/get-user/lib/use-admin-user';
 import { useAdminUserOrders } from '@/features/admin-domain/admin-user/get-user-orders/lib/use-admin-user-orders';
 import type { OrderStatus } from '@/entities/admin-domain/admin-order/model/types';

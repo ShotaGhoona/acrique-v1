@@ -11,7 +11,7 @@ import { CheckoutSkeleton } from './skeleton/CheckoutSkeleton';
 import { useCart } from '@/features/checkout-domain/cart/get-cart/lib/use-cart';
 import { useAddresses } from '@/features/account-domain/address/get-addresses/lib/use-addresses';
 import { useCreateOrder } from '@/features/checkout-domain/order/create-order/lib/use-create-order';
-import { AddressFormModal } from '@/widgets/address/address-form-modal/ui/AddressFormModal';
+import { AddressFormModal } from '@/widgets/mypage/address-form-modal/ui/AddressFormModal';
 import type { Address } from '@/entities/account-domain/address/model/types';
 import type { PaymentMethod } from '@/entities/checkout-domain/order/model/types';
 import { formatPrice } from '@/shared/utils/format/price';

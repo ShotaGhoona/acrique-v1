@@ -9,7 +9,7 @@ import { ConfirmDialog } from '@/shared/ui/components/confirm-dialog/ui/ConfirmD
 import { useAddresses } from '@/features/account-domain/address/get-addresses/lib/use-addresses';
 import { useDeleteAddress } from '@/features/account-domain/address/delete-address/lib/use-delete-address';
 import { useSetDefaultAddress } from '@/features/account-domain/address/set-default-address/lib/use-set-default-address';
-import { AddressFormModal } from '@/widgets/address/address-form-modal/ui/AddressFormModal';
+import { AddressFormModal } from '@/widgets/mypage/address-form-modal/ui/AddressFormModal';
 import { AddressesListSkeleton } from './skeleton/AddressesListSkeleton';
 import { AddressCard } from './components/AddressCard';
 import { AddressesEmptyState } from './components/AddressesEmptyState';

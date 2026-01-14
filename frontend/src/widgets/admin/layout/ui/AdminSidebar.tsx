@@ -3,19 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  Upload,
-  Users,
-  Shield,
-  ScrollText,
-  Settings,
-  LogOut,
-  PanelLeftClose,
-  PanelLeft,
-} from 'lucide-react';
+import { LogOut, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { ScrollArea } from '@/shared/ui/shadcn/ui/scroll-area';
@@ -26,49 +14,7 @@ import {
   TooltipTrigger,
 } from '@/shared/ui/shadcn/ui/tooltip';
 import { useAdminLogout } from '@/features/admin-domain/admin-auth/logout/lib/use-admin-logout';
-
-const menuItems = [
-  {
-    label: 'ダッシュボード',
-    href: '/admin',
-    icon: LayoutDashboard,
-  },
-  {
-    label: '注文管理',
-    href: '/admin/orders',
-    icon: ShoppingCart,
-  },
-  {
-    label: '商品管理',
-    href: '/admin/products',
-    icon: Package,
-  },
-  {
-    label: '入稿データ管理',
-    href: '/admin/uploads',
-    icon: Upload,
-  },
-  {
-    label: '顧客管理',
-    href: '/admin/users',
-    icon: Users,
-  },
-  {
-    label: '管理者一覧',
-    href: '/admin/admins',
-    icon: Shield,
-  },
-  {
-    label: '操作ログ',
-    href: '/admin/logs',
-    icon: ScrollText,
-  },
-  {
-    label: 'サイト設定',
-    href: '/admin/settings',
-    icon: Settings,
-  },
-];
+import { menuItems } from '../config/menu-items';
 
 interface AdminSidebarProps {
   collapsed: boolean;

@@ -6,14 +6,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ChevronRight,
-  Truck,
-  Shield,
-  RotateCcw,
   ShoppingBag,
   Check,
   Loader2,
   Minus,
   Plus,
+  Truck,
 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { useAddToCart } from '@/features/checkout-domain/cart/add-to-cart/lib/use-add-to-cart';
@@ -23,6 +21,7 @@ import {
   getCategoryById,
   isValidCategoryId,
 } from '@/shared/domain/category/data/categories';
+import { trustBadges } from '../../config/trust-badges';
 
 interface ProductHeroSectionProps {
   product: ProductDetail;
@@ -31,12 +30,6 @@ interface ProductHeroSectionProps {
   onOptionChange: (optionId: number, valueId: number) => void;
   onQuantityChange: (quantity: number) => void;
 }
-
-const trustBadges = [
-  { icon: Truck, label: '全国送料無料', note: '¥10,000以上' },
-  { icon: Shield, label: '品質保証', note: '10年間' },
-  { icon: RotateCcw, label: '返品対応', note: '7日以内' },
-];
 
 function formatPrice(price: number): string {
   return `¥${price.toLocaleString()}`;

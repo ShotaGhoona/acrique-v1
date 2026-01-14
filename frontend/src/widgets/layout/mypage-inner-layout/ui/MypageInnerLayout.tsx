@@ -6,12 +6,7 @@ import { Package, MapPin, User, ChevronRight, LogOut } from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { useLogout } from '@/features/account-domain/auth/logout/lib/use-logout';
-
-interface MypageLayoutProps {
-  children: React.ReactNode;
-  title: string;
-  description?: string;
-}
+import { useMypageContext } from '@/shared/contexts/MypageContext';
 
 const menuItems = [
   {
@@ -37,13 +32,10 @@ const menuItems = [
   },
 ];
 
-export function MypageLayout({
-  children,
-  title,
-  description,
-}: MypageLayoutProps) {
+export function MypageInnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const logoutMutation = useLogout();
+  const { pageMeta } = useMypageContext();
 
   const isActive = (href: string, exact?: boolean) => {
     if (exact) {
@@ -65,10 +57,10 @@ export function MypageLayout({
             My Page
           </p>
           <h1 className='mt-4 text-3xl font-light tracking-tight md:text-4xl'>
-            {title}
+            {pageMeta.title}
           </h1>
-          {description && (
-            <p className='mt-3 text-muted-foreground'>{description}</p>
+          {pageMeta.description && (
+            <p className='mt-3 text-muted-foreground'>{pageMeta.description}</p>
           )}
         </div>
       </section>

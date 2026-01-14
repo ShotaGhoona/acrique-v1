@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Check, Loader2, Eye, EyeOff } from 'lucide-react';
-import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
+import { useMypageContext } from '@/shared/contexts/MypageContext';
 import {
   Card,
   CardContent,
@@ -337,15 +337,19 @@ function PasswordForm() {
 }
 
 export function ProfilePage() {
+  const { setPageMeta } = useMypageContext();
+
+  useEffect(() => {
+    setPageMeta({
+      title: 'アカウント設定',
+      description: 'プロフィールやパスワードを変更できます',
+    });
+  }, [setPageMeta]);
+
   return (
-    <MypageLayout
-      title='アカウント設定'
-      description='プロフィールやパスワードを変更できます'
-    >
-      <div className='space-y-8'>
-        <ProfileForm />
-        <PasswordForm />
-      </div>
-    </MypageLayout>
+    <div className='space-y-8'>
+      <ProfileForm />
+      <PasswordForm />
+    </div>
   );
 }

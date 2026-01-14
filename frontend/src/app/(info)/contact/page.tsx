@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ContactPage } from '@/page-components/storefront/contact/ui/ContactContainer';
+import { ContactPage } from '@/page-components/info/contact/ui/ContactContainer';
 import { SITE_INFO } from '@/shared/config/site-info';
 
 export const metadata: Metadata = {

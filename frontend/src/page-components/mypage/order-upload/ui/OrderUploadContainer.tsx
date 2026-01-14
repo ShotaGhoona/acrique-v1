@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -10,7 +10,7 @@ import {
   Info,
   AlertCircle,
 } from 'lucide-react';
-import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
+import { useMypageContext } from '@/shared/contexts/MypageContext';
 import {
   Card,
   CardContent,
@@ -73,6 +73,7 @@ function formatDate(dateString: string | null): string {
 }
 
 export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
+  const { setPageMeta } = useMypageContext();
   const router = useRouter();
   const {
     data: orderData,
@@ -91,6 +92,25 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   const allUploads = uploadsData?.uploads ?? [];
 
   const canUpload = order && order.status === 'revision_required';
+
+  useEffect(() => {
+    if (order) {
+      setPageMeta({
+        title: 'データ入稿',
+        description: `注文番号: ${order.order_number}`,
+      });
+    } else if (isOrderLoading || isUploadsLoading) {
+      setPageMeta({
+        title: 'データ入稿',
+        description: '読み込み中...',
+      });
+    } else {
+      setPageMeta({
+        title: 'データ入稿',
+        description: '',
+      });
+    }
+  }, [order, isOrderLoading, isUploadsLoading, setPageMeta]);
 
   const handleUploadComplete = (itemId: number) => (upload: UploadEntity) => {
     setUploadedFileIds((prev) => ({
@@ -183,336 +203,316 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   };
 
   if (isOrderLoading || isUploadsLoading) {
-    return (
-      <MypageLayout title='データ入稿' description='読み込み中...'>
-        <UploadSkeleton />
-      </MypageLayout>
-    );
+    return <UploadSkeleton />;
   }
 
   if (error || !order) {
     return (
-      <MypageLayout title='データ入稿' description=''>
-        <div className='rounded-sm border border-destructive/50 bg-destructive/10 p-8 text-center'>
-          <AlertCircle className='mx-auto h-10 w-10 text-destructive' />
-          <h3 className='mt-4 font-medium'>注文が見つかりません</h3>
-          <p className='mt-2 text-sm text-muted-foreground'>
-            注文情報を取得できませんでした
-          </p>
-          <Button asChild variant='outline' className='mt-6'>
-            <Link href='/mypage/orders'>
-              <ArrowLeft className='mr-2 h-4 w-4' />
-              注文履歴に戻る
-            </Link>
-          </Button>
-        </div>
-      </MypageLayout>
+      <div className='rounded-sm border border-destructive/50 bg-destructive/10 p-8 text-center'>
+        <AlertCircle className='mx-auto h-10 w-10 text-destructive' />
+        <h3 className='mt-4 font-medium'>注文が見つかりません</h3>
+        <p className='mt-2 text-sm text-muted-foreground'>
+          注文情報を取得できませんでした
+        </p>
+        <Button asChild variant='outline' className='mt-6'>
+          <Link href='/mypage/orders'>
+            <ArrowLeft className='mr-2 h-4 w-4' />
+            注文履歴に戻る
+          </Link>
+        </Button>
+      </div>
     );
   }
 
   return (
-    <MypageLayout
-      title='データ入稿'
-      description={`注文番号: ${order.order_number}`}
-    >
-      <div className='space-y-8'>
-        {/* Back Link */}
-        <Link
-          href={`/mypage/orders/${orderId}`}
-          className='inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground'
-        >
-          <ArrowLeft className='h-4 w-4' />
-          注文詳細に戻る
-        </Link>
+    <div className='space-y-8'>
+      {/* Back Link */}
+      <Link
+        href={`/mypage/orders/${orderId}`}
+        className='inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground'
+      >
+        <ArrowLeft className='h-4 w-4' />
+        注文詳細に戻る
+      </Link>
 
-        {/* Revision Required Alert */}
-        {canUpload && (
-          <div className='flex items-start gap-3 rounded-sm border-2 border-destructive bg-destructive/10 p-4'>
-            <AlertCircle className='mt-0.5 h-5 w-5 flex-shrink-0 text-destructive' />
-            <div className='text-sm'>
-              <p className='font-medium text-destructive'>再入稿が必要です</p>
-              <p className='mt-1 text-muted-foreground'>
-                入稿いただいたデータに問題がありました。差し戻しされた項目を確認のうえ、修正したデータを再度アップロードしてください。
-              </p>
-            </div>
+      {/* Revision Required Alert */}
+      {canUpload && (
+        <div className='flex items-start gap-3 rounded-sm border-2 border-destructive bg-destructive/10 p-4'>
+          <AlertCircle className='mt-0.5 h-5 w-5 flex-shrink-0 text-destructive' />
+          <div className='text-sm'>
+            <p className='font-medium text-destructive'>再入稿が必要です</p>
+            <p className='mt-1 text-muted-foreground'>
+              入稿いただいたデータに問題がありました。差し戻しされた項目を確認のうえ、修正したデータを再度アップロードしてください。
+            </p>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Status Alert */}
-        {!canUpload && (
-          <div className='flex items-start gap-3 rounded-sm border border-border bg-secondary/30 p-4'>
-            <Info className='mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground' />
-            <div className='text-sm'>
-              <p className='font-medium'>入稿を受け付けていません</p>
-              <p className='mt-1 text-muted-foreground'>
-                現在の注文ステータス（{ORDER_STATUS_LABELS[order.status]}
-                ）では、入稿を受け付けておりません。
-              </p>
-            </div>
+      {/* Status Alert */}
+      {!canUpload && (
+        <div className='flex items-start gap-3 rounded-sm border border-border bg-secondary/30 p-4'>
+          <Info className='mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground' />
+          <div className='text-sm'>
+            <p className='font-medium'>入稿を受け付けていません</p>
+            <p className='mt-1 text-muted-foreground'>
+              現在の注文ステータス（{ORDER_STATUS_LABELS[order.status]}
+              ）では、入稿を受け付けておりません。
+            </p>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Order Info */}
-        <Card>
-          <CardContent className='p-6'>
-            <div className='flex items-center justify-between'>
-              <div>
-                <p className='text-sm text-muted-foreground'>注文日</p>
-                <p className='font-medium'>{formatDate(order.created_at)}</p>
-              </div>
-              <Badge variant={canUpload ? 'default' : 'secondary'}>
-                {ORDER_STATUS_LABELS[order.status]}
-              </Badge>
+      {/* Order Info */}
+      <Card>
+        <CardContent className='p-6'>
+          <div className='flex items-center justify-between'>
+            <div>
+              <p className='text-sm text-muted-foreground'>注文日</p>
+              <p className='font-medium'>{formatDate(order.created_at)}</p>
             </div>
-          </CardContent>
-        </Card>
+            <Badge variant={canUpload ? 'default' : 'secondary'}>
+              {ORDER_STATUS_LABELS[order.status]}
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Upload Sections */}
-        {canUpload && (
-          <>
-            {order.items.map((item) => {
-              const uploadType = getUploadTypeFromProduct(item.product_name);
-              const existingUploads = getExistingUploadsForItem(item.id);
+      {/* Upload Sections */}
+      {canUpload && (
+        <>
+          {order.items.map((item) => {
+            const uploadType = getUploadTypeFromProduct(item.product_name);
+            const existingUploads = getExistingUploadsForItem(item.id);
 
-              // quantity_indexごとにuploadを整理
-              const uploadsByIndex: Record<number, UploadedFile | undefined> =
-                {};
-              existingUploads.forEach((u) => {
-                const idx = u.quantity_index ?? 1;
-                uploadsByIndex[idx] = u;
-              });
+            // quantity_indexごとにuploadを整理
+            const uploadsByIndex: Record<number, UploadedFile | undefined> = {};
+            existingUploads.forEach((u) => {
+              const idx = u.quantity_index ?? 1;
+              uploadsByIndex[idx] = u;
+            });
 
-              // 差し戻しがあるかどうか
-              const hasRejected = existingUploads.some(
-                (u) => u.status === 'rejected',
-              );
+            // 差し戻しがあるかどうか
+            const hasRejected = existingUploads.some(
+              (u) => u.status === 'rejected',
+            );
 
-              return (
-                <Card key={item.id}>
-                  <CardHeader>
-                    <div className='flex items-start justify-between'>
-                      <div>
-                        <CardTitle className='text-lg'>
-                          {item.product_name_ja || item.product_name}
-                        </CardTitle>
-                        <p className='mt-1 text-sm text-muted-foreground'>
-                          数量: {item.quantity}
-                        </p>
-                      </div>
-                      {!hasRejected && existingUploads.length > 0 && (
-                        <Badge
-                          variant='outline'
-                          className='gap-1 border-green-600 text-green-600'
-                        >
-                          <CheckCircle className='h-3 w-3' />
-                          すべて承認待ち
-                        </Badge>
-                      )}
-                      {hasRejected && (
-                        <Badge variant='destructive' className='gap-1'>
-                          <AlertCircle className='h-3 w-3' />
-                          再入稿が必要
-                        </Badge>
-                      )}
+            return (
+              <Card key={item.id}>
+                <CardHeader>
+                  <div className='flex items-start justify-between'>
+                    <div>
+                      <CardTitle className='text-lg'>
+                        {item.product_name_ja || item.product_name}
+                      </CardTitle>
+                      <p className='mt-1 text-sm text-muted-foreground'>
+                        数量: {item.quantity}
+                      </p>
                     </div>
-                  </CardHeader>
-                  <CardContent className='space-y-4'>
-                    {/* 数量分のスロットを表示 */}
-                    {Array.from({ length: item.quantity }, (_, i) => i + 1).map(
-                      (quantityIndex) => {
-                        const existingUpload = uploadsByIndex[quantityIndex];
-                        const isRejected =
-                          existingUpload?.status === 'rejected';
-                        const isOk =
-                          existingUpload &&
-                          existingUpload.status !== 'rejected';
-                        const newUploadsForSlot = getUploadedFilesForItem(
-                          item.id,
-                        ).filter((_, idx) => idx === quantityIndex - 1);
+                    {!hasRejected && existingUploads.length > 0 && (
+                      <Badge
+                        variant='outline'
+                        className='gap-1 border-green-600 text-green-600'
+                      >
+                        <CheckCircle className='h-3 w-3' />
+                        すべて承認待ち
+                      </Badge>
+                    )}
+                    {hasRejected && (
+                      <Badge variant='destructive' className='gap-1'>
+                        <AlertCircle className='h-3 w-3' />
+                        再入稿が必要
+                      </Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className='space-y-4'>
+                  {/* 数量分のスロットを表示 */}
+                  {Array.from({ length: item.quantity }, (_, i) => i + 1).map(
+                    (quantityIndex) => {
+                      const existingUpload = uploadsByIndex[quantityIndex];
+                      const isRejected = existingUpload?.status === 'rejected';
+                      const isOk =
+                        existingUpload && existingUpload.status !== 'rejected';
+                      const newUploadsForSlot = getUploadedFilesForItem(
+                        item.id,
+                      ).filter((_, idx) => idx === quantityIndex - 1);
 
-                        return (
-                          <div
-                            key={quantityIndex}
-                            className='rounded-sm border border-border p-4'
-                          >
-                            <div className='mb-3 flex items-center justify-between'>
-                              <p className='text-sm font-medium'>
-                                {item.quantity > 1
-                                  ? `${quantityIndex}個目`
-                                  : '入稿データ'}
-                              </p>
-                              {isOk && (
-                                <Badge
-                                  variant='outline'
-                                  className='gap-1 border-green-600 text-green-600'
-                                >
-                                  <CheckCircle className='h-3 w-3' />
-                                  OK
-                                </Badge>
-                              )}
-                              {isRejected && (
-                                <Badge variant='destructive' className='gap-1'>
-                                  <AlertCircle className='h-3 w-3' />
-                                  差し戻し
-                                </Badge>
-                              )}
+                      return (
+                        <div
+                          key={quantityIndex}
+                          className='rounded-sm border border-border p-4'
+                        >
+                          <div className='mb-3 flex items-center justify-between'>
+                            <p className='text-sm font-medium'>
+                              {item.quantity > 1
+                                ? `${quantityIndex}個目`
+                                : '入稿データ'}
+                            </p>
+                            {isOk && (
+                              <Badge
+                                variant='outline'
+                                className='gap-1 border-green-600 text-green-600'
+                              >
+                                <CheckCircle className='h-3 w-3' />
+                                OK
+                              </Badge>
+                            )}
+                            {isRejected && (
+                              <Badge variant='destructive' className='gap-1'>
+                                <AlertCircle className='h-3 w-3' />
+                                差し戻し
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* OKの場合：ファイル情報のみ表示 */}
+                          {isOk && existingUpload && (
+                            <div className='flex items-center gap-3 rounded-sm border border-green-200 bg-green-50 px-4 py-3 dark:border-green-900 dark:bg-green-950/20'>
+                              <CheckCircle className='h-5 w-5 text-green-600' />
+                              <div>
+                                <p className='text-sm font-medium'>
+                                  {existingUpload.file_name}
+                                </p>
+                                <p className='text-xs text-muted-foreground'>
+                                  再入稿不要
+                                </p>
+                              </div>
                             </div>
+                          )}
 
-                            {/* OKの場合：ファイル情報のみ表示 */}
-                            {isOk && existingUpload && (
-                              <div className='flex items-center gap-3 rounded-sm border border-green-200 bg-green-50 px-4 py-3 dark:border-green-900 dark:bg-green-950/20'>
-                                <CheckCircle className='h-5 w-5 text-green-600' />
-                                <div>
-                                  <p className='text-sm font-medium'>
-                                    {existingUpload.file_name}
+                          {/* 差し戻しの場合：理由表示 + アップロードエリア */}
+                          {isRejected && (
+                            <>
+                              {existingUpload?.admin_notes && (
+                                <div className='mb-3 rounded-sm border border-destructive/30 bg-destructive/5 p-3'>
+                                  <p className='text-xs font-medium text-destructive'>
+                                    差し戻し理由:
                                   </p>
-                                  <p className='text-xs text-muted-foreground'>
-                                    再入稿不要
+                                  <p className='mt-1 text-sm text-muted-foreground'>
+                                    {existingUpload.admin_notes}
                                   </p>
                                 </div>
-                              </div>
-                            )}
-
-                            {/* 差し戻しの場合：理由表示 + アップロードエリア */}
-                            {isRejected && (
-                              <>
-                                {existingUpload?.admin_notes && (
-                                  <div className='mb-3 rounded-sm border border-destructive/30 bg-destructive/5 p-3'>
-                                    <p className='text-xs font-medium text-destructive'>
-                                      差し戻し理由:
-                                    </p>
-                                    <p className='mt-1 text-sm text-muted-foreground'>
-                                      {existingUpload.admin_notes}
-                                    </p>
-                                  </div>
-                                )}
-                                <FileDropzone
-                                  uploadType={uploadType}
-                                  label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
-                                  description={getUploadDescription(uploadType)}
-                                  onUploadComplete={handleUploadComplete(
-                                    item.id,
-                                  )}
-                                  onFileRemove={handleFileRemove(item.id)}
-                                  uploadedFiles={
-                                    existingUpload
-                                      ? [existingUpload, ...newUploadsForSlot]
-                                      : newUploadsForSlot
-                                  }
-                                />
-                              </>
-                            )}
-
-                            {/* 未入稿の場合（通常はないはず） */}
-                            {!existingUpload && (
+                              )}
                               <FileDropzone
                                 uploadType={uploadType}
                                 label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
                                 description={getUploadDescription(uploadType)}
                                 onUploadComplete={handleUploadComplete(item.id)}
                                 onFileRemove={handleFileRemove(item.id)}
-                                uploadedFiles={newUploadsForSlot}
+                                uploadedFiles={
+                                  existingUpload
+                                    ? [existingUpload, ...newUploadsForSlot]
+                                    : newUploadsForSlot
+                                }
                               />
-                            )}
-                          </div>
-                        );
-                      },
-                    )}
-                  </CardContent>
-                </Card>
+                            </>
+                          )}
+
+                          {/* 未入稿の場合（通常はないはず） */}
+                          {!existingUpload && (
+                            <FileDropzone
+                              uploadType={uploadType}
+                              label={`${uploadType === 'logo' ? 'ロゴ' : uploadType === 'qr' ? 'QRコード' : '写真'}データ`}
+                              description={getUploadDescription(uploadType)}
+                              onUploadComplete={handleUploadComplete(item.id)}
+                              onFileRemove={handleFileRemove(item.id)}
+                              uploadedFiles={newUploadsForSlot}
+                            />
+                          )}
+                        </div>
+                      );
+                    },
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+
+          {/* Info */}
+          <div className='flex items-start gap-3 rounded-sm bg-secondary/30 p-4'>
+            <Info className='mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground' />
+            <div className='text-sm text-muted-foreground'>
+              <p className='font-medium text-foreground'>入稿データについて</p>
+              <ul className='mt-2 space-y-1'>
+                <li>データの確認後、製作を開始いたします</li>
+                <li>データに問題がある場合は、メールでご連絡いたします</li>
+                <li>追加のデータがある場合は、再度アップロードしてください</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className='flex items-center justify-between rounded-sm border border-border bg-background p-6'>
+            <div>
+              <p className='font-medium'>
+                {totalNewUploadedCount > 0
+                  ? `${totalNewUploadedCount}件の新しいファイルをアップロード済み`
+                  : 'ファイルをアップロードしてください'}
+              </p>
+              <p className='mt-1 text-sm text-muted-foreground'>
+                すべてのファイルをアップロードしたら送信してください
+              </p>
+            </div>
+            <Button
+              onClick={handleSubmit}
+              disabled={isLinking || totalNewUploadedCount === 0}
+              size='lg'
+            >
+              {isLinking ? (
+                '送信中...'
+              ) : (
+                <>
+                  <Upload className='mr-2 h-4 w-4' />
+                  入稿データを送信
+                </>
+              )}
+            </Button>
+          </div>
+        </>
+      )}
+
+      {/* Show existing uploads if not in upload mode */}
+      {!canUpload && (
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-lg'>入稿済みデータ</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {order.items.map((item) => {
+              const existingUploads = getExistingUploadsForItem(item.id);
+
+              return (
+                <div
+                  key={item.id}
+                  className='border-b border-border py-4 last:border-0'
+                >
+                  <h4 className='font-medium'>
+                    {item.product_name_ja || item.product_name}
+                  </h4>
+                  {existingUploads.length > 0 ? (
+                    <ul className='mt-2 space-y-1'>
+                      {existingUploads.map((upload) => (
+                        <li
+                          key={upload.id}
+                          className='flex items-center gap-2 text-sm text-muted-foreground'
+                        >
+                          <CheckCircle className='h-4 w-4 text-green-600' />
+                          {upload.file_name}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className='mt-2 text-sm text-muted-foreground'>
+                      入稿データなし
+                    </p>
+                  )}
+                </div>
               );
             })}
-
-            {/* Info */}
-            <div className='flex items-start gap-3 rounded-sm bg-secondary/30 p-4'>
-              <Info className='mt-0.5 h-5 w-5 flex-shrink-0 text-muted-foreground' />
-              <div className='text-sm text-muted-foreground'>
-                <p className='font-medium text-foreground'>
-                  入稿データについて
-                </p>
-                <ul className='mt-2 space-y-1'>
-                  <li>データの確認後、製作を開始いたします</li>
-                  <li>データに問題がある場合は、メールでご連絡いたします</li>
-                  <li>
-                    追加のデータがある場合は、再度アップロードしてください
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <div className='flex items-center justify-between rounded-sm border border-border bg-background p-6'>
-              <div>
-                <p className='font-medium'>
-                  {totalNewUploadedCount > 0
-                    ? `${totalNewUploadedCount}件の新しいファイルをアップロード済み`
-                    : 'ファイルをアップロードしてください'}
-                </p>
-                <p className='mt-1 text-sm text-muted-foreground'>
-                  すべてのファイルをアップロードしたら送信してください
-                </p>
-              </div>
-              <Button
-                onClick={handleSubmit}
-                disabled={isLinking || totalNewUploadedCount === 0}
-                size='lg'
-              >
-                {isLinking ? (
-                  '送信中...'
-                ) : (
-                  <>
-                    <Upload className='mr-2 h-4 w-4' />
-                    入稿データを送信
-                  </>
-                )}
-              </Button>
-            </div>
-          </>
-        )}
-
-        {/* Show existing uploads if not in upload mode */}
-        {!canUpload && (
-          <Card>
-            <CardHeader>
-              <CardTitle className='text-lg'>入稿済みデータ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {order.items.map((item) => {
-                const existingUploads = getExistingUploadsForItem(item.id);
-
-                return (
-                  <div
-                    key={item.id}
-                    className='border-b border-border py-4 last:border-0'
-                  >
-                    <h4 className='font-medium'>
-                      {item.product_name_ja || item.product_name}
-                    </h4>
-                    {existingUploads.length > 0 ? (
-                      <ul className='mt-2 space-y-1'>
-                        {existingUploads.map((upload) => (
-                          <li
-                            key={upload.id}
-                            className='flex items-center gap-2 text-sm text-muted-foreground'
-                          >
-                            <CheckCircle className='h-4 w-4 text-green-600' />
-                            {upload.file_name}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className='mt-2 text-sm text-muted-foreground'>
-                        入稿データなし
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </MypageLayout>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 }
 

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Package, ArrowRight, Filter } from 'lucide-react';
-import { MypageLayout } from '@/widgets/layout/mypage-layout/ui/MypageLayout';
+import { useMypageContext } from '@/shared/contexts/MypageContext';
 import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';
@@ -16,7 +16,10 @@ import {
 } from '@/shared/ui/shadcn/ui/select';
 import { useOrders } from '@/features/checkout-domain/order/get-orders/lib/use-orders';
 import { OrdersListSkeleton } from './skeleton/OrdersListSkeleton';
-import type { Order, OrderStatus } from '@/entities/checkout-domain/order/model/types';
+import type {
+  Order,
+  OrderStatus,
+} from '@/entities/checkout-domain/order/model/types';
 import {
   ORDER_STATUS_LABELS,
   ORDER_STATUS_VARIANTS,
@@ -115,6 +118,7 @@ function EmptyState() {
 }
 
 export function OrdersPage() {
+  const { setPageMeta } = useMypageContext();
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const { data, isLoading, error } = useOrders(
     statusFilter !== 'all' ? { status: statusFilter } : undefined,
@@ -122,61 +126,66 @@ export function OrdersPage() {
 
   const orders = data?.orders ?? [];
 
-  return (
-    <MypageLayout title='注文履歴' description='過去のご注文を確認できます'>
-      <div className='space-y-6'>
-        {/* Filter */}
-        <div className='flex items-center justify-between'>
-          <p className='text-sm text-muted-foreground'>
-            {isLoading ? '読み込み中...' : `${orders.length}件の注文`}
-          </p>
-          <div className='flex items-center gap-2'>
-            <Filter className='h-4 w-4 text-muted-foreground' />
-            <Select
-              value={statusFilter}
-              onValueChange={(value) =>
-                setStatusFilter(value as OrderStatus | 'all')
-              }
-            >
-              <SelectTrigger className='w-[140px]'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {filterOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+  useEffect(() => {
+    setPageMeta({
+      title: '注文履歴',
+      description: '過去のご注文を確認できます',
+    });
+  }, [setPageMeta]);
 
-        {/* Orders List */}
-        {isLoading ? (
-          <OrdersListSkeleton />
-        ) : error ? (
-          <div className='rounded-sm border border-destructive/50 bg-destructive/10 p-6 text-center'>
-            <p className='text-destructive'>注文履歴の読み込みに失敗しました</p>
-            <Button
-              variant='outline'
-              size='sm'
-              className='mt-4'
-              onClick={() => window.location.reload()}
-            >
-              再読み込み
-            </Button>
-          </div>
-        ) : orders.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className='space-y-4'>
-            {orders.map((order) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
-          </div>
-        )}
+  return (
+    <div className='space-y-6'>
+      {/* Filter */}
+      <div className='flex items-center justify-between'>
+        <p className='text-sm text-muted-foreground'>
+          {isLoading ? '読み込み中...' : `${orders.length}件の注文`}
+        </p>
+        <div className='flex items-center gap-2'>
+          <Filter className='h-4 w-4 text-muted-foreground' />
+          <Select
+            value={statusFilter}
+            onValueChange={(value) =>
+              setStatusFilter(value as OrderStatus | 'all')
+            }
+          >
+            <SelectTrigger className='w-[140px]'>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {filterOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-    </MypageLayout>
+
+      {/* Orders List */}
+      {isLoading ? (
+        <OrdersListSkeleton />
+      ) : error ? (
+        <div className='rounded-sm border border-destructive/50 bg-destructive/10 p-6 text-center'>
+          <p className='text-destructive'>注文履歴の読み込みに失敗しました</p>
+          <Button
+            variant='outline'
+            size='sm'
+            className='mt-4'
+            onClick={() => window.location.reload()}
+          >
+            再読み込み
+          </Button>
+        </div>
+      ) : orders.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div className='space-y-4'>
+          {orders.map((order) => (
+            <OrderCard key={order.id} order={order} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

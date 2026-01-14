@@ -43,9 +43,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
-import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useProducts } from '@/features/product/get-products/lib/use-products';
-import { useDeleteProduct } from '@/features/admin-product/delete-product/lib/use-delete-product';
+import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
+import { useProducts } from '@/features/catalog-domain/product/get-products/lib/use-products';
+import { useDeleteProduct } from '@/features/admin-domain/admin-product/delete-product/lib/use-delete-product';
 import { ProductsTableSkeleton } from './skeleton/ProductsTableSkeleton';
 import {
   categories,

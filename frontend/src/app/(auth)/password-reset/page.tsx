@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Mail } from 'lucide-react';
-import { usePasswordResetRequest } from '@/features/auth/password-reset/lib/use-password-reset';
+import { usePasswordResetRequest } from '@/features/account-domain/auth/password-reset/lib/use-password-reset';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';

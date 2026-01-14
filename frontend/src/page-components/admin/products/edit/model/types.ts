@@ -1,23 +1,8 @@
-import type { CategoryId } from '@/shared/domain/category/model/types';
-import type { AdminProductDetail } from '@/entities/admin-product/model/types';
+import type { AdminProductDetail } from '@/entities/admin-domain/admin-product/model/types';
+import type { BasicInfoFormData } from '@/features/admin-domain/admin-product/update-product/model/types';
 
-// 基本情報フォームの型
-export interface BasicInfoFormData {
-  name: string;
-  name_ja: string;
-  category_id: CategoryId | '';
-  tagline: string;
-  description: string;
-  long_description: string;
-  base_price: string;
-  price_note: string;
-  lead_time_days: string;
-  lead_time_note: string;
-  is_featured: boolean;
-  requires_upload: boolean;
-  upload_type: string;
-  upload_note: string;
-}
+// Re-export for convenience
+export type { BasicInfoFormData };
 
 // 各タブで使用する共通のProps
 export interface TabProps {

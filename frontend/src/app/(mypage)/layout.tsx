@@ -4,8 +4,10 @@
  */
 import { generateAuthenticatedMetadata } from '@/shared/lib/global-metadata';
 import type { Metadata } from 'next';
-import { Header } from '@/widgets/layout/app-layout/ui/Header';
-import { Footer } from '@/widgets/layout/app-layout/ui/Footer';
+import { Header } from '@/widgets/common/app-layout/ui/Header';
+import { Footer } from '@/widgets/common/app-layout/ui/Footer';
+import { MypageProvider } from '@/shared/contexts/MypageContext';
+import { MypageInnerLayout } from '@/widgets/mypage/inner-layout/ui/MypageInnerLayout';
 
 export const metadata: Metadata = generateAuthenticatedMetadata();
 
@@ -17,7 +19,9 @@ export default function MypageLayout({
   return (
     <div className='flex min-h-screen flex-col'>
       <Header />
-      <main className='flex-1 bg-secondary/20'>{children}</main>
+      <MypageProvider>
+        <MypageInnerLayout>{children}</MypageInnerLayout>
+      </MypageProvider>
       <Footer />
     </div>
   );

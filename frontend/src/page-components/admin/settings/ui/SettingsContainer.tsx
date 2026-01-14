@@ -29,7 +29,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/shared/ui/shadcn/ui/tabs';
-import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
+import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
 
 interface SiteSettings {
   siteName: string;

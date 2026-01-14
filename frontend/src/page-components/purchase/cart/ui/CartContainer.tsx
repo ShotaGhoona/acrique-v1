@@ -4,10 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Trash2 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { useCart } from '@/features/cart/get-cart/lib/use-cart';
-import { useUpdateCartItem } from '@/features/cart/update-cart-item/lib/use-update-cart-item';
-import { useDeleteCartItem } from '@/features/cart/delete-cart-item/lib/use-delete-cart-item';
-import { useClearCart } from '@/features/cart/clear-cart/lib/use-clear-cart';
+import { ErrorState } from '@/shared/ui/components/error-state/ui/ErrorState';
+import { ConfirmDialog } from '@/shared/ui/components/confirm-dialog/ui/ConfirmDialog';
+import { useCart } from '@/features/checkout-domain/cart/get-cart/lib/use-cart';
+import { useUpdateCartItem } from '@/features/checkout-domain/cart/update-cart-item/lib/use-update-cart-item';
+import { useDeleteCartItem } from '@/features/checkout-domain/cart/delete-cart-item/lib/use-delete-cart-item';
+import { useClearCart } from '@/features/checkout-domain/cart/clear-cart/lib/use-clear-cart';
 import { CartItemCard } from './sections/CartItemCard';
 import { CartSummary } from './sections/CartSummary';
 import { EmptyCart } from './sections/EmptyCart';
@@ -22,6 +24,7 @@ export function CartPage() {
   // Track which item is being updated/removed
   const [updatingItemId, setUpdatingItemId] = useState<number | null>(null);
   const [removingItemId, setRemovingItemId] = useState<number | null>(null);
+  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
 
   const handleQuantityChange = (itemId: number, quantity: number) => {
     setUpdatingItemId(itemId);
@@ -41,9 +44,11 @@ export function CartPage() {
   };
 
   const handleClearCart = () => {
-    if (window.confirm('カート内のすべての商品を削除しますか？')) {
-      clearCartMutation.mutate();
-    }
+    setIsClearDialogOpen(true);
+  };
+
+  const confirmClearCart = () => {
+    clearCartMutation.mutate();
   };
 
   // Loading state
@@ -55,20 +60,11 @@ export function CartPage() {
   if (error) {
     return (
       <div className='mx-auto max-w-7xl px-6 py-12 lg:px-12'>
-        <div className='flex flex-col items-center justify-center py-20 text-center'>
-          <p className='text-lg text-destructive'>
-            カート情報の取得に失敗しました
-          </p>
-          <p className='mt-2 text-sm text-muted-foreground'>
-            ページを再読み込みしてください
-          </p>
-          <Button
-            variant='outline'
-            className='mt-6'
-            onClick={() => window.location.reload()}
-          >
-            再読み込み
-          </Button>
+        <div className='py-20'>
+          <ErrorState
+            message='カート情報の取得に失敗しました'
+            onRetry={() => window.location.reload()}
+          />
         </div>
       </div>
     );
@@ -106,6 +102,16 @@ export function CartPage() {
           </Button>
         )}
       </div>
+
+      <ConfirmDialog
+        open={isClearDialogOpen}
+        onOpenChange={setIsClearDialogOpen}
+        title='カートを空にする'
+        description='カート内のすべての商品を削除しますか？この操作は取り消せません。'
+        confirmLabel='すべて削除'
+        destructive
+        onConfirm={confirmClearCart}
+      />
 
       {isEmpty ? (
         <EmptyCart />

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { Header } from '@/widgets/layout/app-layout/ui/Header';
-import { Footer } from '@/widgets/layout/app-layout/ui/Footer';
+import { Header } from '@/widgets/common/app-layout/ui/Header';
+import { Footer } from '@/widgets/common/app-layout/ui/Footer';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 
 export default function NotFound() {

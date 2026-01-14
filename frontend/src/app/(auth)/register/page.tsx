@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { useRegister } from '@/features/auth/register/lib/use-register';
-import type { RegisterFormData } from '@/features/auth/register/model/types';
+import { useRegister } from '@/features/account-domain/auth/register/lib/use-register';
+import type { RegisterFormData } from '@/features/account-domain/auth/register/model/types';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
-import { CheckoutUploadContainer } from '@/page-components/purchase/checkout/upload/ui/CheckoutUploadContainer';
+import { CheckoutUploadContainer } from '@/page-components/purchase/checkout-upload/ui/CheckoutUploadContainer';
 
 export const metadata: Metadata = {
   title: 'データ入稿 | ACRIQUE',

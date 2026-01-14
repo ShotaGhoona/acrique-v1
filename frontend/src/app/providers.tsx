@@ -6,7 +6,7 @@ import { Provider, useDispatch } from 'react-redux';
 import { store, AppDispatch } from '@/store/store';
 import { QueryProvider } from '@/app/provider/QueryProvider';
 import { setUser, clearUser } from '@/store/slices/authSlice';
-import { authApi } from '@/entities/auth/api/auth-api';
+import { authApi } from '@/entities/account-domain/auth/api/auth-api';
 
 // 認証機能の有効/無効
 const ENABLE_AUTH = process.env.NEXT_PUBLIC_ENABLE_AUTH !== 'false';

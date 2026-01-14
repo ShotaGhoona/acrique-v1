@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { QuantitySelector } from './QuantitySelector';
-import type { CartItem } from '@/entities/cart/model/types';
+import type { CartItem } from '@/entities/checkout-domain/cart/model/types';
+import { formatPrice } from '@/shared/utils/format/price';
 
 interface CartItemCardProps {
   item: CartItem;
@@ -13,10 +14,6 @@ interface CartItemCardProps {
   onRemove: (itemId: number) => void;
   isUpdating?: boolean;
   isRemoving?: boolean;
-}
-
-function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}`;
 }
 
 function formatOptions(options: Record<string, unknown> | null): string[] {

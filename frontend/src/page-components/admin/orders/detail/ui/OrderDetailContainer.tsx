@@ -29,12 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdminOrder } from '@/features/admin-order/get-order/lib/use-admin-order';
-import { useUpdateOrderStatus } from '@/features/admin-order/update-order-status/lib/use-update-order-status';
-import { useUpdateAdminOrder } from '@/features/admin-order/update-order/lib/use-update-admin-order';
-import { useShipOrder } from '@/features/admin-order/ship-order/lib/use-ship-order';
-import type { OrderStatus } from '@/entities/admin-order/model/types';
+import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
+import { useAdminOrder } from '@/features/admin-domain/admin-order/get-order/lib/use-admin-order';
+import { useUpdateOrderStatus } from '@/features/admin-domain/admin-order/update-order-status/lib/use-update-order-status';
+import { useUpdateAdminOrder } from '@/features/admin-domain/admin-order/update-order/lib/use-update-admin-order';
+import { useShipOrder } from '@/features/admin-domain/admin-order/ship-order/lib/use-ship-order';
+import type { OrderStatus } from '@/entities/admin-domain/admin-order/model/types';
 import {
   ADMIN_ORDER_STATUS_LABELS,
   ADMIN_ORDER_STATUS_VARIANTS,

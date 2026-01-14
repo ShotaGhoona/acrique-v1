@@ -15,8 +15,8 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
-import { useAdminStats } from '@/features/admin-dashboard/get-stats/lib/use-admin-stats';
-import type { StatsPeriod } from '@/entities/admin-dashboard/model/types';
+import { useAdminStats } from '@/features/admin-domain/admin-dashboard/get-stats/lib/use-admin-stats';
+import type { StatsPeriod } from '@/entities/admin-domain/admin-dashboard/model/types';
 
 interface StatsChartProps {
   className?: string;

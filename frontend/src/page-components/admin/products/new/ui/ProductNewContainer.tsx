@@ -22,8 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useCreateProduct } from '@/features/admin-product/create-product/lib/use-create-product';
+import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
+import { useCreateProduct } from '@/features/admin-domain/admin-product/create-product/lib/use-create-product';
+import {
+  type CreateProductFormData,
+  createProductFormDataInitial,
+} from '@/features/admin-domain/admin-product/create-product/model/types';
 import {
   categories,
   getCategoryIds,
@@ -35,23 +39,8 @@ export function ProductNewContainer() {
   const categoryIds = getCategoryIds();
   const createProductMutation = useCreateProduct();
 
-  const [formData, setFormData] = useState({
-    id: '',
-    name: '',
-    name_ja: '',
-    category_id: '' as CategoryId | '',
-    tagline: '',
-    description: '',
-    long_description: '',
-    base_price: '',
-    price_note: '',
-    lead_time_days: '',
-    lead_time_note: '',
-    is_featured: false,
-    requires_upload: false,
-    upload_type: '',
-    upload_note: '',
-  });
+  const [formData, setFormData] =
+    useState<CreateProductFormData>(createProductFormDataInitial);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

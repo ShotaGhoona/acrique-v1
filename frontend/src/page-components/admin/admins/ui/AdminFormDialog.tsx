@@ -20,9 +20,13 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { Switch } from '@/shared/ui/shadcn/ui/switch';
-import { useCreateAdmin } from '@/features/admin/create-admin/lib/use-create-admin';
-import { useUpdateAdmin } from '@/features/admin/update-admin/lib/use-update-admin';
-import type { Admin, AdminRole } from '@/entities/admin/model/types';
+import { useCreateAdmin } from '@/features/admin-domain/admin/create-admin/lib/use-create-admin';
+import { useUpdateAdmin } from '@/features/admin-domain/admin/update-admin/lib/use-update-admin';
+import {
+  type UpdateAdminFormData,
+  updateAdminFormDataInitial,
+} from '@/features/admin-domain/admin/update-admin/model/types';
+import type { Admin, AdminRole } from '@/entities/admin-domain/admin/model/types';
 
 const adminRoleLabels: Record<AdminRole, string> = {
   super_admin: 'スーパー管理者',
@@ -45,13 +49,9 @@ export function AdminFormDialog({
   const createAdminMutation = useCreateAdmin();
   const updateAdminMutation = useUpdateAdmin();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    role: 'staff' as AdminRole,
-    is_active: true,
-  });
+  const [formData, setFormData] = useState<UpdateAdminFormData>(
+    updateAdminFormDataInitial,
+  );
 
   useEffect(() => {
     if (admin) {
@@ -63,13 +63,7 @@ export function AdminFormDialog({
         is_active: admin.is_active,
       });
     } else {
-      setFormData({
-        email: '',
-        password: '',
-        name: '',
-        role: 'staff',
-        is_active: true,
-      });
+      setFormData(updateAdminFormDataInitial);
     }
   }, [admin, open]);
 

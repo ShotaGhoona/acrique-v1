@@ -19,7 +19,7 @@ export function CartBadge({
   const { data: cart } = useCart();
 
   // Only show count when authenticated and cart data exists
-  const itemCount = isAuthenticated && cart ? cart.item_count : 0;
+  const itemCount = isAuthenticated && cart ? cart.total_quantity : 0;
 
   return (
     <Link href='/cart'>

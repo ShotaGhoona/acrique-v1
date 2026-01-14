@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '@/features/account-domain/auth/login/lib/use-login';
-import type { LoginFormData } from '@/features/account-domain/auth/login/model/types';
+import type { LoginRequest } from '@/entities/account-domain/auth/model/types';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
@@ -45,7 +45,7 @@ function LoginContent() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const credentials: LoginFormData = { email, password };
+    const credentials: LoginRequest = { email, password };
     loginMutation.mutate(credentials);
   };
 

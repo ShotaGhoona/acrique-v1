@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { authApi } from '@/entities/account-domain/auth/api/auth-api';
+import type { LoginRequest } from '@/entities/account-domain/auth/model/types';
 import { useAppDispatch } from '@/store/hooks/typed-hooks';
 import { setUser } from '@/store/slices/authSlice';
-import type { LoginFormData } from '../model/types';
 
 export function useLogin() {
   const router = useRouter();
@@ -11,13 +11,7 @@ export function useLogin() {
   const dispatch = useAppDispatch();
 
   return useMutation({
-    mutationFn: (credentials: LoginFormData) => {
-      // バックエンドのリクエスト形式に変換
-      return authApi.login({
-        email: credentials.email,
-        password: credentials.password,
-      });
-    },
+    mutationFn: (credentials: LoginRequest) => authApi.login(credentials),
     onSuccess: (data) => {
       // バックエンドレスポンス {access_token, user_id} からユーザーオブジェクトを生成
       dispatch(setUser({ id: data.user_id }));

@@ -2,23 +2,9 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import {
-  Package,
-  MapPin,
-  User,
-  ArrowRight,
-  Clock,
-  Truck,
-  CheckCircle,
-} from 'lucide-react';
+import { Package, MapPin, User, ArrowRight } from 'lucide-react';
 import { useMypageContext } from '@/shared/contexts/MypageContext';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/shadcn/ui/card';
-import { Badge } from '@/shared/ui/shadcn/ui/badge';
+import { Card, CardContent } from '@/shared/ui/shadcn/ui/card';
 import { useGetMe } from '@/features/account-domain/user/get-me/lib/use-get-me';
 import { useOrders } from '@/features/checkout-domain/order/get-orders/lib/use-orders';
 import { useAddresses } from '@/features/account-domain/address/get-addresses/lib/use-addresses';
@@ -27,112 +13,9 @@ import {
   RecentOrdersSkeleton,
   AccountInfoSkeleton,
 } from './skeleton/MypageHomeSkeleton';
-import type {
-  Order,
-  OrderStatus,
-} from '@/entities/checkout-domain/order/model/types';
-import {
-  ORDER_STATUS_LABELS,
-  ORDER_STATUS_VARIANTS,
-  PROCESSING_STATUSES,
-} from '@/shared/domain/order/model/types';
-
-function formatDate(dateString: string | null): string {
-  if (!dateString) return '-';
-  return new Date(dateString).toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}`;
-}
-
-function QuickActionCard({
-  href,
-  icon: Icon,
-  title,
-  description,
-}: {
-  href: string;
-  icon: React.ElementType;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Link href={href} className='group block'>
-      <Card className='h-full transition-colors hover:border-foreground/30'>
-        <CardContent className='flex items-start gap-4 p-6'>
-          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary'>
-            <Icon className='h-5 w-5 text-foreground/70' />
-          </div>
-          <div className='flex-1'>
-            <h3 className='font-medium transition-colors group-hover:text-accent'>
-              {title}
-            </h3>
-            <p className='mt-1 text-sm text-muted-foreground'>{description}</p>
-          </div>
-          <ArrowRight className='h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1' />
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
-
-function RecentOrderItem({ order }: { order: Order }) {
-  return (
-    <Link
-      href={`/mypage/orders/${order.id}`}
-      className='group flex items-center justify-between border-b border-border py-4 last:border-0'
-    >
-      <div className='min-w-0 flex-1'>
-        <div className='flex items-center gap-3'>
-          <span className='text-sm font-medium'>{order.order_number}</span>
-          <Badge variant={ORDER_STATUS_VARIANTS[order.status]}>
-            {ORDER_STATUS_LABELS[order.status]}
-          </Badge>
-        </div>
-        <p className='mt-1 text-sm text-muted-foreground'>
-          {formatDate(order.created_at)}
-        </p>
-      </div>
-      <div className='flex items-center gap-4'>
-        <span className='text-sm font-medium'>{formatPrice(order.total)}</span>
-        <ArrowRight className='h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1' />
-      </div>
-    </Link>
-  );
-}
-
-function OrderStatusSummary({ orders }: { orders: Order[] }) {
-  const processing = orders.filter((o) =>
-    PROCESSING_STATUSES.includes(o.status),
-  ).length;
-  const shipped = orders.filter((o) => o.status === 'shipped').length;
-  const completed = orders.filter((o) => o.status === 'delivered').length;
-
-  return (
-    <div className='grid grid-cols-3 gap-4'>
-      <div className='rounded-sm border border-border p-4 text-center'>
-        <Clock className='mx-auto h-5 w-5 text-muted-foreground' />
-        <p className='mt-2 text-2xl font-light'>{processing}</p>
-        <p className='text-xs text-muted-foreground'>処理中</p>
-      </div>
-      <div className='rounded-sm border border-border p-4 text-center'>
-        <Truck className='mx-auto h-5 w-5 text-muted-foreground' />
-        <p className='mt-2 text-2xl font-light'>{shipped}</p>
-        <p className='text-xs text-muted-foreground'>配送中</p>
-      </div>
-      <div className='rounded-sm border border-border p-4 text-center'>
-        <CheckCircle className='mx-auto h-5 w-5 text-muted-foreground' />
-        <p className='mt-2 text-2xl font-light'>{completed}</p>
-        <p className='text-xs text-muted-foreground'>完了</p>
-      </div>
-    </div>
-  );
-}
+import { QuickActionCard } from './components/QuickActionCard';
+import { RecentOrderItem } from './components/RecentOrderItem';
+import { OrderStatusSummary } from './components/OrderStatusSummary';
 
 export function MypageDashboard() {
   const { setPageMeta } = useMypageContext();

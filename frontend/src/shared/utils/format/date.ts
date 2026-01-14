@@ -1,3 +1,10 @@
+export type DateFormat =
+  | 'full' // YYYY/MM/DD
+  | 'short' // YY/MM/DD
+  | 'yearMonth' // YYYY年M月
+  | 'long' // YYYY年M月D日
+  | 'longWithTime'; // YYYY年M月D日 HH:mm
+
 /**
  * 日付を指定フォーマットで文字列に変換
  * @param date - 日付文字列またはDateオブジェクト
@@ -6,7 +13,7 @@
  */
 export const formatDate = (
   date: string | Date | null | undefined,
-  format: 'full' | 'short' | 'yearMonth' = 'short',
+  format: DateFormat = 'short',
 ): string => {
   if (!date) {
     return '-';
@@ -30,6 +37,24 @@ export const formatDate = (
     return d.toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'long',
+    });
+  }
+
+  if (format === 'long') {
+    return d.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+  if (format === 'longWithTime') {
+    return d.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 

@@ -19,8 +19,8 @@ import {
 } from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import { FileDropzone } from '@/widgets/upload/dropzone/ui/FileDropzone';
+import { OrderUploadSkeleton } from './skeleton/OrderUploadSkeleton';
 import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
 import { useUploads } from '@/features/checkout-domain/upload/get-uploads/lib/use-uploads';
 import { useDeleteUpload } from '@/features/checkout-domain/upload/delete-upload/lib/use-delete-upload';
@@ -32,6 +32,7 @@ import {
   getUploadTypeLabel,
   getUploadDescription,
 } from '@/shared/domain/upload/model/types';
+import { formatDate } from '@/shared/utils/format/date';
 import { toast } from 'sonner';
 
 interface OrderUploadPageProps {
@@ -61,15 +62,6 @@ function getUploadTypeFromProduct(productName: string): UploadType {
     return 'photo';
   }
   return 'logo';
-}
-
-function formatDate(dateString: string | null): string {
-  if (!dateString) return '-';
-  return new Date(dateString).toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 }
 
 export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
@@ -203,7 +195,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
   };
 
   if (isOrderLoading || isUploadsLoading) {
-    return <UploadSkeleton />;
+    return <OrderUploadSkeleton />;
   }
 
   if (error || !order) {
@@ -268,7 +260,7 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
           <div className='flex items-center justify-between'>
             <div>
               <p className='text-sm text-muted-foreground'>注文日</p>
-              <p className='font-medium'>{formatDate(order.created_at)}</p>
+              <p className='font-medium'>{formatDate(order.created_at, 'long')}</p>
             </div>
             <Badge variant={canUpload ? 'default' : 'secondary'}>
               {ORDER_STATUS_LABELS[order.status]}
@@ -512,17 +504,6 @@ export function OrderUploadPage({ orderId }: OrderUploadPageProps) {
           </CardContent>
         </Card>
       )}
-    </div>
-  );
-}
-
-function UploadSkeleton() {
-  return (
-    <div className='space-y-8'>
-      <Skeleton className='h-4 w-32' />
-      <Skeleton className='h-24 w-full' />
-      <Skeleton className='h-64 w-full' />
-      <Skeleton className='h-64 w-full' />
     </div>
   );
 }

@@ -25,7 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/shared/ui/shadcn/ui/tooltip';
-import { useAdminLogout } from '@/features/admin-auth/logout/lib/use-admin-logout';
+import { useAdminLogout } from '@/features/admin-domain/admin-auth/logout/lib/use-admin-logout';
 
 const menuItems = [
   {

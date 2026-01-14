@@ -20,9 +20,9 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { Switch } from '@/shared/ui/shadcn/ui/switch';
-import { useCreateAdmin } from '@/features/admin/create-admin/lib/use-create-admin';
-import { useUpdateAdmin } from '@/features/admin/update-admin/lib/use-update-admin';
-import type { Admin, AdminRole } from '@/entities/admin/model/types';
+import { useCreateAdmin } from '@/features/admin-domain/admin/create-admin/lib/use-create-admin';
+import { useUpdateAdmin } from '@/features/admin-domain/admin/update-admin/lib/use-update-admin';
+import type { Admin, AdminRole } from '@/entities/admin-domain/admin/model/types';
 
 const adminRoleLabels: Record<AdminRole, string> = {
   super_admin: 'スーパー管理者',

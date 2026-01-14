@@ -25,10 +25,10 @@ import {
 } from '@/shared/ui/shadcn/ui/table';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdminDashboard } from '@/features/admin-dashboard/get-dashboard/lib/use-admin-dashboard';
-import { useAdminOrders } from '@/features/admin-order/get-orders/lib/use-admin-orders';
+import { useAdminDashboard } from '@/features/admin-domain/admin-dashboard/get-dashboard/lib/use-admin-dashboard';
+import { useAdminOrders } from '@/features/admin-domain/admin-order/get-orders/lib/use-admin-orders';
 import { StatsChart } from './StatsChart';
-import type { OrderStatus } from '@/entities/admin-order/model/types';
+import type { OrderStatus } from '@/entities/admin-domain/admin-order/model/types';
 import {
   ADMIN_ORDER_STATUS_LABELS,
   ADMIN_ORDER_STATUS_VARIANTS,

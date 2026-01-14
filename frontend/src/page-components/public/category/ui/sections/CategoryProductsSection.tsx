@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
-import type { ProductListItem } from '@/entities/product/model/types';
+import type { ProductListItem } from '@/entities/catalog-domain/product/model/types';
 
 interface CategoryProductsSectionProps {
   category: CategoryWithFeatures;

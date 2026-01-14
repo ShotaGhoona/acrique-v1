@@ -15,11 +15,11 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { FileDropzone } from '@/widgets/upload/dropzone/ui/FileDropzone';
-import { useOrder } from '@/features/order/get-order/lib/use-order';
-import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
-import { useDeleteUpload } from '@/features/upload/delete-upload/lib/use-delete-upload';
-import { useLinkUploads } from '@/features/upload/link-uploads/lib/use-link-uploads';
-import type { Upload as UploadEntity } from '@/entities/upload/model/types';
+import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
+import { useUploads } from '@/features/checkout-domain/upload/get-uploads/lib/use-uploads';
+import { useDeleteUpload } from '@/features/checkout-domain/upload/delete-upload/lib/use-delete-upload';
+import { useLinkUploads } from '@/features/checkout-domain/upload/link-uploads/lib/use-link-uploads';
+import type { Upload as UploadEntity } from '@/entities/checkout-domain/upload/model/types';
 import {
   type UploadType,
   getUploadTypeLabel,

@@ -35,8 +35,8 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdminOrders } from '@/features/admin-order/get-orders/lib/use-admin-orders';
-import type { OrderStatus } from '@/entities/admin-order/model/types';
+import { useAdminOrders } from '@/features/admin-domain/admin-order/get-orders/lib/use-admin-orders';
+import type { OrderStatus } from '@/entities/admin-domain/admin-order/model/types';
 import {
   ADMIN_ORDER_STATUS_LABELS,
   ADMIN_ORDER_STATUS_VARIANTS,

@@ -6,7 +6,7 @@ import {
   isValidCategoryId,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import { useProductsByCategory } from '@/features/product/get-products/lib/use-products';
+import { useProductsByCategory } from '@/features/catalog-domain/product/get-products/lib/use-products';
 import { CategoryPageSkeleton } from './skeleton/CategoryPageSkeleton';
 import { CategoryHeroSection } from './sections/CategoryHeroSection';
 import { CategoryProductsSection } from './sections/CategoryProductsSection';

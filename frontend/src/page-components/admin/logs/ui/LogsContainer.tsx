@@ -37,11 +37,11 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdminLogs } from '@/features/admin-log/get-logs/lib/use-admin-logs';
+import { useAdminLogs } from '@/features/admin-domain/admin-log/get-logs/lib/use-admin-logs';
 import type {
   LogAction,
   LogTargetType,
-} from '@/entities/admin-log/model/types';
+} from '@/entities/admin-domain/admin-log/model/types';
 
 const logActionLabels: Record<LogAction, string> = {
   login: 'ログイン',

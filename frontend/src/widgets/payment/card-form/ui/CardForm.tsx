@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { getErrorMessage } from '@/features/payment/create-payment-intent/lib/error-messages';
+import { getErrorMessage } from '@/features/checkout-domain/payment/create-payment-intent/lib/error-messages';
 
 interface CardFormProps {
   clientSecret: string;

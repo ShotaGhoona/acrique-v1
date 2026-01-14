@@ -28,9 +28,9 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdmins } from '@/features/admin/get-admins/lib/use-admins';
-import { useDeleteAdmin } from '@/features/admin/delete-admin/lib/use-delete-admin';
-import type { Admin, AdminRole } from '@/entities/admin/model/types';
+import { useAdmins } from '@/features/admin-domain/admin/get-admins/lib/use-admins';
+import { useDeleteAdmin } from '@/features/admin-domain/admin/delete-admin/lib/use-delete-admin';
+import type { Admin, AdminRole } from '@/entities/admin-domain/admin/model/types';
 import { AdminFormDialog } from './AdminFormDialog';
 
 const adminRoleLabels: Record<AdminRole, string> = {

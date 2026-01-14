@@ -14,9 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
-import { useOrders } from '@/features/order/get-orders/lib/use-orders';
+import { useOrders } from '@/features/checkout-domain/order/get-orders/lib/use-orders';
 import { OrdersListSkeleton } from './skeleton/OrdersListSkeleton';
-import type { Order, OrderStatus } from '@/entities/order/model/types';
+import type { Order, OrderStatus } from '@/entities/checkout-domain/order/model/types';
 import {
   ORDER_STATUS_LABELS,
   ORDER_STATUS_VARIANTS,

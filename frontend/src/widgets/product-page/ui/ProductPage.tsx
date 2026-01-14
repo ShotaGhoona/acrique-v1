@@ -6,7 +6,7 @@ import { ProductDetailsSection } from './sections/ProductDetailsSection';
 import { ProductFAQSection } from './sections/ProductFAQSection';
 import { RelatedProductsSection } from './sections/RelatedProductsSection';
 import { StickyCartBar } from './sections/StickyCartBar';
-import type { ProductDetail } from '@/entities/product/model/types';
+import type { ProductDetail } from '@/entities/catalog-domain/product/model/types';
 
 interface ProductPageProps {
   product: ProductDetail;

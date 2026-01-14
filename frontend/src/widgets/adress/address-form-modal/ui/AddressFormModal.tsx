@@ -15,9 +15,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/shared/ui/shadcn/ui/dialog';
-import { useCreateAddress } from '@/features/address/create-address/lib/use-create-address';
-import { useUpdateAddress } from '@/features/address/update-address/lib/use-update-address';
-import type { Address } from '@/entities/address/model/types';
+import { useCreateAddress } from '@/features/account-domain/address/create-address/lib/use-create-address';
+import { useUpdateAddress } from '@/features/account-domain/address/update-address/lib/use-update-address';
+import type { Address } from '@/entities/account-domain/address/model/types';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
 
 export const addressSchema = z.object({

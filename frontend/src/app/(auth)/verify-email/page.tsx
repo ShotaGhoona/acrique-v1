@@ -4,7 +4,7 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Check, X, Loader2, ArrowRight } from 'lucide-react';
-import { useVerifyEmail } from '@/features/auth/verify-email/lib/use-verify-email';
+import { useVerifyEmail } from '@/features/account-domain/auth/verify-email/lib/use-verify-email';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 
 function VerifyEmailContent() {

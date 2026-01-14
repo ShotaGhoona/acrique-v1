@@ -17,9 +17,9 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
-import { useGetMe } from '@/features/user/get-me/lib/use-get-me';
-import { useUpdateMe } from '@/features/user/update-me/lib/use-update-me';
-import { useChangePassword } from '@/features/user/change-password/lib/use-change-password';
+import { useGetMe } from '@/features/account-domain/user/get-me/lib/use-get-me';
+import { useUpdateMe } from '@/features/account-domain/user/update-me/lib/use-update-me';
+import { useChangePassword } from '@/features/account-domain/user/change-password/lib/use-change-password';
 import { ProfileFormSkeleton } from './skeleton/ProfileFormSkeleton';
 
 const profileSchema = z.object({

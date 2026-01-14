@@ -23,15 +23,15 @@ import {
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Separator } from '@/shared/ui/shadcn/ui/separator';
-import { useOrder } from '@/features/order/get-order/lib/use-order';
-import { useCancelOrder } from '@/features/order/cancel-order/lib/use-cancel-order';
-import { useUploads } from '@/features/upload/get-uploads/lib/use-uploads';
+import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
+import { useCancelOrder } from '@/features/checkout-domain/order/cancel-order/lib/use-cancel-order';
+import { useUploads } from '@/features/checkout-domain/upload/get-uploads/lib/use-uploads';
 import { OrderDetailSkeleton } from './skeleton/OrderDetailSkeleton';
 import type {
   OrderStatus,
   OrderDetail,
   OrderItem,
-} from '@/entities/order/model/types';
+} from '@/entities/checkout-domain/order/model/types';
 import {
   ORDER_STATUS_LABELS,
   ORDER_STATUS_VARIANTS,

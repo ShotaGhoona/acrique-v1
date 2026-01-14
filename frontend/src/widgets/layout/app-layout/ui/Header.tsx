@@ -16,9 +16,9 @@ import {
   getCategoryIds,
 } from '@/shared/domain/category/data/categories';
 import type { CategoryId } from '@/shared/domain/category/model/types';
-import { useProducts } from '@/features/product/get-products/lib/use-products';
+import { useProducts } from '@/features/catalog-domain/product/get-products/lib/use-products';
 import { useAppSelector } from '@/store/hooks/typed-hooks';
-import { useLogout } from '@/features/auth/logout/lib/use-logout';
+import { useLogout } from '@/features/account-domain/auth/logout/lib/use-logout';
 import { CartBadge } from './components/CartBadge';
 import { UserBadge } from './components/UserBadge';
 

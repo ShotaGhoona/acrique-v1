@@ -16,9 +16,9 @@ import {
   Plus,
 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { useAddToCart } from '@/features/cart/add-to-cart/lib/use-add-to-cart';
+import { useAddToCart } from '@/features/checkout-domain/cart/add-to-cart/lib/use-add-to-cart';
 import { useAppSelector } from '@/store/hooks/typed-hooks';
-import type { ProductDetail } from '@/entities/product/model/types';
+import type { ProductDetail } from '@/entities/catalog-domain/product/model/types';
 import {
   getCategoryById,
   isValidCategoryId,

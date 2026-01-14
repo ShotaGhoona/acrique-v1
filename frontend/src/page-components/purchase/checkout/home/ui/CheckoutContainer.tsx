@@ -8,12 +8,12 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/shared/ui/shadcn/ui/radio-group';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
-import { useCart } from '@/features/cart/get-cart/lib/use-cart';
-import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
-import { useCreateOrder } from '@/features/order/create-order/lib/use-create-order';
+import { useCart } from '@/features/checkout-domain/cart/get-cart/lib/use-cart';
+import { useAddresses } from '@/features/account-domain/address/get-addresses/lib/use-addresses';
+import { useCreateOrder } from '@/features/checkout-domain/order/create-order/lib/use-create-order';
 import { AddressFormModal } from '@/widgets/adress/address-form-modal/ui/AddressFormModal';
-import type { Address } from '@/entities/address/model/types';
-import type { PaymentMethod } from '@/entities/order/model/types';
+import type { Address } from '@/entities/account-domain/address/model/types';
+import type { PaymentMethod } from '@/entities/checkout-domain/order/model/types';
 
 function formatPrice(price: number): string {
   return `¥${price.toLocaleString()}`;

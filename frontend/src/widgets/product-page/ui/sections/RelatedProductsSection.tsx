@@ -6,8 +6,8 @@ import { ArrowRight } from 'lucide-react';
 import type {
   ProductDetail,
   RelatedProduct,
-} from '@/entities/product/model/types';
-import { useRelatedProducts } from '@/features/product/get-product/lib/use-product';
+} from '@/entities/catalog-domain/product/model/types';
+import { useRelatedProducts } from '@/features/catalog-domain/product/get-product/lib/use-product';
 
 // 価格フォーマット
 function formatPrice(price: number): string {

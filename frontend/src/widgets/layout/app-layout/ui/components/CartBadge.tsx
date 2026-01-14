@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { useCart } from '@/features/cart/get-cart/lib/use-cart';
+import { useCart } from '@/features/checkout-domain/cart/get-cart/lib/use-cart';
 import { useAppSelector } from '@/store/hooks/typed-hooks';
 
 interface CartBadgeProps {

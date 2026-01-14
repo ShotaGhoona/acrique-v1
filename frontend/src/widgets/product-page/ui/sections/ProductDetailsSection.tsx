@@ -1,7 +1,7 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import type { ProductDetail } from '@/entities/product/model/types';
+import type { ProductDetail } from '@/entities/catalog-domain/product/model/types';
 
 interface ProductDetailsSectionProps {
   product: ProductDetail;

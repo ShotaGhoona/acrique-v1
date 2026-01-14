@@ -18,15 +18,15 @@ import {
   CardTitle,
 } from '@/shared/ui/shadcn/ui/card';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
-import { useGetMe } from '@/features/user/get-me/lib/use-get-me';
-import { useOrders } from '@/features/order/get-orders/lib/use-orders';
-import { useAddresses } from '@/features/address/get-addresses/lib/use-addresses';
+import { useGetMe } from '@/features/account-domain/user/get-me/lib/use-get-me';
+import { useOrders } from '@/features/checkout-domain/order/get-orders/lib/use-orders';
+import { useAddresses } from '@/features/account-domain/address/get-addresses/lib/use-addresses';
 import {
   OrderStatusSummarySkeleton,
   RecentOrdersSkeleton,
   AccountInfoSkeleton,
 } from './skeleton/MypageHomeSkeleton';
-import type { Order, OrderStatus } from '@/entities/order/model/types';
+import type { Order, OrderStatus } from '@/entities/checkout-domain/order/model/types';
 import {
   ORDER_STATUS_LABELS,
   ORDER_STATUS_VARIANTS,

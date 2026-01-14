@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { useAppSelector } from '@/store/hooks/typed-hooks';
-import { useLogout } from '@/features/auth/logout/lib/use-logout';
+import { useLogout } from '@/features/account-domain/auth/logout/lib/use-logout';
 
 interface UserBadgeProps {
   className?: string;

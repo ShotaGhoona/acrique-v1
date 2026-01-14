@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { QuantitySelector } from './QuantitySelector';
-import type { CartItem } from '@/entities/cart/model/types';
+import type { CartItem } from '@/entities/checkout-domain/cart/model/types';
 
 interface CartItemCardProps {
   item: CartItem;

@@ -24,10 +24,10 @@ import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Textarea } from '@/shared/ui/shadcn/ui/textarea';
 import { Switch } from '@/shared/ui/shadcn/ui/switch';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
-import { useUpdateProductOptions } from '@/features/admin-product/update-options/lib/use-update-product-options';
-import { useUpdateProductSpecs } from '@/features/admin-product/update-specs/lib/use-update-product-specs';
-import { useUpdateProductFeatures } from '@/features/admin-product/update-features/lib/use-update-product-features';
-import { useUpdateProductFaqs } from '@/features/admin-product/update-faqs/lib/use-update-product-faqs';
+import { useUpdateProductOptions } from '@/features/admin-domain/admin-product/update-options/lib/use-update-product-options';
+import { useUpdateProductSpecs } from '@/features/admin-domain/admin-product/update-specs/lib/use-update-product-specs';
+import { useUpdateProductFeatures } from '@/features/admin-domain/admin-product/update-features/lib/use-update-product-features';
+import { useUpdateProductFaqs } from '@/features/admin-domain/admin-product/update-faqs/lib/use-update-product-faqs';
 import type { DetailsTabProps } from '../../model/types';
 
 // フォーム用の型

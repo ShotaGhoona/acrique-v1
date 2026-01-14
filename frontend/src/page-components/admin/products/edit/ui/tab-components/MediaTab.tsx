@@ -19,9 +19,9 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';
 import { Progress } from '@/shared/ui/shadcn/ui/progress';
-import { useUploadProductImage } from '@/features/admin-product/upload-image/lib/use-upload-product-image';
-import { useUpdateProductImage } from '@/features/admin-product/update-image/lib/use-update-product-image';
-import { useDeleteProductImage } from '@/features/admin-product/delete-image/lib/use-delete-product-image';
+import { useUploadProductImage } from '@/features/admin-domain/admin-product/upload-image/lib/use-upload-product-image';
+import { useUpdateProductImage } from '@/features/admin-domain/admin-product/update-image/lib/use-update-product-image';
+import { useDeleteProductImage } from '@/features/admin-domain/admin-product/delete-image/lib/use-delete-product-image';
 import type { MediaTabProps } from '../../model/types';
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];

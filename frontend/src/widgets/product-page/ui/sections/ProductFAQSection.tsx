@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { ProductDetail } from '@/entities/product/model/types';
+import type { ProductDetail } from '@/entities/catalog-domain/product/model/types';
 
 interface ProductFAQSectionProps {
   product: ProductDetail;

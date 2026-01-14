@@ -4,8 +4,8 @@ import { useState, useCallback } from 'react';
 import { Upload, X, FileImage, FileText, Loader2, AlertCircle } from 'lucide-react';
 import { cn } from '@/shared/ui/shadcn/lib/utils';
 import { Button } from '@/shared/ui/shadcn/ui/button';
-import { useUploadFile } from '@/features/upload/upload-file/lib/use-upload-file';
-import type { Upload as UploadEntity } from '@/entities/upload/model/types';
+import { useUploadFile } from '@/features/checkout-domain/upload/upload-file/lib/use-upload-file';
+import type { Upload as UploadEntity } from '@/entities/checkout-domain/upload/model/types';
 import {
   type UploadType,
   getUploadTypeLabelDetail,

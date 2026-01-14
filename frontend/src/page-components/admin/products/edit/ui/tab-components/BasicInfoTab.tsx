@@ -32,7 +32,7 @@ import {
   categories,
   getCategoryIds,
 } from '@/shared/domain/category/data/categories';
-import { useUpdateProduct } from '@/features/admin-product/update-product/lib/use-update-product';
+import { useUpdateProduct } from '@/features/admin-domain/admin-product/update-product/lib/use-update-product';
 import type { CategoryId } from '@/shared/domain/category/model/types';
 import type { BasicInfoTabProps } from '../../model/types';
 

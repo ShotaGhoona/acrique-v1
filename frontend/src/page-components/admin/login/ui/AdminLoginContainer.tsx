@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shield, Eye, EyeOff } from 'lucide-react';
-import { useAdminLogin } from '@/features/admin-auth/login/lib/use-admin-login';
+import { useAdminLogin } from '@/features/admin-domain/admin-auth/login/lib/use-admin-login';
 import {
   Card,
   CardContent,

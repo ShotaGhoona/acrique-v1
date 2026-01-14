@@ -9,8 +9,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import { getStripe } from '@/shared/lib/stripe';
 import { CardForm } from '@/widgets/payment/card-form/ui/CardForm';
-import { useOrder, ORDER_QUERY_KEY } from '@/features/order/get-order/lib/use-order';
-import { useCreatePaymentIntent } from '@/features/payment/create-payment-intent/lib/use-create-payment-intent';
+import { useOrder, ORDER_QUERY_KEY } from '@/features/checkout-domain/order/get-order/lib/use-order';
+import { useCreatePaymentIntent } from '@/features/checkout-domain/payment/create-payment-intent/lib/use-create-payment-intent';
 import { toast } from 'sonner';
 
 function formatPrice(price: number): string {

@@ -3,8 +3,8 @@
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { useLogin } from '@/features/auth/login/lib/use-login';
-import type { LoginFormData } from '@/features/auth/login/model/types';
+import { useLogin } from '@/features/account-domain/auth/login/lib/use-login';
+import type { LoginFormData } from '@/features/account-domain/auth/login/model/types';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';

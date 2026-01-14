@@ -34,7 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdminUploads } from '@/features/admin-upload/get-uploads/lib/use-admin-uploads';
+import { useAdminUploads } from '@/features/admin-domain/admin-upload/get-uploads/lib/use-admin-uploads';
 import type { UploadStatus } from '@/shared/domain/upload/model/types';
 import {
   UPLOAD_STATUS_LABELS,

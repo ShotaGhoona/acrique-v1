@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CheckCircle, Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
-import { useOrder } from '@/features/order/get-order/lib/use-order';
+import { useOrder } from '@/features/checkout-domain/order/get-order/lib/use-order';
 
 function formatPrice(price: number): string {
   return `¥${price.toLocaleString()}`;

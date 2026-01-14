@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { KeyRound, Check, X, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { usePasswordResetConfirm } from '@/features/auth/password-reset/lib/use-password-reset';
+import { usePasswordResetConfirm } from '@/features/account-domain/auth/password-reset/lib/use-password-reset';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Label } from '@/shared/ui/shadcn/ui/label';

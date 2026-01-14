@@ -19,8 +19,8 @@ import {
   TabsTrigger,
 } from '@/shared/ui/shadcn/ui/tabs';
 import { AdminLayout } from '@/widgets/layout/admin-layout/ui/AdminLayout';
-import { useAdminProduct } from '@/features/admin-product/get-product/lib/use-admin-product';
-import { useDeleteProduct } from '@/features/admin-product/delete-product/lib/use-delete-product';
+import { useAdminProduct } from '@/features/admin-domain/admin-product/get-product/lib/use-admin-product';
+import { useDeleteProduct } from '@/features/admin-domain/admin-product/delete-product/lib/use-delete-product';
 import { ProductEditSkeleton } from './skeleton/ProductEditSkeleton';
 import { BasicInfoTab } from './tab-components/BasicInfoTab';
 import { MediaTab } from './tab-components/MediaTab';

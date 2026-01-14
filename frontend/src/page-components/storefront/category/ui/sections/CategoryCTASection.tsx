@@ -1,36 +1,12 @@
 import Link from 'next/link';
-import { ArrowRight, Mail, Phone, MessageCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
-import { SITE_INFO } from '@/shared/config/site-info';
+import { contactMethods } from '../../config/contact-methods';
 
 interface CategoryCTASectionProps {
   category: CategoryWithFeatures;
 }
-
-const contactMethods = [
-  {
-    icon: Mail,
-    title: 'メールで相談',
-    description: '24時間受付、翌営業日までにご返信',
-    action: 'お問い合わせフォーム',
-    href: '/contact',
-  },
-  {
-    icon: Phone,
-    title: '電話で相談',
-    description: SITE_INFO.businessHours.displayShort,
-    action: SITE_INFO.contact.phone,
-    href: SITE_INFO.contact.phoneTel,
-  },
-  {
-    icon: MessageCircle,
-    title: 'LINEで相談',
-    description: 'お気軽にメッセージください',
-    action: 'LINE公式アカウント',
-    href: SITE_INFO.social.line,
-  },
-];
 
 export function CategoryCTASection({ category }: CategoryCTASectionProps) {
   return (

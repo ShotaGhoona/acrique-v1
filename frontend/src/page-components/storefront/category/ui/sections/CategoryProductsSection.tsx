@@ -3,15 +3,11 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
 import type { ProductListItem } from '@/entities/catalog-domain/product/model/types';
+import { formatPrice } from '@/shared/utils/format/price';
 
 interface CategoryProductsSectionProps {
   category: CategoryWithFeatures;
   products: ProductListItem[];
-}
-
-// 価格のフォーマット
-function formatPrice(price: number): string {
-  return `¥${price.toLocaleString()}〜`;
 }
 
 function ProductCard({
@@ -42,7 +38,7 @@ function ProductCard({
         )}
         {/* Price Badge */}
         <div className='absolute bottom-4 right-4 rounded-sm bg-background/95 px-3 py-1.5 text-sm font-medium shadow-sm backdrop-blur-sm'>
-          {formatPrice(product.base_price)}
+          {formatPrice(product.base_price)}〜
         </div>
       </div>
 

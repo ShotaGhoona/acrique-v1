@@ -2,17 +2,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import type { CategoryWithFeatures } from '@/shared/domain/category/model/types';
+import { categoryHeroImages } from '../../config/category-hero-images';
 
 interface CategoryHeroSectionProps {
   category: CategoryWithFeatures;
   productCount: number;
 }
-
-const categoryHeroImages: Record<string, string> = {
-  shop: '/IMG/category-page/category-hero-shop-v1.png',
-  office: '/IMG/category-page/category-hero-office-v1.png',
-  you: '/IMG/category-page/category-hero-you-v1.png',
-};
 
 export function CategoryHeroSection({
   category,

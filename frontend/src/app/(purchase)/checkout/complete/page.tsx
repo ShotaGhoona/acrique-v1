@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { CheckoutCompleteContainer } from '@/page-components/purchase/checkout/complete/ui/CheckoutCompleteContainer';
+import { CheckoutCompleteContainer } from '@/page-components/purchase/checkout-complete/ui/CheckoutCompleteContainer';
 
 export const metadata: Metadata = {
   title: 'ご注文完了 | ACRIQUE',

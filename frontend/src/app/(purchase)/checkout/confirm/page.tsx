@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { CheckoutConfirmContainer } from '@/page-components/purchase/checkout/confirm/ui/CheckoutConfirmContainer';
+import { CheckoutConfirmContainer } from '@/page-components/purchase/checkout-confirm/ui/CheckoutConfirmContainer';
 
 export const metadata: Metadata = {
   title: '注文確認・お支払い | ACRIQUE',

@@ -1,39 +1,11 @@
-import { MapPin, Clock, Mail, Building2 } from 'lucide-react';
-import { SITE_INFO } from '@/shared/config/site-info';
-
-const infoItems = [
-  {
-    icon: Building2,
-    title: '運営会社',
-    content: SITE_INFO.company.nameShort,
-    note: null,
-  },
-  {
-    icon: MapPin,
-    title: '所在地',
-    content: SITE_INFO.address.full,
-    note: null,
-  },
-  {
-    icon: Mail,
-    title: 'メール',
-    content: SITE_INFO.contact.email,
-    note: SITE_INFO.responseTime.emailNote,
-  },
-  {
-    icon: Clock,
-    title: '営業時間',
-    content: SITE_INFO.businessHours.display,
-    note: SITE_INFO.businessHours.note,
-  },
-];
+import { contactInfoItems } from '../../config/contact-data';
 
 export function ContactInfoSection() {
   return (
     <section className='bg-secondary/30 py-20'>
       <div className='mx-auto max-w-7xl px-6 lg:px-12'>
         <div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-4'>
-          {infoItems.map((item) => (
+          {contactInfoItems.map((item) => (
             <div key={item.title} className='flex gap-4'>
               <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background'>
                 <item.icon className='h-4 w-4' />

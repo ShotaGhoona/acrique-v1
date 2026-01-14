@@ -1,67 +1,6 @@
 'use client';
 
-import { Package, Upload, CreditCard, Truck, CheckCircle } from 'lucide-react';
-
-const steps = [
-  {
-    number: '01',
-    icon: Package,
-    title: '商品を選ぶ',
-    description:
-      'カテゴリーから用途に合った商品をお選びください。サイズやオプションを選択し、カートに追加します。',
-  },
-  {
-    number: '02',
-    icon: CreditCard,
-    title: 'ご注文・お支払い',
-    description:
-      'カート内容を確認後、お届け先情報とお支払い方法を入力します。クレジットカードまたは銀行振込がご利用いただけます。',
-  },
-  {
-    number: '03',
-    icon: Upload,
-    title: 'データ入稿',
-    description:
-      'ロゴやQRコードなど、製作に必要なデータをアップロードしてください。対応形式はAI、PDF、PNG、JPGです。',
-  },
-  {
-    number: '04',
-    icon: CheckCircle,
-    title: 'データ確認',
-    description:
-      '弊社スタッフがデータを確認し、製作可能な状態かをチェックします。問題があればご連絡いたします。',
-  },
-  {
-    number: '05',
-    icon: Truck,
-    title: '製作・発送',
-    description:
-      'データ確認後、製作に入ります。完成次第、追跡番号をお知らせし、丁寧に梱包してお届けします。',
-  },
-];
-
-const faqs = [
-  {
-    question: '入稿データの形式は何に対応していますか？',
-    answer:
-      'AI（Adobe Illustrator）、PDF、PNG、JPG形式に対応しています。ベクターデータ（AI/PDF）の場合、より鮮明な仕上がりになります。',
-  },
-  {
-    question: '納期はどのくらいですか？',
-    answer:
-      '商品によって異なりますが、データ確認完了後、通常5〜10営業日でお届けします。お急ぎの場合はお問い合わせください。',
-  },
-  {
-    question: '大量注文の場合、割引はありますか？',
-    answer:
-      'はい、まとまった数量でのご注文は別途ご相談を承っております。お問い合わせフォームからご連絡ください。',
-  },
-  {
-    question: '返品・交換はできますか？',
-    answer:
-      'オーダーメイド製品のため、お客様都合での返品・交換は承っておりません。不良品の場合は到着後7日以内にご連絡ください。',
-  },
-];
+import { guideSteps, guideFAQs } from '../config/guide-data';
 
 export function GuidePage() {
   return (
@@ -92,10 +31,10 @@ export function GuidePage() {
           </div>
 
           <div className='space-y-12 md:grid md:grid-cols-5 md:gap-8 md:space-y-0'>
-            {steps.map((step, index) => (
+            {guideSteps.map((step, index) => (
               <div key={step.number} className='relative text-center'>
                 {/* Connector line (desktop) */}
-                {index < steps.length - 1 && (
+                {index < guideSteps.length - 1 && (
                   <div className='absolute left-full top-10 hidden h-px w-full bg-border md:block' />
                 )}
                 <div className='mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-secondary/50'>
@@ -170,7 +109,7 @@ export function GuidePage() {
           </div>
 
           <div className='mx-auto max-w-3xl space-y-6'>
-            {faqs.map((faq, index) => (
+            {guideFAQs.map((faq, index) => (
               <div key={index} className='border-b border-border pb-6'>
                 <h3 className='font-medium'>{faq.question}</h3>
                 <p className='mt-3 text-sm leading-relaxed text-muted-foreground'>

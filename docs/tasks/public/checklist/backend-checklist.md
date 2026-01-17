@@ -233,6 +233,24 @@
 
 ---
 
+# Product Master 導入
+
+| D | A | I | P | タスク |
+|---|---|---|---|--------|
+| ⬜ | ⬜ | ⬜ | - | product_master テーブル作成（マイグレーション） |
+| ⬜ | ⬜ | ⬜ | - | products に master_id, production_type, upload_requirements 追加 |
+| ⬜ | ⬜ | - | - | ProductMaster エンティティ作成 |
+| ⬜ | ⬜ | - | - | Product エンティティに新フィールド追加 |
+| ⬜ | - | ⬜ | - | ProductMaster リポジトリ作成 |
+| ⬜ | - | ⬜ | - | Product リポジトリ更新（新フィールド対応） |
+| - | ⬜ | - | - | 入稿要否判定ロジック変更（production_type !== 'standard'） |
+| - | - | - | ⬜ | GET /api/masters エンドポイント（任意） |
+| - | - | - | ⬜ | Admin Masters CRUD エンドポイント（任意） |
+| ⬜ | ⬜ | ⬜ | - | 既存データ移行（requires_upload → production_type） |
+| - | - | ⬜ | - | 旧カラム削除（requires_upload, upload_type, upload_note） |
+
+---
+
 # リファクタリング
 
 | 状況 | タスク | 備考 |

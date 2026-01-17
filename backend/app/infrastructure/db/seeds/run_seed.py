@@ -15,6 +15,8 @@ from app.config import get_settings
 from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
+from app.infrastructure.db.models.upload_model import UploadModel
+from app.infrastructure.db.models.product_master_model import ProductMasterModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
     ProductFeatureModel,
@@ -33,6 +35,7 @@ from app.infrastructure.db.seeds.product_seed import (
     PRODUCT_FAQS,
     PRODUCT_FEATURES,
     PRODUCT_IMAGES,
+    PRODUCT_MASTERS,
     PRODUCT_OPTION_VALUES,
     PRODUCT_OPTIONS,
     PRODUCT_RELATIONS,
@@ -163,9 +166,22 @@ def seed_products(session: Session) -> None:  # noqa: C901
     session.query(ProductOptionValueModel).delete()
     session.query(ProductOptionModel).delete()
     session.query(ProductImageModel).delete()
+    # 商品を参照しているテーブルを先に削除
+    session.query(UploadModel).delete()
+    session.query(OrderItemModel).delete()
+    session.query(OrderModel).delete()
+    session.query(CartItemModel).delete()
     session.query(ProductModel).delete()
+    session.query(ProductMasterModel).delete()
     session.commit()
     print('  既存データを削除しました')
+
+    # 商品マスタを登録
+    for master_data in PRODUCT_MASTERS:
+        master = ProductMasterModel(**master_data)
+        session.add(master)
+    session.commit()
+    print(f'  商品マスタを {len(PRODUCT_MASTERS)} 件登録しました')
 
     # 商品を登録
     for product_data in PRODUCTS:
@@ -280,13 +296,19 @@ def seed_users(session: Session) -> None:
     )
     existing_user_ids = [u.id for u in existing_users]
     if existing_user_ids:
+        # uploadsを削除（order_itemsへの外部キー制約）
+        order_ids = session.query(OrderModel.id).filter(
+            OrderModel.user_id.in_(existing_user_ids)
+        )
+        order_item_ids = session.query(OrderItemModel.id).filter(
+            OrderItemModel.order_id.in_(order_ids)
+        )
+        session.query(UploadModel).filter(
+            UploadModel.order_item_id.in_(order_item_ids)
+        ).delete(synchronize_session=False)
         # 注文明細を削除
         session.query(OrderItemModel).filter(
-            OrderItemModel.order_id.in_(
-                session.query(OrderModel.id).filter(
-                    OrderModel.user_id.in_(existing_user_ids)
-                )
-            )
+            OrderItemModel.order_id.in_(order_ids)
         ).delete(synchronize_session=False)
         # 注文を削除
         session.query(OrderModel).filter(

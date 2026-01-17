@@ -1,0 +1,187 @@
+{
+  "id": "shop-cube-qr",
+  "category_id": "shop",
+  "name": "QR Code Cube",
+  "name_ja": "QRコードキューブ",
+  "slug": "qr-cube",
+  "tagline": "あなたのQRを、アートに。",
+  "description": "Instagram、決済用QR、Wi-Fi案内など、あらゆるQRコードを高級感あるキューブに。レジ横やテーブルに置くだけで、店舗の格が上がります。",
+  "long_description": "店舗のレジ横やテーブルに置くだけで、空間の格が上がる。QRコードという機能的なものを、インテリアとして昇華させたプロダクトです。裏面からのUV印刷により、QRコードは透明なアクリル越しに美しく見え、側面の鏡面仕上げが高級感を演出します。Instagram、PayPay・楽天ペイなどの決済QR、Wi-Fiパスワード、Google口コミへの誘導など、様々な用途にお使いいただけます。",
+  "base_price": 8800,
+  "price_note": "サイズ・オプションにより変動",
+  "lead_time_days": 5,
+  "lead_time_note": "5営業日〜",
+  "master_id": "cube",
+  "production_type": "template",
+  "upload_requirements": {
+    "inputs": [
+      {
+        "key": "qr_url",
+        "type": "url",
+        "label": "QRコードのリンク先URL",
+        "required": true,
+        "placeholder": "https://instagram.com/yourshop"
+      },
+      {
+        "key": "label_text",
+        "type": "text",
+        "label": "下部に表示するテキスト（任意）",
+        "required": false,
+        "maxLength": 30,
+        "placeholder": "例: @yourshop / Wi-Fi / PayPay"
+      }
+    ]
+  },
+  "is_featured": true,
+  "images": [],
+  "options": [
+    {
+      "id": 88,
+      "name": "サイズ",
+      "is_required": true,
+      "sort_order": 1,
+      "values": [
+        {
+          "id": 252,
+          "label": "50mm角",
+          "price_diff": 0,
+          "description": "コンパクト",
+          "sort_order": 1
+        },
+        {
+          "id": 253,
+          "label": "60mm角",
+          "price_diff": 2000,
+          "description": "標準サイズ",
+          "sort_order": 2
+        },
+        {
+          "id": 254,
+          "label": "80mm角",
+          "price_diff": 6000,
+          "description": "存在感あり",
+          "sort_order": 3
+        }
+      ]
+    },
+    {
+      "id": 89,
+      "name": "厚み",
+      "is_required": true,
+      "sort_order": 2,
+      "values": [
+        {
+          "id": 255,
+          "label": "10mm",
+          "price_diff": 0,
+          "description": "スタンダード",
+          "sort_order": 1
+        },
+        {
+          "id": 256,
+          "label": "15mm",
+          "price_diff": 2000,
+          "description": "おすすめ",
+          "sort_order": 2
+        },
+        {
+          "id": 257,
+          "label": "20mm",
+          "price_diff": 4000,
+          "description": "ブロック状",
+          "sort_order": 3
+        }
+      ]
+    },
+    {
+      "id": 90,
+      "name": "仕上げ",
+      "is_required": true,
+      "sort_order": 3,
+      "values": [
+        {
+          "id": 258,
+          "label": "鏡面仕上げ",
+          "price_diff": 0,
+          "description": "高級感",
+          "sort_order": 1
+        },
+        {
+          "id": 259,
+          "label": "マット仕上げ",
+          "price_diff": 1000,
+          "description": "落ち着いた印象",
+          "sort_order": 2
+        }
+      ]
+    }
+  ],
+  "specs": [
+    {
+      "id": 113,
+      "label": "仕上げ",
+      "value": "側面鏡面仕上げ / マット仕上げ",
+      "sort_order": 5
+    },
+    {
+      "id": 112,
+      "label": "印刷",
+      "value": "UV印刷（裏面）",
+      "sort_order": 4
+    },
+    {
+      "id": 111,
+      "label": "素材",
+      "value": "アクリル（透明）",
+      "sort_order": 3
+    },
+    {
+      "id": 110,
+      "label": "厚み",
+      "value": "10mm / 15mm / 20mm",
+      "sort_order": 2
+    },
+    {
+      "id": 109,
+      "label": "サイズ",
+      "value": "50mm / 60mm / 80mm 角",
+      "sort_order": 1
+    }
+  ],
+  "features": [
+    {
+      "id": 73,
+      "title": "長期間使える耐久性",
+      "description": "UV印刷は色褪せに強く、アクリル素材は割れにくい。長くお使いいただけます。",
+      "sort_order": 3
+    },
+    {
+      "id": 72,
+      "title": "スキャンしやすい設計",
+      "description": "適度な角度で自立し、お客様がスマホをかざしやすい高さを実現。",
+      "sort_order": 2
+    },
+    {
+      "id": 71,
+      "title": "高級感のある佇まい",
+      "description": "10mm以上の厚みが生み出す重厚感。店舗の雰囲気を損なわず、むしろ格上げします。",
+      "sort_order": 1
+    }
+  ],
+  "faqs": [
+    {
+      "id": 69,
+      "question": "追加注文は可能ですか？",
+      "answer": "はい、同じデザインでの追加注文を承っております。データは1年間保管しておりますので、お気軽にご連絡ください。",
+      "sort_order": 2
+    },
+    {
+      "id": 68,
+      "question": "QRコードのデータはどのように入稿すればよいですか？",
+      "answer": "ご注文時にQRコードのリンク先URLをご入力いただくだけでOKです。当方でQRコードを生成いたします。",
+      "sort_order": 1
+    }
+  ],
+  "created_at": "2026-01-17T06:26:34.040458",
+  "updated_at": "2026-01-17T06:26:34.040458"
+}

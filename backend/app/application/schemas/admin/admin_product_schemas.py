@@ -90,9 +90,9 @@ class AdminProductDetailDTO(AdminProductDTO):
     price_note: str | None
     lead_time_days: int | None
     lead_time_note: str | None
-    requires_upload: bool
-    upload_type: str | None
-    upload_note: str | None
+    master_id: str | None
+    production_type: str
+    upload_requirements: dict | None
     images: list[AdminProductImageDTO]
     options: list[AdminProductOptionDTO]
     specs: list[AdminProductSpecDTO]
@@ -149,9 +149,9 @@ class CreateProductInputDTO(BaseModel):
     category_id: str
     lead_time_days: int | None = None
     lead_time_note: str | None = None
-    requires_upload: bool = False
-    upload_type: str | None = None
-    upload_note: str | None = None
+    master_id: str | None = None
+    production_type: str = 'standard'
+    upload_requirements: dict | None = None
     is_active: bool = False
     is_featured: bool = False
     sort_order: int = 0
@@ -181,9 +181,9 @@ class UpdateProductInputDTO(BaseModel):
     category_id: str | None = None
     lead_time_days: int | None = None
     lead_time_note: str | None = None
-    requires_upload: bool | None = None
-    upload_type: str | None = None
-    upload_note: str | None = None
+    master_id: str | None = None
+    production_type: str | None = None
+    upload_requirements: dict | None = None
     is_active: bool | None = None
     is_featured: bool | None = None
     sort_order: int | None = None

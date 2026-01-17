@@ -184,9 +184,9 @@ class AdminProductDetailResponse(AdminProductResponse):
     price_note: str | None
     lead_time_days: int | None
     lead_time_note: str | None
-    requires_upload: bool
-    upload_type: str | None
-    upload_note: str | None
+    master_id: str | None
+    production_type: str
+    upload_requirements: dict | None
     images: list[AdminProductImageResponse]
     options: list[AdminProductOptionResponse]
     specs: list[AdminProductSpecResponse]
@@ -208,9 +208,9 @@ class AdminProductDetailResponse(AdminProductResponse):
             category_id=dto.category_id,
             lead_time_days=dto.lead_time_days,
             lead_time_note=dto.lead_time_note,
-            requires_upload=dto.requires_upload,
-            upload_type=dto.upload_type,
-            upload_note=dto.upload_note,
+            master_id=dto.master_id,
+            production_type=dto.production_type,
+            upload_requirements=dto.upload_requirements,
             is_active=dto.is_active,
             is_featured=dto.is_featured,
             sort_order=dto.sort_order,
@@ -340,9 +340,9 @@ class CreateProductRequest(BaseModel):
     category_id: str = Field(..., min_length=1, max_length=50)
     lead_time_days: int | None = Field(None, ge=0)
     lead_time_note: str | None = Field(None, max_length=200)
-    requires_upload: bool = False
-    upload_type: str | None = Field(None, max_length=50)
-    upload_note: str | None = Field(None, max_length=500)
+    master_id: str | None = Field(None, max_length=100)
+    production_type: str = Field(default='standard', pattern=r'^(standard|template|custom)$')
+    upload_requirements: dict | None = None
     is_active: bool = False
     is_featured: bool = False
     sort_order: int = 0
@@ -361,9 +361,9 @@ class CreateProductRequest(BaseModel):
             category_id=self.category_id,
             lead_time_days=self.lead_time_days,
             lead_time_note=self.lead_time_note,
-            requires_upload=self.requires_upload,
-            upload_type=self.upload_type,
-            upload_note=self.upload_note,
+            master_id=self.master_id,
+            production_type=self.production_type,
+            upload_requirements=self.upload_requirements,
             is_active=self.is_active,
             is_featured=self.is_featured,
             sort_order=self.sort_order,
@@ -384,9 +384,9 @@ class UpdateProductRequest(BaseModel):
     category_id: str | None = Field(None, min_length=1, max_length=50)
     lead_time_days: int | None = Field(None, ge=0)
     lead_time_note: str | None = Field(None, max_length=200)
-    requires_upload: bool | None = None
-    upload_type: str | None = Field(None, max_length=50)
-    upload_note: str | None = Field(None, max_length=500)
+    master_id: str | None = Field(None, max_length=100)
+    production_type: str | None = Field(None, pattern=r'^(standard|template|custom)$')
+    upload_requirements: dict | None = None
     is_active: bool | None = None
     is_featured: bool | None = None
     sort_order: int | None = None
@@ -404,9 +404,9 @@ class UpdateProductRequest(BaseModel):
             category_id=self.category_id,
             lead_time_days=self.lead_time_days,
             lead_time_note=self.lead_time_note,
-            requires_upload=self.requires_upload,
-            upload_type=self.upload_type,
-            upload_note=self.upload_note,
+            master_id=self.master_id,
+            production_type=self.production_type,
+            upload_requirements=self.upload_requirements,
             is_active=self.is_active,
             is_featured=self.is_featured,
             sort_order=self.sort_order,

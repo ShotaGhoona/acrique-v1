@@ -1,6 +1,7 @@
 """商品DBモデル"""
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
 from app.infrastructure.db.models.base import Base
@@ -23,9 +24,14 @@ class ProductModel(Base):
     price_note = Column(String(255), nullable=True)  # 価格補足
     lead_time_days = Column(Integer, nullable=True)  # 標準納期
     lead_time_note = Column(String(255), nullable=True)  # 納期補足
-    requires_upload = Column(Boolean, default=False)  # 入稿必須
-    upload_type = Column(String(50), nullable=True)  # logo/qr/photo/text
-    upload_note = Column(Text, nullable=True)  # 入稿時の注意
+    master_id = Column(
+        String(100),
+        ForeignKey('product_masters.id', ondelete='SET NULL'),
+        nullable=True,
+        index=True,
+    )
+    production_type = Column(String(20), nullable=False, default='standard', index=True)
+    upload_requirements = Column(JSONB, nullable=True)
     is_active = Column(Boolean, default=True, index=True)  # 公開状態
     is_featured = Column(Boolean, default=False, index=True)  # おすすめ
     sort_order = Column(Integer, default=0)  # 並び順
@@ -33,6 +39,7 @@ class ProductModel(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     # リレーション
+    master = relationship('ProductMasterModel', back_populates='products')
     images = relationship(
         'ProductImageModel', back_populates='product', cascade='all, delete-orphan'
     )

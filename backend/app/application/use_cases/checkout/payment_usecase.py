@@ -289,6 +289,8 @@ class PaymentUsecase:
     def _check_requires_upload(self, order) -> bool:
         """注文に入稿が必要な商品が含まれているかチェック
 
+        upload_requirements がある商品は入稿が必要。
+
         Args:
             order: 注文エンティティ
 
@@ -297,6 +299,6 @@ class PaymentUsecase:
         """
         for item in order.items:
             product = self.product_repository.get_by_id(item.product_id)
-            if product and product.requires_upload:
+            if product and product.upload_requirements:
                 return True
         return False

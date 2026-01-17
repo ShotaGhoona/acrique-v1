@@ -269,8 +269,7 @@ class OrderUsecase:
                     unit_price=item.unit_price,
                     options=item.options,
                     subtotal=item.subtotal,
-                    requires_upload=product.requires_upload if product else False,
-                    upload_type=product.upload_type if product else None,
+                    upload_requirements=product.upload_requirements if product else None,
                 )
             )
 

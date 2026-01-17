@@ -154,7 +154,9 @@ class AdminAdminUsecase:
             raise AdminNotFoundError()
 
         current_admin = self.admin_repository.get_by_id(current_admin_id)
-        self._validate_admin_update_permission(current_admin, admin, current_admin_id, target_admin_id)
+        self._validate_admin_update_permission(
+            current_admin, admin, current_admin_id, target_admin_id
+        )
         self._apply_admin_updates(admin, input_dto, current_admin)
 
         updated = self.admin_repository.update(admin)
@@ -175,7 +177,10 @@ class AdminAdminUsecase:
             return  # 自分自身の編集は許可
         if not current_admin.can_manage_admins():
             raise AdminPermissionDeniedError('管理者を編集する')
-        if target_admin.role == AdminRole.SUPER_ADMIN and current_admin.role != AdminRole.SUPER_ADMIN:
+        if (
+            target_admin.role == AdminRole.SUPER_ADMIN
+            and current_admin.role != AdminRole.SUPER_ADMIN
+        ):
             raise AdminPermissionDeniedError('super_adminを編集する')
 
     def _apply_admin_updates(

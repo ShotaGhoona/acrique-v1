@@ -6,23 +6,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.infrastructure.logging.logging import setup_logging
-from app.presentation.api.address_api import router as address_router
-from app.presentation.api.admin_admin_api import router as admin_admin_router
-from app.presentation.api.admin_auth_api import router as admin_auth_router
-from app.presentation.api.admin_dashboard_api import router as admin_dashboard_router
-from app.presentation.api.admin_log_api import router as admin_log_router
-from app.presentation.api.admin_order_api import router as admin_order_router
-from app.presentation.api.admin_product_api import router as admin_product_router
-from app.presentation.api.admin_upload_api import router as admin_upload_router
-from app.presentation.api.admin_user_api import router as admin_user_router
-from app.presentation.api.auth_api import router as auth_router
-from app.presentation.api.cart_api import router as cart_router
-from app.presentation.api.order_api import router as order_router
-from app.presentation.api.payment_api import router as payment_router
-from app.presentation.api.product_api import router as product_router
-from app.presentation.api.upload_api import order_uploads_router
-from app.presentation.api.upload_api import router as upload_router
-from app.presentation.api.user_api import router as user_router
+from app.presentation.api.account.address_api import router as address_router
+from app.presentation.api.account.auth_api import router as auth_router
+from app.presentation.api.account.user_api import router as user_router
+from app.presentation.api.admin.admin_admin_api import router as admin_admin_router
+from app.presentation.api.admin.admin_auth_api import router as admin_auth_router
+from app.presentation.api.admin.admin_dashboard_api import (
+    router as admin_dashboard_router,
+)
+from app.presentation.api.admin.admin_log_api import router as admin_log_router
+from app.presentation.api.admin.admin_order_api import router as admin_order_router
+from app.presentation.api.admin.admin_product_api import router as admin_product_router
+from app.presentation.api.admin.admin_upload_api import router as admin_upload_router
+from app.presentation.api.admin.admin_user_api import router as admin_user_router
+from app.presentation.api.catalog.product_api import router as product_router
+from app.presentation.api.checkout.cart_api import router as cart_router
+from app.presentation.api.checkout.order_api import router as order_router
+from app.presentation.api.checkout.payment_api import router as payment_router
+from app.presentation.api.checkout.upload_api import order_uploads_router
+from app.presentation.api.checkout.upload_api import router as upload_router
 from app.presentation.exception_handlers import register_exception_handlers
 
 # ロギングの設定を初期化

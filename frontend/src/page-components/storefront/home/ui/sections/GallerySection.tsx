@@ -62,18 +62,22 @@ export function GallerySection() {
         </div>
 
         {/* Instagram CTA */}
-        <div className='mt-16 flex items-center justify-center gap-4 border-t border-border pt-16'>
-          <Instagram className='h-5 w-5 text-muted-foreground' />
-          <p className='text-sm text-muted-foreground'>
-            最新の施工事例は Instagram でもご覧いただけます
-          </p>
+        <div className='mt-16 border-t border-border pt-16 text-center'>
           <a
             href={SITE_INFO.social.instagram}
             target='_blank'
             rel='noopener noreferrer'
-            className='text-sm font-medium transition-colors hover:text-accent'
+            className='group inline-flex flex-col items-center gap-3'
           >
-            {SITE_INFO.social.instagramHandle}
+            <div className='flex items-center gap-2'>
+              <Instagram className='h-5 w-5 text-muted-foreground transition-colors group-hover:text-accent' />
+              <span className='font-medium transition-colors group-hover:text-accent'>
+                {SITE_INFO.social.instagramHandle}
+              </span>
+            </div>
+            <p className='text-sm text-muted-foreground'>
+              最新の施工事例は Instagram でもご覧いただけます
+            </p>
           </a>
         </div>
       </div>

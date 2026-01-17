@@ -51,6 +51,25 @@ RESTful API原則に従い、ドメインごとに整理。
 | GET | `/api/products/{id}/related` | 関連商品 |
 | GET | `/api/products/featured` | おすすめ商品 |
 | GET | `/api/products/search` | 商品検索 |
+| GET | `/api/masters` | 形状マスタ一覧（任意） |
+
+### GET `/api/products/{id}` レスポンス例
+
+```json
+{
+  "id": "you-canvas-photo",
+  "master_id": "canvas",
+  "category_id": "you",
+  "production_type": "custom",
+  "name": "Photo Canvas",
+  "name_ja": "フォトキャンバス",
+  "upload_requirements": {
+    "inputs": [
+      { "type": "file", "key": "photo", "label": "写真", "required": true, "accept": "image/*" }
+    ]
+  }
+}
+```
 
 ---
 
@@ -171,6 +190,18 @@ Stripeからのイベント通知を受信。処理するイベント:
 
 ---
 
+## 形状マスタ管理 (Admin Masters) - 任意
+
+| Method | Endpoint | 説明 |
+|--------|----------|------|
+| GET | `/api/admin/masters` | マスタ一覧 |
+| POST | `/api/admin/masters` | マスタ追加 |
+| PUT | `/api/admin/masters/{id}` | マスタ更新 |
+
+※ 形状マスタは頻繁に変更しないため、シードデータで管理も可
+
+---
+
 ## 商品管理 (Admin Products)
 
 | Method | Endpoint | 説明 |
@@ -188,6 +219,25 @@ Stripeからのイベント通知を受信。処理するイベント:
 | PUT | `/api/admin/products/{id}/specs` | スペック更新 |
 | PUT | `/api/admin/products/{id}/features` | 特長更新 |
 | PUT | `/api/admin/products/{id}/faqs` | FAQ更新 |
+
+### POST `/api/admin/products` リクエスト例
+
+```json
+{
+  "id": "you-canvas-photo",
+  "master_id": "canvas",
+  "category_id": "you",
+  "production_type": "custom",
+  "name": "Photo Canvas",
+  "name_ja": "フォトキャンバス",
+  "base_price": 15000,
+  "upload_requirements": {
+    "inputs": [
+      { "type": "file", "key": "photo", "label": "写真", "required": true, "accept": "image/*" }
+    ]
+  }
+}
+```
 
 ---
 

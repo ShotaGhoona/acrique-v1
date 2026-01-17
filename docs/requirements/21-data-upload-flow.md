@@ -11,7 +11,7 @@
 
 ```mermaid
 flowchart TD
-    START[チェックアウト開始] --> CHECK{注文内に<br>requires_upload=true<br>の商品がある?}
+    START[チェックアウト開始] --> CHECK{注文内に<br>production_type != standard<br>の商品がある?}
     CHECK -->|No| NO_UPLOAD[入稿不要]
     CHECK -->|Yes| NEED_UPLOAD[入稿必要]
 
@@ -32,7 +32,7 @@ flowchart TD
 flowchart TD
     START[入稿画面] --> LOOP[注文内の各商品をループ]
 
-    LOOP --> CHECK{requires_upload<br>=true?}
+    LOOP --> CHECK{production_type<br>!= standard?}
     CHECK -->|No| SKIP[この商品はスキップ]
     CHECK -->|Yes| QTY{quantity > 1?}
 
@@ -260,7 +260,7 @@ flowchart LR
 def determine_status_after_payment(order) -> OrderStatus:
     """支払い成功後のステータスを決定"""
     has_upload_required = any(
-        get_product(item.product_id).requires_upload
+        get_product(item.product_id).production_type != 'standard'
         for item in order.items
     )
 
@@ -282,7 +282,7 @@ interface UploadSlot {
   orderItemId: number;
   quantityIndex: number;  // 1, 2, 3...
   productName: string;
-  uploadType: 'logo' | 'qr' | 'photo' | 'text';
+  uploadRequirements: UploadRequirements;  // 入稿要件（JSONB）
   status: 'empty' | 'pending' | 'submitted' | 'approved' | 'rejected';
   upload?: Upload;  // 入稿済みの場合
 }
@@ -292,14 +292,14 @@ function generateUploadSlots(order: Order): UploadSlot[] {
   const slots: UploadSlot[] = [];
 
   for (const item of order.items) {
-    if (!item.requires_upload) continue;
+    if (item.production_type === 'standard') continue;
 
     for (let i = 1; i <= item.quantity; i++) {
       slots.push({
         orderItemId: item.id,
         quantityIndex: i,
         productName: item.product_name_ja || item.product_name,
-        uploadType: getUploadType(item.product_name),
+        uploadRequirements: item.upload_requirements,
         status: 'empty',
         upload: findUpload(item.id, i),
       });
@@ -315,7 +315,7 @@ function generateUploadSlots(order: Order): UploadSlot[] {
 ```typescript
 function canProceedToPayment(order: Order, uploads: Upload[]): boolean {
   for (const item of order.items) {
-    if (!item.requires_upload) continue;
+    if (item.production_type === 'standard') continue;
 
     // 各数量に対応する入稿があるかチェック
     for (let i = 1; i <= item.quantity; i++) {

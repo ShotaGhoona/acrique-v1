@@ -212,6 +212,20 @@
 
 ---
 
+# Product Master 導入
+
+| 状況 | タスク | 備考 |
+|------|--------|------|
+| ⬜ | Product 型に master_id, production_type, upload_requirements 追加 | entities/product |
+| ⬜ | UploadRequirements 型定義 | shared/types |
+| ⬜ | 入稿フォーム動的生成コンポーネント | upload_requirements から自動生成 |
+| ⬜ | 入稿要否判定ロジック変更 | production_type !== 'standard' |
+| ⬜ | Admin 商品編集: master_id 選択 | |
+| ⬜ | Admin 商品編集: production_type 選択 | |
+| ⬜ | Admin 商品編集: upload_requirements 入力UI | |
+
+---
+
 # リファクタリング
 
 | 状況 | タスク | 備考 |

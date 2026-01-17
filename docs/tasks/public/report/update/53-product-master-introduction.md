@@ -321,6 +321,62 @@ upload_requirements=product.upload_requirements if product else None,
 
 ---
 
+### 2026-01-17: Phase 7 - order_items テーブルに upload_requirements 追加
+
+**目的**: 注文時点の入稿要件を保存し、商品変更後も正しい入稿フォームを表示
+
+#### 1. マイグレーション作成
+
+**作成ファイル**: `backend/alembic/versions/h5c6d7e8f9a0_add_upload_requirements_to_order_items.py`
+
+```python
+def upgrade() -> None:
+    op.add_column(
+        'order_items',
+        sa.Column('upload_requirements', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+    )
+```
+
+#### 2. OrderItem エンティティ更新
+
+**変更ファイル**: `backend/app/domain/entities/order.py`
+
+```python
+upload_requirements: dict[str, Any] | None = Field(
+    None, description='入稿要件（商品からコピー）'
+)
+```
+
+#### 3. OrderItemModel 更新
+
+**変更ファイル**: `backend/app/infrastructure/db/models/order_model.py`
+
+```python
+upload_requirements = Column(JSONB, nullable=True)
+```
+
+#### 4. order_usecase.py 更新
+
+**変更ファイル**: `backend/app/application/use_cases/checkout/order_usecase.py`
+
+注文作成時に商品の `upload_requirements` を `order_item` にコピー:
+
+```python
+# _build_order_items_from_input, _build_order_items_from_cart
+upload_requirements=product.upload_requirements,
+
+# _to_order_detail_dto - 保存済みの値を使用
+upload_requirements=item.upload_requirements,
+```
+
+#### 5. order_repository_impl.py 更新
+
+**変更ファイル**: `backend/app/infrastructure/db/repositories/order_repository_impl.py`
+
+`_item_to_entity`, `_to_entity`, `create` に `upload_requirements` マッピング追加。
+
+---
+
 ## 削除されたフィールド一覧
 
 技術負債を残さないため、以下のフィールドを完全に削除：
@@ -385,8 +441,9 @@ upload_requirements=product.upload_requirements if product else None,
 | Presentation層実装 | ✅ 完了 |
 | マイグレーション実行 | ✅ 完了 |
 | Seed データ更新 | ✅ 完了 |
+| order_items に upload_requirements 追加 | ✅ 完了 |
+| Frontend 対応 | ✅ 完了 |
 | ProductMaster API 作成（任意） | [ ] 別タスク |
-| Frontend 対応 | [ ] 別タスク |
 
 ---
 

@@ -1,4 +1,6 @@
 import type { CategoryId } from '@/shared/domain/category/model/types';
+import type { UploadRequirements } from '@/shared/domain/upload/model/types';
+import type { ProductionType } from '@/entities/catalog-domain/product/model/types';
 
 /**
  * 商品作成フォームの入力型
@@ -20,9 +22,9 @@ export interface CreateProductFormData {
   lead_time_days: string;
   lead_time_note: string;
   is_featured: boolean;
-  requires_upload: boolean;
-  upload_type: string;
-  upload_note: string;
+  master_id: string;
+  production_type: ProductionType;
+  upload_requirements: UploadRequirements;
 }
 
 /**
@@ -41,7 +43,7 @@ export const createProductFormDataInitial: CreateProductFormData = {
   lead_time_days: '',
   lead_time_note: '',
   is_featured: false,
-  requires_upload: false,
-  upload_type: '',
-  upload_note: '',
+  master_id: '',
+  production_type: 'standard',
+  upload_requirements: null,
 };

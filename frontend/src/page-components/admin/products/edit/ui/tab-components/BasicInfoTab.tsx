@@ -65,9 +65,9 @@ export function BasicInfoTab({
             : undefined,
           lead_time_note: formData.lead_time_note || undefined,
           is_featured: formData.is_featured,
-          requires_upload: formData.requires_upload,
-          upload_type: formData.upload_type || undefined,
-          upload_note: formData.upload_note || undefined,
+          master_id: formData.master_id || undefined,
+          production_type: formData.production_type,
+          upload_requirements: formData.upload_requirements,
         },
       },
       {
@@ -174,67 +174,86 @@ export function BasicInfoTab({
             </CardContent>
           </Card>
 
-          {/* 入稿設定 */}
+          {/* 製作設定 */}
           <Card>
             <CardHeader className='pb-3'>
               <div className='flex items-center gap-2'>
                 <Upload className='h-5 w-5 text-muted-foreground' />
-                <CardTitle className='text-base'>入稿設定</CardTitle>
+                <CardTitle className='text-base'>製作設定</CardTitle>
               </div>
               <CardDescription>
-                お客様からのデータ入稿に関する設定
+                製作タイプと入稿要件の設定
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
-              <div className='flex items-center justify-between rounded-lg border bg-muted/30 p-3'>
-                <div>
-                  <Label>入稿データ必要</Label>
-                  <p className='text-xs text-muted-foreground'>
-                    お客様からデータ入稿が必要な商品
-                  </p>
-                </div>
-                <Switch
-                  checked={formData.requires_upload}
-                  onCheckedChange={(checked) =>
-                    onFormDataChange({ ...formData, requires_upload: checked })
+              <div className='space-y-2'>
+                <Label htmlFor='master_id'>プロダクトマスターID</Label>
+                <Input
+                  id='master_id'
+                  value={formData.master_id}
+                  onChange={(e) =>
+                    onFormDataChange({ ...formData, master_id: e.target.value })
                   }
+                  placeholder='cube, canvas, plate など'
                 />
+                <p className='text-xs text-muted-foreground'>
+                  製造テンプレートの識別子
+                </p>
               </div>
-              {formData.requires_upload && (
+              <div className='space-y-2'>
+                <Label>製作タイプ</Label>
+                <Select
+                  value={formData.production_type}
+                  onValueChange={(value: 'standard' | 'template' | 'custom') =>
+                    onFormDataChange({ ...formData, production_type: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder='選択してください' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='standard'>
+                      スタンダード（入稿不要）
+                    </SelectItem>
+                    <SelectItem value='template'>
+                      テンプレート（URL/テキスト入力）
+                    </SelectItem>
+                    <SelectItem value='custom'>
+                      カスタム（画像入稿必要）
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {formData.production_type !== 'standard' && (
                 <div className='space-y-4 rounded-lg border p-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='upload_type'>入稿タイプ</Label>
-                    <Select
-                      value={formData.upload_type}
-                      onValueChange={(value) =>
-                        onFormDataChange({ ...formData, upload_type: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='選択してください' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='logo'>ロゴ</SelectItem>
-                        <SelectItem value='qr'>QRコード</SelectItem>
-                        <SelectItem value='photo'>写真</SelectItem>
-                        <SelectItem value='text'>テキスト</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='upload_note'>入稿に関する注意事項</Label>
+                    <Label>入稿要件（JSON）</Label>
                     <Textarea
-                      id='upload_note'
-                      value={formData.upload_note}
-                      onChange={(e) =>
-                        onFormDataChange({
-                          ...formData,
-                          upload_note: e.target.value,
-                        })
+                      value={
+                        formData.upload_requirements
+                          ? JSON.stringify(formData.upload_requirements, null, 2)
+                          : ''
                       }
-                      placeholder='推奨フォーマットや解像度など'
-                      rows={2}
+                      onChange={(e) => {
+                        try {
+                          const parsed = e.target.value
+                            ? JSON.parse(e.target.value)
+                            : null;
+                          onFormDataChange({
+                            ...formData,
+                            upload_requirements: parsed,
+                          });
+                        } catch {
+                          // JSON parse error - ignore
+                        }
+                      }}
+                      placeholder='{"inputs": [{"key": "qr_url", "type": "url", "label": "QRコードURL", "required": true}]}'
+                      rows={6}
+                      className='font-mono text-sm'
                     />
+                    <p className='text-xs text-muted-foreground'>
+                      有効なJSON形式で入力してください
+                    </p>
                   </div>
                 </div>
               )}

@@ -1,5 +1,3 @@
-import type { UploadType } from '@/shared/domain/upload/model/types';
-
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml'];
 export const ACCEPTED_DOCUMENT_TYPES = [
   'application/pdf',
@@ -7,18 +5,10 @@ export const ACCEPTED_DOCUMENT_TYPES = [
   'image/svg+xml',
 ];
 
-export function getAcceptedTypes(uploadType: UploadType): string[] {
-  switch (uploadType) {
-    case 'logo':
-      return [...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_DOCUMENT_TYPES];
-    case 'qr':
-      return ACCEPTED_IMAGE_TYPES;
-    case 'photo':
-      return ACCEPTED_IMAGE_TYPES;
-    default:
-      return [...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_DOCUMENT_TYPES];
-  }
-}
+export const DEFAULT_ACCEPTED_TYPES = [
+  ...ACCEPTED_IMAGE_TYPES,
+  ...ACCEPTED_DOCUMENT_TYPES,
+];
 
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -31,16 +21,20 @@ export function validateFile(
   acceptedTypes: string[],
   maxSize: number,
 ): string | null {
-  if (
-    !acceptedTypes.some(
-      (type) =>
-        file.type === type || file.name.endsWith(type.replace('*', '')),
-    )
-  ) {
+  const isValidType = acceptedTypes.some(
+    (type) =>
+      file.type === type ||
+      (type.startsWith('.') && file.name.toLowerCase().endsWith(type.toLowerCase()))
+  );
+  if (!isValidType) {
     return '対応していないファイル形式です';
   }
   if (file.size > maxSize) {
     return `ファイルサイズは${formatFileSize(maxSize)}以下にしてください`;
   }
   return null;
+}
+
+export function getAcceptString(acceptTypes: string[]): string {
+  return acceptTypes.join(',');
 }

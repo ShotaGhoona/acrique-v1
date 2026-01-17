@@ -1,4 +1,8 @@
 import type { CategoryId } from '@/shared/domain/category/model/types';
+import type { UploadRequirements } from '@/shared/domain/upload/model/types';
+
+// === 製作タイプ ===
+export type ProductionType = 'standard' | 'template' | 'custom';
 
 // === 商品画像 ===
 export interface ProductImage {
@@ -80,9 +84,9 @@ export interface ProductDetail {
   price_note: string | null;
   lead_time_days: number | null;
   lead_time_note: string | null;
-  requires_upload: boolean;
-  upload_type: string | null;
-  upload_note: string | null;
+  master_id: string | null;
+  production_type: ProductionType;
+  upload_requirements: UploadRequirements;
   is_featured: boolean;
   images: ProductImage[];
   options: ProductOption[];

@@ -14,26 +14,21 @@ import { Button } from '@/shared/ui/shadcn/ui/button';
 import { useUploadFile } from '@/features/checkout-domain/upload/upload-file/lib/use-upload-file';
 import type { Upload as UploadEntity } from '@/entities/checkout-domain/upload/model/types';
 import {
-  type UploadType,
-  getUploadTypeLabelDetail,
-} from '@/shared/domain/upload/model/types';
-import {
-  getAcceptedTypes,
+  DEFAULT_ACCEPTED_TYPES,
   formatFileSize,
   validateFile,
-} from '../lib/file-utils';
+  getAcceptString,
+} from '../../lib/file-utils';
 
 interface UploadedFile {
   id: number;
   file_name: string;
   file_url: string;
-  upload_type: string | null;
   status?: string;
 }
 
 interface FileDropzoneProps {
-  uploadType: UploadType;
-  accept?: string;
+  accept?: string[];
   maxSize?: number;
   onUploadComplete?: (upload: UploadEntity) => void;
   onFileRemove?: (uploadId: number) => void;
@@ -44,8 +39,7 @@ interface FileDropzoneProps {
 }
 
 export function FileDropzone({
-  uploadType,
-  accept,
+  accept = DEFAULT_ACCEPTED_TYPES,
   maxSize = 10 * 1024 * 1024,
   onUploadComplete,
   onFileRemove,
@@ -58,15 +52,11 @@ export function FileDropzone({
   const [error, setError] = useState<string | null>(null);
   const { mutateAsync: uploadFile, isPending } = useUploadFile();
 
-  const acceptedTypes = accept
-    ? accept.split(',').map((t) => t.trim())
-    : getAcceptedTypes(uploadType);
-
   const handleValidateFile = useCallback(
     (file: File): string | null => {
-      return validateFile(file, acceptedTypes, maxSize);
+      return validateFile(file, accept, maxSize);
     },
-    [acceptedTypes, maxSize],
+    [accept, maxSize],
   );
 
   const handleFile = useCallback(
@@ -80,13 +70,13 @@ export function FileDropzone({
       setError(null);
 
       try {
-        const result = await uploadFile({ file, uploadType });
+        const result = await uploadFile({ file });
         onUploadComplete?.(result.upload as unknown as UploadEntity);
       } catch {
         setError('アップロードに失敗しました。もう一度お試しください。');
       }
     },
-    [handleValidateFile, uploadFile, uploadType, onUploadComplete],
+    [handleValidateFile, uploadFile, onUploadComplete],
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -123,13 +113,8 @@ export function FileDropzone({
     [handleFile],
   );
 
-  const getAcceptString = (): string => {
-    return acceptedTypes.join(',');
-  };
-
   return (
     <div className={cn('space-y-4', className)}>
-      {/* Label */}
       {label && (
         <div>
           <p className='text-sm font-medium'>{label}</p>
@@ -139,7 +124,6 @@ export function FileDropzone({
         </div>
       )}
 
-      {/* Dropzone */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -154,7 +138,7 @@ export function FileDropzone({
       >
         <input
           type='file'
-          accept={getAcceptString()}
+          accept={getAcceptString(accept)}
           onChange={handleInputChange}
           className='absolute inset-0 cursor-pointer opacity-0'
           disabled={isPending}
@@ -172,21 +156,19 @@ export function FileDropzone({
             </div>
             <div>
               <p className='text-sm font-medium'>
-                {getUploadTypeLabelDetail(uploadType)}をドラッグ＆ドロップ
+                ファイルをドラッグ＆ドロップ
               </p>
               <p className='mt-1 text-xs text-muted-foreground'>
                 または<span className='text-accent'>クリックして選択</span>
               </p>
             </div>
             <p className='text-xs text-muted-foreground'>
-              最大{formatFileSize(maxSize)} /{' '}
-              {uploadType === 'photo' ? 'JPG, PNG' : 'AI, EPS, PDF, SVG, PNG'}
+              最大{formatFileSize(maxSize)}
             </p>
           </div>
         )}
       </div>
 
-      {/* Error */}
       {error && (
         <div className='flex items-center gap-2 text-sm text-destructive'>
           <AlertCircle className='h-4 w-4' />
@@ -194,7 +176,6 @@ export function FileDropzone({
         </div>
       )}
 
-      {/* Uploaded Files */}
       {uploadedFiles.length > 0 && (
         <div className='space-y-2'>
           <p className='text-xs font-medium uppercase tracking-wider text-muted-foreground'>
@@ -234,12 +215,6 @@ export function FileDropzone({
                             差し戻し
                           </span>
                         )}
-                      </p>
-                      <p className='text-xs text-muted-foreground'>
-                        {file.upload_type &&
-                          getUploadTypeLabelDetail(
-                            file.upload_type as UploadType,
-                          )}
                       </p>
                     </div>
                   </div>

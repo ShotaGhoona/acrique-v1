@@ -1,12 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadApi } from '@/entities/checkout-domain/upload/api/upload-api';
 import type { CreateUploadResponse } from '@/entities/checkout-domain/upload/model/types';
-import type { UploadType } from '@/shared/domain/upload/model/types';
 import { UPLOADS_QUERY_KEY } from '@/shared/api/query-keys';
 
 interface UploadFileParams {
   file: File;
-  uploadType: UploadType;
 }
 
 interface UploadFileResult {
@@ -24,12 +22,11 @@ export function useUploadFile() {
   const queryClient = useQueryClient();
 
   return useMutation<UploadFileResult, Error, UploadFileParams>({
-    mutationFn: async ({ file, uploadType }) => {
+    mutationFn: async ({ file }) => {
       // 1. Presigned URL取得
       const presignedResult = await uploadApi.getPresignedUrl({
         file_name: file.name,
         content_type: file.type,
-        upload_type: uploadType,
       });
 
       // 2. S3へファイルアップロード
@@ -42,7 +39,6 @@ export function useUploadFile() {
         file_url: presignedResult.file_url,
         file_type: file.type,
         file_size: file.size,
-        upload_type: uploadType,
       });
 
       return { upload };

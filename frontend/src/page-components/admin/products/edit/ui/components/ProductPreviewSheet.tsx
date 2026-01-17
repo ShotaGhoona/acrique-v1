@@ -33,9 +33,9 @@ function toProductDetail(admin: AdminProductDetail): ProductDetail {
     price_note: admin.price_note,
     lead_time_days: admin.lead_time_days,
     lead_time_note: admin.lead_time_note,
-    requires_upload: admin.requires_upload,
-    upload_type: admin.upload_type,
-    upload_note: admin.upload_note,
+    master_id: admin.master_id,
+    production_type: admin.production_type,
+    upload_requirements: admin.upload_requirements,
     is_featured: admin.is_featured,
     images: admin.images,
     options: admin.options.map((opt) => ({

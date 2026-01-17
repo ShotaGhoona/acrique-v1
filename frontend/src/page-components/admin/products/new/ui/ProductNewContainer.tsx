@@ -71,9 +71,9 @@ export function ProductNewContainer() {
           : undefined,
         lead_time_note: formData.lead_time_note || undefined,
         is_featured: formData.is_featured,
-        requires_upload: formData.requires_upload,
-        upload_type: formData.upload_type || undefined,
-        upload_note: formData.upload_note || undefined,
+        master_id: formData.master_id || undefined,
+        production_type: formData.production_type,
+        upload_requirements: formData.upload_requirements,
       },
       {
         onSuccess: () => {
@@ -215,63 +215,80 @@ export function ProductNewContainer() {
               </CardContent>
             </Card>
 
-            {/* Upload Settings */}
+            {/* 製作設定 */}
             <Card>
               <CardHeader>
-                <CardTitle>入稿設定</CardTitle>
+                <CardTitle>製作設定</CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <Label>入稿データ必要</Label>
-                    <p className='text-xs text-muted-foreground'>
-                      お客様からデータ入稿が必要な商品
-                    </p>
-                  </div>
-                  <Switch
-                    checked={formData.requires_upload}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, requires_upload: checked })
+                <div className='space-y-2'>
+                  <Label htmlFor='master_id'>プロダクトマスターID</Label>
+                  <Input
+                    id='master_id'
+                    value={formData.master_id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, master_id: e.target.value })
                     }
+                    placeholder='cube, canvas, plate など'
                   />
+                  <p className='text-xs text-muted-foreground'>
+                    製造テンプレートの識別子
+                  </p>
                 </div>
-                {formData.requires_upload && (
-                  <>
-                    <div className='space-y-2'>
-                      <Label htmlFor='upload_type'>入稿タイプ</Label>
-                      <Select
-                        value={formData.upload_type}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, upload_type: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='選択してください' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value='logo'>ロゴ</SelectItem>
-                          <SelectItem value='qr'>QRコード</SelectItem>
-                          <SelectItem value='photo'>写真</SelectItem>
-                          <SelectItem value='text'>テキスト</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className='space-y-2'>
-                      <Label htmlFor='upload_note'>入稿に関する注意事項</Label>
-                      <Textarea
-                        id='upload_note'
-                        value={formData.upload_note}
-                        onChange={(e) =>
+                <div className='space-y-2'>
+                  <Label>製作タイプ</Label>
+                  <Select
+                    value={formData.production_type}
+                    onValueChange={(value: 'standard' | 'template' | 'custom') =>
+                      setFormData({ ...formData, production_type: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='選択してください' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='standard'>
+                        スタンダード（入稿不要）
+                      </SelectItem>
+                      <SelectItem value='template'>
+                        テンプレート（URL/テキスト入力）
+                      </SelectItem>
+                      <SelectItem value='custom'>
+                        カスタム（画像入稿必要）
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {formData.production_type !== 'standard' && (
+                  <div className='space-y-2'>
+                    <Label>入稿要件（JSON）</Label>
+                    <Textarea
+                      value={
+                        formData.upload_requirements
+                          ? JSON.stringify(formData.upload_requirements, null, 2)
+                          : ''
+                      }
+                      onChange={(e) => {
+                        try {
+                          const parsed = e.target.value
+                            ? JSON.parse(e.target.value)
+                            : null;
                           setFormData({
                             ...formData,
-                            upload_note: e.target.value,
-                          })
+                            upload_requirements: parsed,
+                          });
+                        } catch {
+                          // JSON parse error - ignore
                         }
-                        placeholder='入稿データの形式など...'
-                        rows={2}
-                      />
-                    </div>
-                  </>
+                      }}
+                      placeholder='{"inputs": [{"key": "qr_url", "type": "url", "label": "QRコードURL", "required": true}]}'
+                      rows={6}
+                      className='font-mono text-sm'
+                    />
+                    <p className='text-xs text-muted-foreground'>
+                      有効なJSON形式で入力してください
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>

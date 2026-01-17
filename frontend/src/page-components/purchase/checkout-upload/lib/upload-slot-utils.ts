@@ -1,21 +1,9 @@
-import type { UploadType } from '@/shared/domain/upload/model/types';
-import type { Upload } from '@/entities/checkout-domain/upload/model/types';
 import type {
   SlotKey,
   UploadSlot,
-  UploadedFile,
   UploadRequiredItem,
+  InputValue,
 } from './types';
-
-/**
- * UploadTypeをマッピング（不正な値はデフォルトに変換）
- */
-export function mapUploadType(type: UploadType | null): UploadType {
-  if (type === 'logo' || type === 'qr' || type === 'photo' || type === 'text') {
-    return type;
-  }
-  return 'logo';
-}
 
 /**
  * 注文アイテムから入稿スロットを生成
@@ -31,7 +19,7 @@ export function createUploadSlots(items: UploadRequiredItem[]): UploadSlot[] {
         quantityIndex: i,
         slotKey: `${item.id}-${i}`,
         productName: item.product_name_ja || item.product_name,
-        uploadType: mapUploadType(item.upload_type),
+        uploadRequirements: item.upload_requirements,
       });
     }
   }
@@ -40,34 +28,41 @@ export function createUploadSlots(items: UploadRequiredItem[]): UploadSlot[] {
 }
 
 /**
+ * スロットの入稿が完了しているか判定
+ */
+export function isSlotComplete(
+  slot: UploadSlot,
+  inputValues: Record<SlotKey, InputValue[]>,
+): boolean {
+  const requirements = slot.uploadRequirements;
+  if (!requirements?.inputs || requirements.inputs.length === 0) return true;
+
+  const values = inputValues[slot.slotKey] ?? [];
+
+  for (const input of requirements.inputs) {
+    if (!input.required) continue;
+
+    const value = values.find((v) => v.key === input.key);
+    if (!value) return false;
+
+    if (input.type === 'file') {
+      if (!value.fileId) return false;
+    } else {
+      if (!value.value || value.value.trim() === '') return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * 入稿完了しているスロット数をカウント
  */
 export function countCompletedSlots(
   slots: UploadSlot[],
-  uploadedFileIds: Record<SlotKey, number[]>,
+  inputValues: Record<SlotKey, InputValue[]>,
 ): number {
-  return slots.filter(
-    (slot) => (uploadedFileIds[slot.slotKey]?.length ?? 0) > 0,
-  ).length;
-}
-
-/**
- * 特定スロットのアップロード済みファイル一覧を取得
- */
-export function getUploadedFilesForSlot(
-  slotKey: SlotKey,
-  uploadedFileIds: Record<SlotKey, number[]>,
-  allUploads: Upload[],
-): UploadedFile[] {
-  const ids = uploadedFileIds[slotKey] ?? [];
-  return allUploads
-    .filter((u) => ids.includes(u.id))
-    .map((u) => ({
-      id: u.id,
-      file_name: u.file_name,
-      file_url: u.file_url,
-      upload_type: u.upload_type,
-    }));
+  return slots.filter((slot) => isSlotComplete(slot, inputValues)).length;
 }
 
 /**
@@ -81,4 +76,21 @@ export function groupSlotsByItem(
     item,
     slots: slots.filter((slot) => slot.itemId === item.id),
   }));
+}
+
+/**
+ * upload_requirementsから入稿タイプのラベルを取得
+ */
+export function getUploadLabel(item: UploadRequiredItem): string {
+  const requirements = item.upload_requirements;
+  if (!requirements?.inputs || requirements.inputs.length === 0) {
+    return 'データ';
+  }
+
+  const inputCount = requirements.inputs.length;
+  if (inputCount === 1) {
+    return requirements.inputs[0].label;
+  }
+
+  return `${inputCount}項目の入稿`;
 }

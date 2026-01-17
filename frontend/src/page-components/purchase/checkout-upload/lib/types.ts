@@ -1,14 +1,15 @@
-import type { UploadType } from '@/shared/domain/upload/model/types';
+import type { UploadRequirements } from '@/shared/domain/upload/model/types';
 
 /** スロットキー（商品ID + 個数インデックス） */
 export type SlotKey = `${number}-${number}`;
 
-/** アップロード済みファイル情報 */
-export interface UploadedFile {
-  id: number;
-  file_name: string;
-  file_url: string;
-  upload_type: string | null;
+/** 入力値 */
+export interface InputValue {
+  key: string;
+  type: 'text' | 'url' | 'date' | 'file';
+  value: string;
+  fileId?: number;
+  fileName?: string;
 }
 
 /** 入稿スロット情報 */
@@ -17,7 +18,7 @@ export interface UploadSlot {
   quantityIndex: number;
   slotKey: SlotKey;
   productName: string;
-  uploadType: UploadType;
+  uploadRequirements: UploadRequirements;
 }
 
 /** 入稿が必要な注文アイテム */
@@ -26,5 +27,5 @@ export interface UploadRequiredItem {
   quantity: number;
   product_name: string;
   product_name_ja: string | null;
-  upload_type: UploadType | null;
+  upload_requirements: UploadRequirements;
 }

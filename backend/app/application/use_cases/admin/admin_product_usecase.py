@@ -144,41 +144,7 @@ class AdminProductUsecase:
         if product is None:
             raise ProductNotFoundError()
 
-        # 指定されたフィールドのみ更新
-        if input_dto.name is not None:
-            product.name = input_dto.name
-        if input_dto.name_ja is not None:
-            product.name_ja = input_dto.name_ja
-        if input_dto.slug is not None:
-            product.slug = input_dto.slug
-        if input_dto.tagline is not None:
-            product.tagline = input_dto.tagline
-        if input_dto.description is not None:
-            product.description = input_dto.description
-        if input_dto.long_description is not None:
-            product.long_description = input_dto.long_description
-        if input_dto.base_price is not None:
-            product.base_price = input_dto.base_price
-        if input_dto.price_note is not None:
-            product.price_note = input_dto.price_note
-        if input_dto.category_id is not None:
-            product.category_id = input_dto.category_id
-        if input_dto.lead_time_days is not None:
-            product.lead_time_days = input_dto.lead_time_days
-        if input_dto.lead_time_note is not None:
-            product.lead_time_note = input_dto.lead_time_note
-        if input_dto.requires_upload is not None:
-            product.requires_upload = input_dto.requires_upload
-        if input_dto.upload_type is not None:
-            product.upload_type = input_dto.upload_type
-        if input_dto.upload_note is not None:
-            product.upload_note = input_dto.upload_note
-        if input_dto.is_active is not None:
-            product.is_active = input_dto.is_active
-        if input_dto.is_featured is not None:
-            product.is_featured = input_dto.is_featured
-        if input_dto.sort_order is not None:
-            product.sort_order = input_dto.sort_order
+        self._apply_product_updates(product, input_dto)
 
         self.product_repository.update(product)
         # リレーションを含めて再取得
@@ -190,6 +156,34 @@ class AdminProductUsecase:
             product=self._to_product_detail_dto(updated_product),
             message='商品を更新しました',
         )
+
+    def _apply_product_updates(
+        self, product: Product, input_dto: UpdateProductInputDTO
+    ) -> None:
+        """商品エンティティにDTOの値を適用"""
+        update_fields = [
+            ('name', 'name'),
+            ('name_ja', 'name_ja'),
+            ('slug', 'slug'),
+            ('tagline', 'tagline'),
+            ('description', 'description'),
+            ('long_description', 'long_description'),
+            ('base_price', 'base_price'),
+            ('price_note', 'price_note'),
+            ('category_id', 'category_id'),
+            ('lead_time_days', 'lead_time_days'),
+            ('lead_time_note', 'lead_time_note'),
+            ('requires_upload', 'requires_upload'),
+            ('upload_type', 'upload_type'),
+            ('upload_note', 'upload_note'),
+            ('is_active', 'is_active'),
+            ('is_featured', 'is_featured'),
+            ('sort_order', 'sort_order'),
+        ]
+        for dto_field, entity_field in update_fields:
+            value = getattr(input_dto, dto_field)
+            if value is not None:
+                setattr(product, entity_field, value)
 
     def delete_product(self, product_id: str) -> DeleteProductOutputDTO:
         """商品を削除"""

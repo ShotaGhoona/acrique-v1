@@ -154,30 +154,42 @@ class AdminAdminUsecase:
             raise AdminNotFoundError()
 
         current_admin = self.admin_repository.get_by_id(current_admin_id)
+        self._validate_admin_update_permission(current_admin, admin, current_admin_id, target_admin_id)
+        self._apply_admin_updates(admin, input_dto, current_admin)
 
-        # 権限チェック（自分自身の編集は許可）
-        if current_admin_id != target_admin_id:
-            if not current_admin.can_manage_admins():
-                raise AdminPermissionDeniedError('管理者を編集する')
-            # super_adminの編集はsuper_adminのみ
-            if (
-                admin.role == AdminRole.SUPER_ADMIN
-                and current_admin.role != AdminRole.SUPER_ADMIN
-            ):
-                raise AdminPermissionDeniedError('super_adminを編集する')
+        updated = self.admin_repository.update(admin)
+        self._log_admin_action(current_admin_id, 'update', target_admin_id, ip_address)
 
-        # メールアドレス重複チェック
+        logger.info(f'Admin updated: {updated.email} by admin_id={current_admin_id}')
+
+        return UpdateAdminOutputDTO(
+            admin=self._to_admin_dto(updated),
+            message='管理者情報を更新しました',
+        )
+
+    def _validate_admin_update_permission(
+        self, current_admin: Admin, target_admin: Admin, current_id: int, target_id: int
+    ) -> None:
+        """管理者更新の権限を検証"""
+        if current_id == target_id:
+            return  # 自分自身の編集は許可
+        if not current_admin.can_manage_admins():
+            raise AdminPermissionDeniedError('管理者を編集する')
+        if target_admin.role == AdminRole.SUPER_ADMIN and current_admin.role != AdminRole.SUPER_ADMIN:
+            raise AdminPermissionDeniedError('super_adminを編集する')
+
+    def _apply_admin_updates(
+        self, admin: Admin, input_dto: UpdateAdminInputDTO, current_admin: Admin
+    ) -> None:
+        """管理者エンティティにDTOの値を適用"""
         if input_dto.email is not None:
             existing = self.admin_repository.get_by_email(input_dto.email)
             if existing and existing.id != admin.id:
                 raise AdminEmailAlreadyExistsError()
             admin.email = input_dto.email
-
-        # 更新
         if input_dto.name is not None:
             admin.name = input_dto.name
         if input_dto.role is not None:
-            # roleの変更は権限チェック
             if not current_admin.can_create_role(input_dto.role):
                 raise AdminPermissionDeniedError(f'{input_dto.role.value}に変更する')
             admin.role = input_dto.role
@@ -186,24 +198,18 @@ class AdminAdminUsecase:
         if input_dto.password is not None:
             admin.password_hash = self.security_service.hash_password(input_dto.password)
 
-        updated = self.admin_repository.update(admin)
-
-        # 操作ログ記録
+    def _log_admin_action(
+        self, admin_id: int, action: str, target_id: int, ip_address: str | None
+    ) -> None:
+        """管理者操作ログを記録"""
         self.admin_log_repository.create(
             AdminLog(
-                admin_id=current_admin_id,
-                action='update',
+                admin_id=admin_id,
+                action=action,
                 target_type='admin',
-                target_id=str(target_admin_id),
+                target_id=str(target_id),
                 ip_address=ip_address,
             )
-        )
-
-        logger.info(f'Admin updated: {updated.email} by admin_id={current_admin_id}')
-
-        return UpdateAdminOutputDTO(
-            admin=self._to_admin_dto(updated),
-            message='管理者情報を更新しました',
         )
 
     def delete_admin(

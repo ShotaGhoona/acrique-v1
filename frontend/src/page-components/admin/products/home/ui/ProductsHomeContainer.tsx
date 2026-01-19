@@ -24,7 +24,7 @@ import { ProductsTable } from '../ui-block/table-view/ui/ProductsTable';
 import { ProductsTableSkeleton } from '../ui-block/table-view/ui/skeleton/ProductsTableSkeleton';
 import { ProductsGallery } from '../ui-block/gallery-view/ui/ProductsGallery';
 import { ProductsGallerySkeleton } from '../ui-block/gallery-view/ui/skeleton/ProductsGallerySkeleton';
-import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+import { AdminPagination } from '@/shared/ui/components/pagination/AdminPagination';
 
 type ViewMode = 'table' | 'gallery';
 const PAGE_SIZE = 20;

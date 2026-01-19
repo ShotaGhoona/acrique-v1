@@ -28,7 +28,7 @@ import type {
   AdminRole,
 } from '@/entities/admin-domain/admin/model/types';
 import { AdminFormDialog } from './AdminFormDialog';
-import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+import { AdminPagination } from '@/shared/ui/components/pagination/AdminPagination';
 
 const adminRoleLabels: Record<AdminRole, string> = {
   super_admin: 'スーパー管理者',

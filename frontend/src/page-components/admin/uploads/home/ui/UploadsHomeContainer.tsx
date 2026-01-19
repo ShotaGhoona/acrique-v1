@@ -35,7 +35,7 @@ import {
   UPLOAD_STATUS_LABELS,
   UPLOAD_STATUS_COLORS,
 } from '@/shared/domain/upload/model/types';
-import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+import { AdminPagination } from '@/shared/ui/components/pagination/AdminPagination';
 
 function formatFileSize(bytes: number | null): string {
   if (bytes === null) return '-';

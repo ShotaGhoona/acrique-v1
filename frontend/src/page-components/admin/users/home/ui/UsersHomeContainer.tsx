@@ -23,7 +23,7 @@ import {
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
 import { useAdminUsers } from '@/features/admin-domain/admin-user/get-users/lib/use-admin-users';
-import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+import { AdminPagination } from '@/shared/ui/components/pagination/AdminPagination';
 
 const PAGE_SIZE = 20;
 

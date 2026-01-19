@@ -29,7 +29,7 @@ import {
   ADMIN_ORDER_STATUS_LABELS,
   ADMIN_ORDER_STATUS_VARIANTS,
 } from '@/shared/domain/order/model/types';
-import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+import { AdminPagination } from '@/shared/ui/components/pagination/AdminPagination';
 
 const PAGE_SIZE = 20;
 

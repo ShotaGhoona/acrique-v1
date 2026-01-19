@@ -36,7 +36,7 @@ import type {
   LogAction,
   LogTargetType,
 } from '@/entities/admin-domain/admin-log/model/types';
-import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+import { AdminPagination } from '@/shared/ui/components/pagination/AdminPagination';
 
 const logActionLabels: Record<LogAction, string> = {
   login: 'ログイン',

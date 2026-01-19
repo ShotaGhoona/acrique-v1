@@ -27,7 +27,7 @@ import { ProductsGallerySkeleton } from '../ui-block/gallery-view/ui/skeleton/Pr
 import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
 
 type ViewMode = 'table' | 'gallery';
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 export function ProductsHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');

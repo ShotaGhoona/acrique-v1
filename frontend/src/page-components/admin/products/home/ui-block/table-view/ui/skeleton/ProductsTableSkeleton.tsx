@@ -13,6 +13,7 @@ export function ProductsTableSkeleton() {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className='w-12'></TableHead>
           <TableHead>商品ID</TableHead>
           <TableHead>商品名</TableHead>
           <TableHead>カテゴリ</TableHead>
@@ -24,6 +25,9 @@ export function ProductsTableSkeleton() {
       <TableBody>
         {[...Array(5)].map((_, i) => (
           <TableRow key={i}>
+            <TableCell>
+              <Skeleton className='h-8 w-8 rounded' />
+            </TableCell>
             <TableCell>
               <Skeleton className='h-4 w-8' />
             </TableCell>

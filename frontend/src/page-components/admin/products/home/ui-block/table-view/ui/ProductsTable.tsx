@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Eye, Edit, Trash2, MoreHorizontal, Star } from 'lucide-react';
+import { Eye, Pencil, Trash2, MoreHorizontal, Star } from 'lucide-react';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import {
@@ -42,6 +42,7 @@ export function ProductsTable({
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className='w-12'></TableHead>
           <TableHead>商品ID</TableHead>
           <TableHead>商品名</TableHead>
           <TableHead>カテゴリ</TableHead>
@@ -53,6 +54,13 @@ export function ProductsTable({
       <TableBody>
         {products.map((product) => (
           <TableRow key={product.id}>
+            <TableCell>
+              <Link href={`/admin/products/${product.id}`}>
+                <Button variant='ghost' size='icon' className='h-8 w-8'>
+                  <Pencil className='h-4 w-4' />
+                </Button>
+              </Link>
+            </TableCell>
             <TableCell className='font-mono text-sm'>{product.id}</TableCell>
             <TableCell>
               <div>
@@ -87,12 +95,6 @@ export function ProductsTable({
                     <Link href={`/${product.category_id}/${product.id}`}>
                       <Eye className='mr-2 h-4 w-4' />
                       プレビュー
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href={`/admin/products/${product.id}`}>
-                      <Edit className='mr-2 h-4 w-4' />
-                      編集
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

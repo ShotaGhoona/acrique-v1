@@ -3,12 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Eye, Download, MoreHorizontal } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
@@ -83,141 +77,144 @@ export function UploadsHomeContainer() {
 
   return (
     <AdminLayout title='入稿データ管理'>
-      <Card>
-        <CardHeader>
-          <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-            <CardTitle>入稿データ一覧</CardTitle>
-            <div className='flex flex-col gap-2 sm:flex-row'>
-              <div className='relative'>
-                <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-                <Input
-                  placeholder='ID、注文ID、ファイル名で検索...'
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className='w-full pl-9 sm:w-64'
-                />
-              </div>
-              <Select
-                value={statusFilter}
-                onValueChange={(value) =>
-                  setStatusFilter(value as UploadStatus | 'all')
-                }
-              >
-                <SelectTrigger className='w-full sm:w-40'>
-                  <Filter className='mr-2 h-4 w-4' />
-                  <SelectValue placeholder='ステータス' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>すべて</SelectItem>
-                  {Object.entries(UPLOAD_STATUS_LABELS).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+      {/* ヘッダー */}
+      <div className='shrink-0'>
+        <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+        <h2 className='shrink-0 text-lg font-semibold'>入稿データ一覧</h2>
+        <div className='flex flex-col gap-2 sm:flex-row'>
+          <div className='relative'>
+            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+            <Input
+              placeholder='ID、注文ID、ファイル名で検索...'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className='w-full pl-9 sm:w-64'
+            />
           </div>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className='py-12 text-center text-muted-foreground'>
-              読み込み中...
-            </div>
-          ) : error ? (
-            <div className='py-12 text-center text-destructive'>
-              データの取得に失敗しました
-            </div>
-          ) : (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>入稿ID</TableHead>
-                    <TableHead>注文ID</TableHead>
-                    <TableHead>ファイル名</TableHead>
-                    <TableHead>ファイルサイズ</TableHead>
-                    <TableHead>ステータス</TableHead>
-                    <TableHead>アップロード日時</TableHead>
-                    <TableHead className='w-12'></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUploads.map((upload) => (
-                    <TableRow key={upload.id}>
-                      <TableCell className='font-medium'>{upload.id}</TableCell>
-                      <TableCell>
-                        {upload.order_id ? (
-                          <Link
-                            href={`/admin/orders/${upload.order_id}`}
-                            className='text-primary hover:underline'
-                          >
-                            {upload.order_id}
-                          </Link>
-                        ) : (
-                          '-'
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <div className='font-medium'>{upload.file_name}</div>
-                          {upload.file_type && (
-                            <div className='text-xs text-muted-foreground'>
-                              {upload.file_type}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>{formatFileSize(upload.file_size)}</TableCell>
-                      <TableCell>
-                        <Badge variant={UPLOAD_STATUS_COLORS[upload.status]}>
-                          {UPLOAD_STATUS_LABELS[upload.status]}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className='text-muted-foreground'>
-                        {formatDate(upload.created_at)}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant='ghost' size='icon'>
-                              <MoreHorizontal className='h-4 w-4' />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align='end'>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/admin/uploads/${upload.id}`}>
-                                <Eye className='mr-2 h-4 w-4' />
-                                詳細・確認
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <a
-                                href={upload.file_url}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                              >
-                                <Download className='mr-2 h-4 w-4' />
-                                ダウンロード
-                              </a>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          <Select
+            value={statusFilter}
+            onValueChange={(value) =>
+              setStatusFilter(value as UploadStatus | 'all')
+            }
+          >
+            <SelectTrigger className='w-full sm:w-40'>
+              <Filter className='mr-2 h-4 w-4' />
+              <SelectValue placeholder='ステータス' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='all'>すべて</SelectItem>
+              {Object.entries(UPLOAD_STATUS_LABELS).map(([key, label]) => (
+                <SelectItem key={key} value={key}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      </div>
 
-              {filteredUploads.length === 0 && (
-                <div className='py-12 text-center text-muted-foreground'>
-                  該当する入稿データがありません
-                </div>
-              )}
-            </>
-          )}
-        </CardContent>
-      </Card>
+      {/* コンテンツ */}
+      <div className='mt-6 min-h-0 flex-1 overflow-auto'>
+        {isLoading ? (
+          <div className='py-12 text-center text-muted-foreground'>
+            読み込み中...
+          </div>
+        ) : error ? (
+          <div className='py-12 text-center text-destructive'>
+            データの取得に失敗しました
+          </div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className='w-12'></TableHead>
+                  <TableHead>入稿ID</TableHead>
+                  <TableHead>注文ID</TableHead>
+                  <TableHead>ファイル名</TableHead>
+                  <TableHead>ファイルサイズ</TableHead>
+                  <TableHead>ステータス</TableHead>
+                  <TableHead>アップロード日時</TableHead>
+                  <TableHead className='w-12'></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredUploads.map((upload) => (
+                  <TableRow key={upload.id}>
+                    <TableCell>
+                      <Link href={`/admin/uploads/${upload.id}`}>
+                        <Button variant='ghost' size='icon' className='h-8 w-8'>
+                          <Eye className='h-4 w-4' />
+                        </Button>
+                      </Link>
+                    </TableCell>
+                    <TableCell className='font-medium'>{upload.id}</TableCell>
+                    <TableCell>
+                      {upload.order_id ? (
+                        <Link
+                          href={`/admin/orders/${upload.order_id}`}
+                          className='text-primary hover:underline'
+                        >
+                          {upload.order_id}
+                        </Link>
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <div className='font-medium'>{upload.file_name}</div>
+                        {upload.file_type && (
+                          <div className='text-xs text-muted-foreground'>
+                            {upload.file_type}
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>{formatFileSize(upload.file_size)}</TableCell>
+                    <TableCell>
+                      <Badge variant={UPLOAD_STATUS_COLORS[upload.status]}>
+                        {UPLOAD_STATUS_LABELS[upload.status]}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className='text-muted-foreground'>
+                      {formatDate(upload.created_at)}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant='ghost' size='icon'>
+                            <MoreHorizontal className='h-4 w-4' />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align='end'>
+                          <DropdownMenuItem asChild>
+                            <a
+                              href={upload.file_url}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
+                              <Download className='mr-2 h-4 w-4' />
+                              ダウンロード
+                            </a>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            {filteredUploads.length === 0 && (
+              <div className='py-12 text-center text-muted-foreground'>
+                該当する入稿データがありません
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </AdminLayout>
   );
 }

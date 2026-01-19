@@ -3,12 +3,6 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Plus, LayoutGrid, List } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/shadcn/ui/card';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import {
@@ -38,7 +32,7 @@ export function ProductsHomeContainer() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryId | 'all'>(
     'all',
   );
-  const [viewMode, setViewMode] = useState<ViewMode>('table');
+  const [viewMode, setViewMode] = useState<ViewMode>('gallery');
 
   const { data, isLoading, error } = useProducts();
   const deleteProductMutation = useDeleteProduct();
@@ -76,98 +70,99 @@ export function ProductsHomeContainer() {
 
   return (
     <AdminLayout title='商品管理'>
-      <Card>
-        <CardHeader>
-          <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
-            <CardTitle className='shrink-0'>商品一覧</CardTitle>
-            <div className='flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
-              {/* 検索 */}
-              <div className='relative w-full sm:w-64'>
-                <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-                <Input
-                  placeholder='商品名で検索...'
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className='pl-9'
-                />
-              </div>
-              {/* カテゴリフィルター */}
-              <Select
-                value={categoryFilter}
-                onValueChange={(value) =>
-                  setCategoryFilter(value as CategoryId | 'all')
-                }
+      {/* ヘッダー */}
+      <div className='shrink-0'>
+        <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
+          <h2 className='shrink-0 text-lg font-semibold'>商品一覧</h2>
+          <div className='flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
+            {/* 検索 */}
+            <div className='relative w-full sm:w-64'>
+              <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+              <Input
+                placeholder='商品名で検索...'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className='pl-9'
+              />
+            </div>
+            {/* カテゴリフィルター */}
+            <Select
+              value={categoryFilter}
+              onValueChange={(value) =>
+                setCategoryFilter(value as CategoryId | 'all')
+              }
+            >
+              <SelectTrigger className='w-full sm:w-36'>
+                <Filter className='mr-2 h-4 w-4' />
+                <SelectValue placeholder='カテゴリ' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>すべて</SelectItem>
+                {categoryIds.map((id) => (
+                  <SelectItem key={id} value={id}>
+                    {categories[id].name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {/* ビュー切り替え */}
+            <div className='flex shrink-0 rounded-md border'>
+              <Button
+                variant={viewMode === 'table' ? 'secondary' : 'ghost'}
+                size='icon'
+                className='h-9 w-9 rounded-r-none'
+                onClick={() => setViewMode('table')}
               >
-                <SelectTrigger className='w-full sm:w-36'>
-                  <Filter className='mr-2 h-4 w-4' />
-                  <SelectValue placeholder='カテゴリ' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>すべて</SelectItem>
-                  {categoryIds.map((id) => (
-                    <SelectItem key={id} value={id}>
-                      {categories[id].name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {/* ビュー切り替え */}
-              <div className='flex shrink-0 rounded-md border'>
-                <Button
-                  variant={viewMode === 'table' ? 'secondary' : 'ghost'}
-                  size='icon'
-                  className='h-9 w-9 rounded-r-none'
-                  onClick={() => setViewMode('table')}
-                >
-                  <List className='h-4 w-4' />
-                </Button>
-                <Button
-                  variant={viewMode === 'gallery' ? 'secondary' : 'ghost'}
-                  size='icon'
-                  className='h-9 w-9 rounded-l-none border-l'
-                  onClick={() => setViewMode('gallery')}
-                >
-                  <LayoutGrid className='h-4 w-4' />
-                </Button>
-              </div>
-              {/* 商品追加 */}
-              <Link href='/admin/products/new' className='shrink-0'>
-                <Button>
-                  <Plus className='mr-2 h-4 w-4' />
-                  商品を追加
-                </Button>
-              </Link>
+                <List className='h-4 w-4' />
+              </Button>
+              <Button
+                variant={viewMode === 'gallery' ? 'secondary' : 'ghost'}
+                size='icon'
+                className='h-9 w-9 rounded-l-none border-l'
+                onClick={() => setViewMode('gallery')}
+              >
+                <LayoutGrid className='h-4 w-4' />
+              </Button>
             </div>
+            {/* 商品追加 */}
+            <Link href='/admin/products/new' className='shrink-0'>
+              <Button>
+                <Plus className='mr-2 h-4 w-4' />
+                商品を追加
+              </Button>
+            </Link>
           </div>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            viewMode === 'table' ? (
-              <ProductsTableSkeleton />
-            ) : (
-              <ProductsGallerySkeleton />
-            )
-          ) : viewMode === 'table' ? (
-            <ProductsTable
-              products={filteredProducts}
-              onDelete={handleDelete}
-              isDeleting={deleteProductMutation.isPending}
-            />
-          ) : (
-            <ProductsGallery
-              products={filteredProducts}
-              onDelete={handleDelete}
-              isDeleting={deleteProductMutation.isPending}
-            />
-          )}
+        </div>
+      </div>
 
-          {!isLoading && filteredProducts.length === 0 && (
-            <div className='py-12 text-center text-muted-foreground'>
-              該当する商品がありません
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* コンテンツ */}
+      <div className='mt-6 min-h-0 flex-1 overflow-auto'>
+        {isLoading ? (
+          viewMode === 'table' ? (
+            <ProductsTableSkeleton />
+          ) : (
+            <ProductsGallerySkeleton />
+          )
+        ) : viewMode === 'table' ? (
+          <ProductsTable
+            products={filteredProducts}
+            onDelete={handleDelete}
+            isDeleting={deleteProductMutation.isPending}
+          />
+        ) : (
+          <ProductsGallery
+            products={filteredProducts}
+            onDelete={handleDelete}
+            isDeleting={deleteProductMutation.isPending}
+          />
+        )}
+
+        {!isLoading && filteredProducts.length === 0 && (
+          <div className='py-12 text-center text-muted-foreground'>
+            該当する商品がありません
+          </div>
+        )}
+      </div>
     </AdminLayout>
   );
 }

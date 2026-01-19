@@ -1,4 +1,8 @@
-export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml'];
+export const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/svg+xml',
+];
 export const ACCEPTED_DOCUMENT_TYPES = [
   'application/pdf',
   'application/postscript',
@@ -24,7 +28,8 @@ export function validateFile(
   const isValidType = acceptedTypes.some(
     (type) =>
       file.type === type ||
-      (type.startsWith('.') && file.name.toLowerCase().endsWith(type.toLowerCase()))
+      (type.startsWith('.') &&
+        file.name.toLowerCase().endsWith(type.toLowerCase())),
   );
   if (!isValidType) {
     return '対応していないファイル形式です';

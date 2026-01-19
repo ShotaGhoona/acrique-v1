@@ -1,5 +1,5 @@
+import type { ProductionType } from '@/shared/domain/product/model/types';
 import type { UploadRequirements } from '@/shared/domain/upload/model/types';
-import type { ProductionType } from '@/entities/catalog-domain/product/model/types';
 
 // === 商品画像 ===
 export interface AdminProductImage {

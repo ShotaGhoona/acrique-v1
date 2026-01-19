@@ -39,8 +39,9 @@ export function ProductNewContainer() {
   const categoryIds = getCategoryIds();
   const createProductMutation = useCreateProduct();
 
-  const [formData, setFormData] =
-    useState<CreateProductFormData>(createProductFormDataInitial);
+  const [formData, setFormData] = useState<CreateProductFormData>(
+    createProductFormDataInitial,
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,9 +240,9 @@ export function ProductNewContainer() {
                   <Label>製作タイプ</Label>
                   <Select
                     value={formData.production_type}
-                    onValueChange={(value: 'standard' | 'template' | 'custom') =>
-                      setFormData({ ...formData, production_type: value })
-                    }
+                    onValueChange={(
+                      value: 'standard' | 'template' | 'custom',
+                    ) => setFormData({ ...formData, production_type: value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder='選択してください' />
@@ -265,7 +266,11 @@ export function ProductNewContainer() {
                     <Textarea
                       value={
                         formData.upload_requirements
-                          ? JSON.stringify(formData.upload_requirements, null, 2)
+                          ? JSON.stringify(
+                              formData.upload_requirements,
+                              null,
+                              2,
+                            )
                           : ''
                       }
                       onChange={(e) => {

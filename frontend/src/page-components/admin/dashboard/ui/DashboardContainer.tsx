@@ -175,7 +175,9 @@ export function DashboardContainer() {
                       </TableCell>
                       <TableCell>{formatCurrency(order.total)}</TableCell>
                       <TableCell>
-                        <Badge variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}>
+                        <Badge
+                          variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}
+                        >
                           {ADMIN_ORDER_STATUS_LABELS[order.status]}
                         </Badge>
                       </TableCell>

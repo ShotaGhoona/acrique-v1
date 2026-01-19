@@ -181,9 +181,7 @@ export function BasicInfoTab({
                 <Upload className='h-5 w-5 text-muted-foreground' />
                 <CardTitle className='text-base'>製作設定</CardTitle>
               </div>
-              <CardDescription>
-                製作タイプと入稿要件の設定
-              </CardDescription>
+              <CardDescription>製作タイプと入稿要件の設定</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
@@ -231,7 +229,11 @@ export function BasicInfoTab({
                     <Textarea
                       value={
                         formData.upload_requirements
-                          ? JSON.stringify(formData.upload_requirements, null, 2)
+                          ? JSON.stringify(
+                              formData.upload_requirements,
+                              null,
+                              2,
+                            )
                           : ''
                       }
                       onChange={(e) => {

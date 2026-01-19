@@ -1,8 +1,9 @@
 import type { CategoryId } from '@/shared/domain/category/model/types';
+import type { ProductionType } from '@/shared/domain/product/model/types';
 import type { UploadRequirements } from '@/shared/domain/upload/model/types';
 
-// === 製作タイプ ===
-export type ProductionType = 'standard' | 'template' | 'custom';
+// re-export for convenience
+export type { ProductionType };
 
 // === 商品画像 ===
 export interface ProductImage {

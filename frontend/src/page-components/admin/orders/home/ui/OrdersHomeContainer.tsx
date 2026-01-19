@@ -87,11 +87,13 @@ export function OrdersHomeContainer() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='all'>すべて</SelectItem>
-                  {Object.entries(ADMIN_ORDER_STATUS_LABELS).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                  {Object.entries(ADMIN_ORDER_STATUS_LABELS).map(
+                    ([key, label]) => (
+                      <SelectItem key={key} value={key}>
+                        {label}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -125,7 +127,9 @@ export function OrdersHomeContainer() {
                       </TableCell>
                       <TableCell>{formatCurrency(order.total)}</TableCell>
                       <TableCell>
-                        <Badge variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}>
+                        <Badge
+                          variant={ADMIN_ORDER_STATUS_VARIANTS[order.status]}
+                        >
                           {ADMIN_ORDER_STATUS_LABELS[order.status]}
                         </Badge>
                       </TableCell>

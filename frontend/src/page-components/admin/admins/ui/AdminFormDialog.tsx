@@ -26,7 +26,10 @@ import {
   type UpdateAdminFormData,
   updateAdminFormDataInitial,
 } from '@/features/admin-domain/admin/update-admin/model/types';
-import type { Admin, AdminRole } from '@/entities/admin-domain/admin/model/types';
+import type {
+  Admin,
+  AdminRole,
+} from '@/entities/admin-domain/admin/model/types';
 
 const adminRoleLabels: Record<AdminRole, string> = {
   super_admin: 'スーパー管理者',

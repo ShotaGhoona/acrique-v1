@@ -23,33 +23,43 @@ import {
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
 import { useAdminUsers } from '@/features/admin-domain/admin-user/get-users/lib/use-admin-users';
+import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+
+const PAGE_SIZE = 20;
 
 export function UsersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [offset, setOffset] = useState(0);
 
   const { data, isLoading } = useAdminUsers({
     search: searchQuery || undefined,
-    limit: 50,
+    limit: PAGE_SIZE,
+    offset,
   });
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setOffset(0);
+  };
 
   return (
     <AdminLayout title='顧客管理'>
       {/* ヘッダー */}
       <div className='shrink-0'>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-        <h2 className='shrink-0 text-lg font-semibold'>顧客一覧</h2>
-        <div className='flex flex-col gap-2 sm:flex-row'>
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-            <Input
-              placeholder='名前、メールで検索...'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-9 sm:w-64'
-            />
+          <h2 className='shrink-0 text-lg font-semibold'>顧客一覧</h2>
+          <div className='flex flex-col gap-2 sm:flex-row'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+              <Input
+                placeholder='名前、メールで検索...'
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className='w-full pl-9 sm:w-64'
+              />
+            </div>
           </div>
         </div>
-      </div>
       </div>
 
       {/* コンテンツ */}
@@ -141,15 +151,21 @@ export function UsersHomeContainer() {
                 該当する顧客がいません
               </div>
             )}
-
-            {data?.customers && data.total > data.customers.length && (
-              <div className='mt-4 text-center text-sm text-muted-foreground'>
-                {data.total}件中 {data.customers.length}件を表示
-              </div>
-            )}
           </>
         )}
       </div>
+
+      {/* ページネーション */}
+      {data && data.total > 0 && (
+        <div className='shrink-0 border-t pt-4'>
+          <AdminPagination
+            total={data.total}
+            limit={data.limit}
+            offset={data.offset}
+            onPageChange={setOffset}
+          />
+        </div>
+      )}
     </AdminLayout>
   );
 }

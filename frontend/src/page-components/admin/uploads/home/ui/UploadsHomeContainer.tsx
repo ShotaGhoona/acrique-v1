@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Eye, Download, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
+import { Skeleton } from '@/shared/ui/shadcn/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ import {
   UPLOAD_STATUS_LABELS,
   UPLOAD_STATUS_COLORS,
 } from '@/shared/domain/upload/model/types';
+import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
 
 function formatFileSize(bytes: number | null): string {
   if (bytes === null) return '-';
@@ -54,71 +56,84 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
+const PAGE_SIZE = 20;
+
 export function UploadsHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<UploadStatus | 'all'>('all');
+  const [offset, setOffset] = useState(0);
 
-  const { data, isLoading, error } = useAdminUploads(
-    statusFilter === 'all' ? undefined : { status: statusFilter },
-  );
+  const { data, isLoading, error } = useAdminUploads({
+    status: statusFilter !== 'all' ? statusFilter : undefined,
+    limit: PAGE_SIZE,
+    offset,
+  });
 
   const uploads = data?.uploads ?? [];
 
+  const handleStatusChange = (value: UploadStatus | 'all') => {
+    setStatusFilter(value);
+    setOffset(0);
+  };
+
   // クライアント側でのフィルタリング（検索クエリ）
-  const filteredUploads = uploads.filter((upload) => {
-    if (!searchQuery) return true;
+  const filteredUploads = useMemo(() => {
+    if (!searchQuery) return uploads;
     const query = searchQuery.toLowerCase();
-    return (
-      upload.id.toString().includes(query) ||
-      (upload.order_id?.toString().includes(query) ?? false) ||
-      upload.file_name.toLowerCase().includes(query)
+    return uploads.filter(
+      (upload) =>
+        upload.id.toString().includes(query) ||
+        (upload.order_id?.toString().includes(query) ?? false) ||
+        upload.file_name.toLowerCase().includes(query),
     );
-  });
+  }, [uploads, searchQuery]);
 
   return (
     <AdminLayout title='入稿データ管理'>
       {/* ヘッダー */}
       <div className='shrink-0'>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-        <h2 className='shrink-0 text-lg font-semibold'>入稿データ一覧</h2>
-        <div className='flex flex-col gap-2 sm:flex-row'>
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-            <Input
-              placeholder='ID、注文ID、ファイル名で検索...'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-9 sm:w-64'
-            />
+          <h2 className='shrink-0 text-lg font-semibold'>入稿データ一覧</h2>
+          <div className='flex flex-col gap-2 sm:flex-row'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+              <Input
+                placeholder='ID、注文ID、ファイル名で検索...'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className='w-full pl-9 sm:w-64'
+              />
+            </div>
+            <Select
+              value={statusFilter}
+              onValueChange={(value) =>
+                handleStatusChange(value as UploadStatus | 'all')
+              }
+            >
+              <SelectTrigger className='w-full sm:w-40'>
+                <Filter className='mr-2 h-4 w-4' />
+                <SelectValue placeholder='ステータス' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>すべて</SelectItem>
+                {Object.entries(UPLOAD_STATUS_LABELS).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Select
-            value={statusFilter}
-            onValueChange={(value) =>
-              setStatusFilter(value as UploadStatus | 'all')
-            }
-          >
-            <SelectTrigger className='w-full sm:w-40'>
-              <Filter className='mr-2 h-4 w-4' />
-              <SelectValue placeholder='ステータス' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='all'>すべて</SelectItem>
-              {Object.entries(UPLOAD_STATUS_LABELS).map(([key, label]) => (
-                <SelectItem key={key} value={key}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
-      </div>
       </div>
 
       {/* コンテンツ */}
       <div className='mt-6 min-h-0 flex-1 overflow-auto'>
         {isLoading ? (
-          <div className='py-12 text-center text-muted-foreground'>
-            読み込み中...
+          <div className='space-y-3'>
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className='h-16 w-full' />
+            ))}
           </div>
         ) : error ? (
           <div className='py-12 text-center text-destructive'>
@@ -215,6 +230,18 @@ export function UploadsHomeContainer() {
           </>
         )}
       </div>
+
+      {/* ページネーション */}
+      {data && data.total > 0 && (
+        <div className='shrink-0 border-t pt-4'>
+          <AdminPagination
+            total={data.total}
+            limit={data.limit}
+            offset={data.offset}
+            onPageChange={setOffset}
+          />
+        </div>
+      )}
     </AdminLayout>
   );
 }

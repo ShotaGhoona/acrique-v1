@@ -18,10 +18,11 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { categories } from '@/shared/domain/category/data/categories';
-import type { ProductListItem } from '@/entities/catalog-domain/product/model/types';
+import type { AdminProduct } from '@/entities/admin-domain/admin-product/model/types';
+import type { CategoryId } from '@/shared/domain/category/model/types';
 
 interface ProductsTableProps {
-  products: ProductListItem[];
+  products: AdminProduct[];
   onDelete: (productId: string, productName: string) => void;
   isDeleting: boolean;
 }
@@ -64,7 +65,7 @@ export function ProductsTable({
             <TableCell className='font-mono text-sm'>{product.id}</TableCell>
             <TableCell>
               <div>
-                <div className='font-medium'>{product.name_ja}</div>
+                <div className='font-medium'>{product.name_ja ?? product.name}</div>
                 <div className='text-xs text-muted-foreground'>
                   {product.name}
                 </div>
@@ -72,7 +73,7 @@ export function ProductsTable({
             </TableCell>
             <TableCell>
               <Badge variant='outline'>
-                {categories[product.category_id]?.name ?? product.category_id}
+                {categories[product.category_id as CategoryId]?.name ?? product.category_id}
               </Badge>
             </TableCell>
             <TableCell className='text-right'>
@@ -100,7 +101,7 @@ export function ProductsTable({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className='text-destructive'
-                    onClick={() => onDelete(product.id, product.name_ja)}
+                    onClick={() => onDelete(product.id, product.name_ja ?? product.name)}
                     disabled={isDeleting}
                   >
                     <Trash2 className='mr-2 h-4 w-4' />

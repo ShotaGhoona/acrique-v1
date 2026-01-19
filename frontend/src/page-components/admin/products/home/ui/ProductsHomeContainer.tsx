@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Search, Filter, Plus, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/shared/ui/shadcn/ui/select';
 import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
-import { useProducts } from '@/features/catalog-domain/product/get-products/lib/use-products';
+import { useAdminProducts } from '@/features/admin-domain/admin-product/get-products/lib/use-admin-products';
 import { useDeleteProduct } from '@/features/admin-domain/admin-product/delete-product/lib/use-delete-product';
 import {
   categories,
@@ -24,8 +24,10 @@ import { ProductsTable } from '../ui-block/table-view/ui/ProductsTable';
 import { ProductsTableSkeleton } from '../ui-block/table-view/ui/skeleton/ProductsTableSkeleton';
 import { ProductsGallery } from '../ui-block/gallery-view/ui/ProductsGallery';
 import { ProductsGallerySkeleton } from '../ui-block/gallery-view/ui/skeleton/ProductsGallerySkeleton';
+import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
 
 type ViewMode = 'table' | 'gallery';
+const PAGE_SIZE = 10;
 
 export function ProductsHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,8 +35,14 @@ export function ProductsHomeContainer() {
     'all',
   );
   const [viewMode, setViewMode] = useState<ViewMode>('gallery');
+  const [offset, setOffset] = useState(0);
 
-  const { data, isLoading, error } = useProducts();
+  const { data, isLoading, error } = useAdminProducts({
+    search: searchQuery || undefined,
+    category_id: categoryFilter !== 'all' ? categoryFilter : undefined,
+    limit: PAGE_SIZE,
+    offset,
+  });
   const deleteProductMutation = useDeleteProduct();
   const products = data?.products ?? [];
   const categoryIds = getCategoryIds();
@@ -47,16 +55,15 @@ export function ProductsHomeContainer() {
     }
   };
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.name_ja.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory =
-        categoryFilter === 'all' || product.category_id === categoryFilter;
-      return matchesSearch && matchesCategory;
-    });
-  }, [products, searchQuery, categoryFilter]);
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setOffset(0);
+  };
+
+  const handleCategoryChange = (value: CategoryId | 'all') => {
+    setCategoryFilter(value);
+    setOffset(0);
+  };
 
   if (error) {
     return (
@@ -81,7 +88,7 @@ export function ProductsHomeContainer() {
               <Input
                 placeholder='商品名で検索...'
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className='pl-9'
               />
             </div>
@@ -89,7 +96,7 @@ export function ProductsHomeContainer() {
             <Select
               value={categoryFilter}
               onValueChange={(value) =>
-                setCategoryFilter(value as CategoryId | 'all')
+                handleCategoryChange(value as CategoryId | 'all')
               }
             >
               <SelectTrigger className='w-full sm:w-36'>
@@ -145,24 +152,36 @@ export function ProductsHomeContainer() {
           )
         ) : viewMode === 'table' ? (
           <ProductsTable
-            products={filteredProducts}
+            products={products}
             onDelete={handleDelete}
             isDeleting={deleteProductMutation.isPending}
           />
         ) : (
           <ProductsGallery
-            products={filteredProducts}
+            products={products}
             onDelete={handleDelete}
             isDeleting={deleteProductMutation.isPending}
           />
         )}
 
-        {!isLoading && filteredProducts.length === 0 && (
+        {!isLoading && products.length === 0 && (
           <div className='py-12 text-center text-muted-foreground'>
             該当する商品がありません
           </div>
         )}
       </div>
+
+      {/* ページネーション */}
+      {data && data.total > 0 && (
+        <div className='shrink-0 border-t pt-4'>
+          <AdminPagination
+            total={data.total}
+            limit={data.limit}
+            offset={data.offset}
+            onPageChange={setOffset}
+          />
+        </div>
+      )}
     </AdminLayout>
   );
 }

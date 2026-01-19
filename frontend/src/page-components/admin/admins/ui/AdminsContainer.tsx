@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Plus, Pencil, Trash2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
@@ -18,7 +18,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
@@ -29,6 +28,7 @@ import type {
   AdminRole,
 } from '@/entities/admin-domain/admin/model/types';
 import { AdminFormDialog } from './AdminFormDialog';
+import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
 
 const adminRoleLabels: Record<AdminRole, string> = {
   super_admin: 'スーパー管理者',
@@ -43,11 +43,14 @@ const adminRoleColors: Record<AdminRole, 'default' | 'secondary' | 'outline'> =
     staff: 'outline',
   };
 
+const PAGE_SIZE = 20;
+
 export function AdminsContainer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAdmin, setEditingAdmin] = useState<Admin | null>(null);
-  const { data, isLoading } = useAdmins({ limit: 50 });
+  const [offset, setOffset] = useState(0);
+  const { data, isLoading } = useAdmins({ limit: PAGE_SIZE, offset });
   const deleteAdminMutation = useDeleteAdmin();
 
   const handleOpenCreate = () => {
@@ -60,11 +63,13 @@ export function AdminsContainer() {
     setDialogOpen(true);
   };
 
-  const filteredAdmins = (data?.admins ?? []).filter(
-    (admin) =>
-      admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      admin.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredAdmins = useMemo(() => {
+    return (data?.admins ?? []).filter(
+      (admin) =>
+        admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        admin.email.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [data?.admins, searchQuery]);
 
   const handleDelete = (adminId: number, adminName: string) => {
     if (confirm(`「${adminName}」を削除しますか？`)) {
@@ -77,23 +82,23 @@ export function AdminsContainer() {
       {/* ヘッダー */}
       <div className='shrink-0'>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-        <h2 className='shrink-0 text-lg font-semibold'>管理者一覧</h2>
-        <div className='flex flex-col gap-2 sm:flex-row'>
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-            <Input
-              placeholder='名前、メールで検索...'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-9 sm:w-64'
-            />
+          <h2 className='shrink-0 text-lg font-semibold'>管理者一覧</h2>
+          <div className='flex flex-col gap-2 sm:flex-row'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+              <Input
+                placeholder='名前、メールで検索...'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className='w-full pl-9 sm:w-64'
+              />
+            </div>
+            <Button onClick={handleOpenCreate}>
+              <Plus className='mr-2 h-4 w-4' />
+              管理者を追加
+            </Button>
           </div>
-          <Button onClick={handleOpenCreate}>
-            <Plus className='mr-2 h-4 w-4' />
-            管理者を追加
-          </Button>
         </div>
-      </div>
       </div>
 
       {/* コンテンツ */}
@@ -185,15 +190,21 @@ export function AdminsContainer() {
                 該当する管理者がいません
               </div>
             )}
-
-            {data?.admins && data.total > data.admins.length && (
-              <div className='mt-4 text-center text-sm text-muted-foreground'>
-                {data.total}件中 {data.admins.length}件を表示
-              </div>
-            )}
           </>
         )}
       </div>
+
+      {/* ページネーション */}
+      {data && data.total > 0 && (
+        <div className='shrink-0 border-t pt-4'>
+          <AdminPagination
+            total={data.total}
+            limit={data.limit}
+            offset={data.offset}
+            onPageChange={setOffset}
+          />
+        </div>
+      )}
 
       <AdminFormDialog
         open={dialogOpen}

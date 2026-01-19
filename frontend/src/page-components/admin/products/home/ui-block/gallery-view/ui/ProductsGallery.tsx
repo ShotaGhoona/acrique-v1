@@ -11,10 +11,11 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/ui/dropdown-menu';
 import { categories } from '@/shared/domain/category/data/categories';
-import type { ProductListItem } from '@/entities/catalog-domain/product/model/types';
+import type { AdminProduct } from '@/entities/admin-domain/admin-product/model/types';
+import type { CategoryId } from '@/shared/domain/category/model/types';
 
 interface ProductsGalleryProps {
-  products: ProductListItem[];
+  products: AdminProduct[];
   onDelete: (productId: string, productName: string) => void;
   isDeleting: boolean;
 }
@@ -48,7 +49,7 @@ export function ProductsGallery({
               {product.main_image_url ? (
                 <Image
                   src={product.main_image_url}
-                  alt={product.name_ja}
+                  alt={product.name_ja ?? product.name}
                   fill
                   className='object-cover transition-transform group-hover:scale-105'
                 />
@@ -70,11 +71,11 @@ export function ProductsGallery({
             <div className='p-3'>
               <div className='mb-2'>
                 <Badge variant='outline' className='text-xs'>
-                  {categories[product.category_id]?.name ?? product.category_id}
+                  {categories[product.category_id as CategoryId]?.name ?? product.category_id}
                 </Badge>
               </div>
               <h3 className='line-clamp-1 text-sm font-medium'>
-                {product.name_ja}
+                {product.name_ja ?? product.name}
               </h3>
               <p className='line-clamp-1 text-xs text-muted-foreground'>
                 {product.name}
@@ -108,7 +109,7 @@ export function ProductsGallery({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className='text-destructive'
-                  onClick={() => onDelete(product.id, product.name_ja)}
+                  onClick={() => onDelete(product.id, product.name_ja ?? product.name)}
                   disabled={isDeleting}
                 >
                   <Trash2 className='mr-2 h-4 w-4' />

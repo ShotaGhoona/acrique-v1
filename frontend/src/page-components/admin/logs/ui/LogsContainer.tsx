@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Search,
   Filter,
@@ -36,6 +36,7 @@ import type {
   LogAction,
   LogTargetType,
 } from '@/entities/admin-domain/admin-log/model/types';
+import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
 
 const logActionLabels: Record<LogAction, string> = {
   login: 'ログイン',
@@ -60,87 +61,103 @@ const logActionIcons: Record<LogAction, React.ReactNode> = {
   delete: <Trash2 className='h-4 w-4 text-red-500' />,
 };
 
+const PAGE_SIZE = 20;
+
 export function LogsContainer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [actionFilter, setActionFilter] = useState<LogAction | 'all'>('all');
   const [targetTypeFilter, setTargetTypeFilter] = useState<
     LogTargetType | 'all'
   >('all');
+  const [offset, setOffset] = useState(0);
 
   const { data, isLoading } = useAdminLogs({
     action: actionFilter !== 'all' ? actionFilter : undefined,
     target_type: targetTypeFilter !== 'all' ? targetTypeFilter : undefined,
-    limit: 100,
+    limit: PAGE_SIZE,
+    offset,
   });
 
-  const filteredLogs = (data?.logs ?? []).filter((log) => {
-    const matchesSearch = (log.admin_name ?? '')
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
+  const handleFilterChange = (
+    type: 'action' | 'targetType',
+    value: string,
+  ) => {
+    if (type === 'action') {
+      setActionFilter(value as LogAction | 'all');
+    } else {
+      setTargetTypeFilter(value as LogTargetType | 'all');
+    }
+    setOffset(0);
+  };
+
+  const filteredLogs = useMemo(() => {
+    return (data?.logs ?? []).filter((log) => {
+      const matchesSearch = (log.admin_name ?? '')
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [data?.logs, searchQuery]);
 
   return (
     <AdminLayout title='操作ログ'>
       {/* ヘッダー */}
       <div className='shrink-0'>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-        <h2 className='shrink-0 text-lg font-semibold'>操作ログ</h2>
-        <Button
-          variant='outline'
-          onClick={() => alert('ログをエクスポート（未実装）')}
-        >
-          <Download className='mr-2 h-4 w-4' />
-          エクスポート
-        </Button>
-      </div>
+          <h2 className='shrink-0 text-lg font-semibold'>操作ログ</h2>
+          <Button
+            variant='outline'
+            onClick={() => alert('ログをエクスポート（未実装）')}
+          >
+            <Download className='mr-2 h-4 w-4' />
+            エクスポート
+          </Button>
+        </div>
 
         {/* フィルター */}
         <div className='mt-4 flex flex-col gap-2 sm:flex-row'>
-        <div className='relative flex-1'>
-          <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-          <Input
-            placeholder='管理者名で検索...'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className='pl-9'
-          />
-        </div>
-        <Select
-          value={actionFilter}
-          onValueChange={(value) => setActionFilter(value as LogAction | 'all')}
-        >
-          <SelectTrigger className='w-full sm:w-40'>
-            <Filter className='mr-2 h-4 w-4' />
-            <SelectValue placeholder='アクション' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='all'>すべて</SelectItem>
-            {Object.entries(logActionLabels).map(([key, label]) => (
-              <SelectItem key={key} value={key}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={targetTypeFilter}
-          onValueChange={(value) =>
-            setTargetTypeFilter(value as LogTargetType | 'all')
-          }
-        >
-          <SelectTrigger className='w-full sm:w-40'>
-            <SelectValue placeholder='対象タイプ' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='all'>すべて</SelectItem>
-            {Object.entries(logTargetTypeLabels).map(([key, label]) => (
-              <SelectItem key={key} value={key}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <div className='relative flex-1'>
+            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+            <Input
+              placeholder='管理者名で検索...'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className='pl-9'
+            />
+          </div>
+          <Select
+            value={actionFilter}
+            onValueChange={(value) => handleFilterChange('action', value)}
+          >
+            <SelectTrigger className='w-full sm:w-40'>
+              <Filter className='mr-2 h-4 w-4' />
+              <SelectValue placeholder='アクション' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='all'>すべて</SelectItem>
+              {Object.entries(logActionLabels).map(([key, label]) => (
+                <SelectItem key={key} value={key}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={targetTypeFilter}
+            onValueChange={(value) => handleFilterChange('targetType', value)}
+          >
+            <SelectTrigger className='w-full sm:w-40'>
+              <SelectValue placeholder='対象タイプ' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='all'>すべて</SelectItem>
+              {Object.entries(logTargetTypeLabels).map(([key, label]) => (
+                <SelectItem key={key} value={key}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -208,15 +225,21 @@ export function LogsContainer() {
                 該当するログがありません
               </div>
             )}
-
-            {data?.logs && data.total > data.logs.length && (
-              <div className='mt-4 text-center text-sm text-muted-foreground'>
-                {data.total}件中 {data.logs.length}件を表示
-              </div>
-            )}
           </>
         )}
       </div>
+
+      {/* ページネーション */}
+      {data && data.total > 0 && (
+        <div className='shrink-0 border-t pt-4'>
+          <AdminPagination
+            total={data.total}
+            limit={data.limit}
+            offset={data.offset}
+            onPageChange={setOffset}
+          />
+        </div>
+      )}
     </AdminLayout>
   );
 }

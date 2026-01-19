@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Filter, Eye, MoreHorizontal } from 'lucide-react';
+import { Search, Filter, Eye } from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import { Input } from '@/shared/ui/shadcn/ui/input';
 import { Badge } from '@/shared/ui/shadcn/ui/badge';
@@ -29,16 +29,31 @@ import {
   ADMIN_ORDER_STATUS_LABELS,
   ADMIN_ORDER_STATUS_VARIANTS,
 } from '@/shared/domain/order/model/types';
+import { AdminPagination } from '@/shared/ui/admin/pagination/AdminPagination';
+
+const PAGE_SIZE = 20;
 
 export function OrdersHomeContainer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
+  const [offset, setOffset] = useState(0);
 
   const { data, isLoading } = useAdminOrders({
     search: searchQuery || undefined,
     status: statusFilter !== 'all' ? [statusFilter] : undefined,
-    limit: 50,
+    limit: PAGE_SIZE,
+    offset,
   });
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setOffset(0);
+  };
+
+  const handleStatusChange = (value: OrderStatus | 'all') => {
+    setStatusFilter(value);
+    setOffset(0);
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -52,38 +67,38 @@ export function OrdersHomeContainer() {
       {/* ヘッダー */}
       <div className='shrink-0'>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-        <h2 className='shrink-0 text-lg font-semibold'>注文一覧</h2>
-        <div className='flex flex-col gap-2 sm:flex-row'>
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-            <Input
-              placeholder='注文番号で検索...'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-9 sm:w-64'
-            />
+          <h2 className='shrink-0 text-lg font-semibold'>注文一覧</h2>
+          <div className='flex flex-col gap-2 sm:flex-row'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+              <Input
+                placeholder='注文番号で検索...'
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className='w-full pl-9 sm:w-64'
+              />
+            </div>
+            <Select
+              value={statusFilter}
+              onValueChange={(value) =>
+                handleStatusChange(value as OrderStatus | 'all')
+              }
+            >
+              <SelectTrigger className='w-full sm:w-40'>
+                <Filter className='mr-2 h-4 w-4' />
+                <SelectValue placeholder='ステータス' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>すべて</SelectItem>
+                {Object.entries(ADMIN_ORDER_STATUS_LABELS).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Select
-            value={statusFilter}
-            onValueChange={(value) =>
-              setStatusFilter(value as OrderStatus | 'all')
-            }
-          >
-            <SelectTrigger className='w-full sm:w-40'>
-              <Filter className='mr-2 h-4 w-4' />
-              <SelectValue placeholder='ステータス' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='all'>すべて</SelectItem>
-              {Object.entries(ADMIN_ORDER_STATUS_LABELS).map(([key, label]) => (
-                <SelectItem key={key} value={key}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
-      </div>
       </div>
 
       {/* コンテンツ */}
@@ -152,15 +167,21 @@ export function OrdersHomeContainer() {
                 該当する注文がありません
               </div>
             )}
-
-            {data && data.total > data.orders.length && (
-              <div className='mt-4 text-center text-sm text-muted-foreground'>
-                {data.total}件中 {data.orders.length}件を表示
-              </div>
-            )}
           </>
         )}
       </div>
+
+      {/* ページネーション */}
+      {data && data.total > 0 && (
+        <div className='shrink-0 border-t pt-4'>
+          <AdminPagination
+            total={data.total}
+            limit={data.limit}
+            offset={data.offset}
+            onPageChange={setOffset}
+          />
+        </div>
+      )}
     </AdminLayout>
   );
 }

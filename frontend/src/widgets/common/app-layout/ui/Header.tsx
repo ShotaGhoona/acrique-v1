@@ -255,11 +255,10 @@ export function Header() {
                             setIsOpen(false);
                           }}
                           disabled={isLoggingOut}
-                          className='flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground'
                         >
                           <LogOut className='h-4 w-4' />
                           {isLoggingOut ? 'ログアウト中...' : 'ログアウト'}
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       <Link

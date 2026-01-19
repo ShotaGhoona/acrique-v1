@@ -341,7 +341,9 @@ class CreateProductRequest(BaseModel):
     lead_time_days: int | None = Field(None, ge=0)
     lead_time_note: str | None = Field(None, max_length=200)
     master_id: str | None = Field(None, max_length=100)
-    production_type: str = Field(default='standard', pattern=r'^(standard|template|custom)$')
+    production_type: str = Field(
+        default='standard', pattern=r'^(standard|template|custom)$'
+    )
     upload_requirements: dict | None = None
     is_active: bool = False
     is_featured: bool = False

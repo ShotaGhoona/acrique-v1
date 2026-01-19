@@ -71,11 +71,15 @@ class AdminProductMasterUsecase:
         updated_master = ProductMaster(
             id=existing.id,
             name=input_dto.name if input_dto.name is not None else existing.name,
-            name_en=input_dto.name_en if input_dto.name_en is not None else existing.name_en,
+            name_en=input_dto.name_en
+            if input_dto.name_en is not None
+            else existing.name_en,
             model_category=input_dto.model_category
             if input_dto.model_category is not None
             else existing.model_category,
-            tagline=input_dto.tagline if input_dto.tagline is not None else existing.tagline,
+            tagline=input_dto.tagline
+            if input_dto.tagline is not None
+            else existing.tagline,
             description=input_dto.description
             if input_dto.description is not None
             else existing.description,

@@ -1282,9 +1282,19 @@ PRODUCT_IMAGES = [
 
 PRODUCT_OPTIONS = [
     # QR Cube
-    {'product_id': 'shop-cube-qr', 'name': 'サイズ', 'is_required': True, 'sort_order': 1},
+    {
+        'product_id': 'shop-cube-qr',
+        'name': 'サイズ',
+        'is_required': True,
+        'sort_order': 1,
+    },
     {'product_id': 'shop-cube-qr', 'name': '厚み', 'is_required': True, 'sort_order': 2},
-    {'product_id': 'shop-cube-qr', 'name': '仕上げ', 'is_required': True, 'sort_order': 3},
+    {
+        'product_id': 'shop-cube-qr',
+        'name': '仕上げ',
+        'is_required': True,
+        'sort_order': 3,
+    },
     # Wall Sign
     {
         'product_id': 'office-canvas-wall',
@@ -1898,8 +1908,16 @@ PRODUCT_FAQS = [
 
 PRODUCT_RELATIONS = [
     # QR Cube
-    {'product_id': 'shop-cube-qr', 'related_product_id': 'shop-logo-cutout', 'sort_order': 1},
-    {'product_id': 'shop-cube-qr', 'related_product_id': 'shop-plate-price', 'sort_order': 2},
+    {
+        'product_id': 'shop-cube-qr',
+        'related_product_id': 'shop-logo-cutout',
+        'sort_order': 1,
+    },
+    {
+        'product_id': 'shop-cube-qr',
+        'related_product_id': 'shop-plate-price',
+        'sort_order': 2,
+    },
     {'product_id': 'shop-cube-qr', 'related_product_id': 'shop-a-stand', 'sort_order': 3},
     # Wall Sign
     {

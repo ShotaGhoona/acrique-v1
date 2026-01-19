@@ -56,7 +56,9 @@ class AdminProductMasterListResponse(BaseModel):
     total: int = Field(..., description='総件数')
 
     @classmethod
-    def from_dto(cls, dto: AdminProductMasterListOutputDTO) -> 'AdminProductMasterListResponse':
+    def from_dto(
+        cls, dto: AdminProductMasterListOutputDTO
+    ) -> 'AdminProductMasterListResponse':
         """DTOからレスポンスを生成"""
         return cls(
             masters=[AdminProductMasterResponse.from_dto(m) for m in dto.masters],

@@ -15,7 +15,6 @@ from app.config import get_settings
 from app.infrastructure.db.models.address_model import AddressModel
 from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
-from app.infrastructure.db.models.upload_model import UploadModel
 from app.infrastructure.db.models.product_master_model import ProductMasterModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
@@ -27,6 +26,7 @@ from app.infrastructure.db.models.product_model import (
     ProductRelationModel,
     ProductSpecModel,
 )
+from app.infrastructure.db.models.upload_model import UploadModel
 from app.infrastructure.db.models.user_model import UserModel
 from app.infrastructure.db.seeds.address_seed import ADDRESSES
 from app.infrastructure.db.seeds.cart_seed import CART_ITEMS

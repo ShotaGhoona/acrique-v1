@@ -15,7 +15,9 @@ class ProductMaster(BaseModel):
     id: str = Field(..., description='マスタID (例: qr-cube-base)')
     name: str = Field(..., description='日本語名')
     name_en: str | None = Field(None, description='英語名')
-    model_category: str | None = Field(None, description='モデルカテゴリ (cube/stand/plate等)')
+    model_category: str | None = Field(
+        None, description='モデルカテゴリ (cube/stand/plate等)'
+    )
     tagline: str | None = Field(None, description='キャッチコピー')
     description: str | None = Field(None, description='説明')
     base_lead_time_days: int | None = Field(None, description='基本納期（日数）')

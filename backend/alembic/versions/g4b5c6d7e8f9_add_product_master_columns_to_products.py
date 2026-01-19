@@ -28,11 +28,15 @@ def upgrade() -> None:
     )
     op.add_column(
         'products',
-        sa.Column('production_type', sa.String(20), nullable=False, server_default='standard'),
+        sa.Column(
+            'production_type', sa.String(20), nullable=False, server_default='standard'
+        ),
     )
     op.add_column(
         'products',
-        sa.Column('upload_requirements', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column(
+            'upload_requirements', postgresql.JSONB(astext_type=sa.Text()), nullable=True
+        ),
     )
 
     # 外部キー制約
@@ -59,7 +63,9 @@ def downgrade() -> None:
     # 旧カラム復元
     op.add_column('products', sa.Column('upload_note', sa.Text(), nullable=True))
     op.add_column('products', sa.Column('upload_type', sa.String(50), nullable=True))
-    op.add_column('products', sa.Column('requires_upload', sa.Boolean(), server_default='false'))
+    op.add_column(
+        'products', sa.Column('requires_upload', sa.Boolean(), server_default='false')
+    )
 
     # インデックス削除
     op.drop_index('ix_products_production_type', table_name='products')

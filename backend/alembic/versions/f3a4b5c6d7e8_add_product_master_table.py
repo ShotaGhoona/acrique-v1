@@ -37,7 +37,9 @@ def upgrade() -> None:
     )
 
     # インデックスを作成
-    op.create_index('ix_product_masters_model_category', 'product_masters', ['model_category'])
+    op.create_index(
+        'ix_product_masters_model_category', 'product_masters', ['model_category']
+    )
     op.create_index('ix_product_masters_is_active', 'product_masters', ['is_active'])
 
 

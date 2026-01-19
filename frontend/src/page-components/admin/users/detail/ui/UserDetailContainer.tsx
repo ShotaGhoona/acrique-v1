@@ -191,8 +191,9 @@ export function UserDetailContainer({ userId }: UserDetailContainerProps) {
                         <TableCell>{formatCurrency(order.total)}</TableCell>
                         <TableCell>
                           <Badge variant='outline'>
-                            {ADMIN_ORDER_STATUS_LABELS[order.status as OrderStatus] ||
-                              order.status}
+                            {ADMIN_ORDER_STATUS_LABELS[
+                              order.status as OrderStatus
+                            ] || order.status}
                           </Badge>
                         </TableCell>
                         <TableCell className='text-muted-foreground'>

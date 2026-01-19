@@ -398,6 +398,7 @@ class OrderRepositoryImpl(IOrderRepository):
             unit_price=item_model.unit_price,
             options=item_model.options,
             subtotal=item_model.subtotal,
+            upload_requirements=item_model.upload_requirements,
         )
 
 
@@ -427,6 +428,7 @@ class OrderItemRepositoryImpl(IOrderItemRepository):
             unit_price=order_item.unit_price,
             options=order_item.options,
             subtotal=order_item.subtotal,
+            upload_requirements=order_item.upload_requirements,
         )
         self.session.add(item_model)
         self.session.flush()
@@ -448,4 +450,5 @@ class OrderItemRepositoryImpl(IOrderItemRepository):
             unit_price=item_model.unit_price,
             options=item_model.options,
             subtotal=item_model.subtotal,
+            upload_requirements=item_model.upload_requirements,
         )

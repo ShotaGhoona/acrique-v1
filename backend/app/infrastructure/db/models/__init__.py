@@ -5,6 +5,7 @@ from app.infrastructure.db.models.admin_model import AdminLogModel, AdminModel
 from app.infrastructure.db.models.base import Base
 from app.infrastructure.db.models.cart_item_model import CartItemModel
 from app.infrastructure.db.models.order_model import OrderItemModel, OrderModel
+from app.infrastructure.db.models.product_master_model import ProductMasterModel
 from app.infrastructure.db.models.product_model import (
     ProductFaqModel,
     ProductFeatureModel,
@@ -28,6 +29,7 @@ __all__ = [
     'CartItemModel',
     'OrderModel',
     'OrderItemModel',
+    'ProductMasterModel',
     'ProductModel',
     'ProductImageModel',
     'ProductOptionModel',

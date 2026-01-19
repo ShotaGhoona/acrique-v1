@@ -61,9 +61,9 @@ export function CheckoutContainer() {
       },
       {
         onSuccess: (data) => {
-          // 入稿が必要な商品があるかチェック
+          // 入稿が必要な商品があるかチェック（upload_requirementsがnullでない場合）
           const hasUploadRequired = data.order.items.some(
-            (item) => item.requires_upload,
+            (item) => item.upload_requirements !== null,
           );
 
           if (hasUploadRequired) {
@@ -309,4 +309,3 @@ export function CheckoutContainer() {
     </div>
   );
 }
-

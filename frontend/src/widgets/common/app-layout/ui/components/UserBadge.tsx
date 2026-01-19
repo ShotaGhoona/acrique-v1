@@ -24,11 +24,7 @@ export function UserBadge({ className = '' }: UserBadgeProps) {
   if (!isAuthenticated) {
     return (
       <Link href='/login'>
-        <Button
-          variant='ghost'
-          size='icon'
-          className={`h-9 w-9 ${className}`}
-        >
+        <Button variant='ghost' size='icon' className={`h-9 w-9 ${className}`}>
           <User className='h-4 w-4' />
         </Button>
       </Link>
@@ -38,11 +34,7 @@ export function UserBadge({ className = '' }: UserBadgeProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant='ghost'
-          size='icon'
-          className={`h-9 w-9 ${className}`}
-        >
+        <Button variant='ghost' size='icon' className={`h-9 w-9 ${className}`}>
           <div className='relative'>
             <User className='h-4 w-4' />
             <span className='absolute -bottom-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-accent ring-2 ring-background' />

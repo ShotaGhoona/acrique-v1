@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   ShoppingCart,
   Package,
+  Layers,
   Upload,
   Users,
   Shield,
@@ -24,6 +25,11 @@ export const menuItems = [
     label: '商品管理',
     href: '/admin/products',
     icon: Package,
+  },
+  {
+    label: '商品マスタ',
+    href: '/admin/masters',
+    icon: Layers,
   },
   {
     label: '入稿データ管理',

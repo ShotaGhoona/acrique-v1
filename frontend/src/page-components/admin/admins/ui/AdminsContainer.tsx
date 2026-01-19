@@ -30,7 +30,10 @@ import {
 import { AdminLayout } from '@/widgets/admin/layout/ui/AdminLayout';
 import { useAdmins } from '@/features/admin-domain/admin/get-admins/lib/use-admins';
 import { useDeleteAdmin } from '@/features/admin-domain/admin/delete-admin/lib/use-delete-admin';
-import type { Admin, AdminRole } from '@/entities/admin-domain/admin/model/types';
+import type {
+  Admin,
+  AdminRole,
+} from '@/entities/admin-domain/admin/model/types';
 import { AdminFormDialog } from './AdminFormDialog';
 
 const adminRoleLabels: Record<AdminRole, string> = {

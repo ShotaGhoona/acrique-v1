@@ -61,6 +61,7 @@ class OrderItemModel(Base):
     unit_price = Column(Integer, nullable=False)
     options = Column(JSONB, nullable=True)
     subtotal = Column(Integer, nullable=False)
+    upload_requirements = Column(JSONB, nullable=True)
 
     # リレーション
     order = relationship('OrderModel', back_populates='items')

@@ -20,9 +20,12 @@ class Product(BaseModel):
     price_note: str | None = Field(None, description='価格補足')
     lead_time_days: int | None = Field(None, description='標準納期（日数）')
     lead_time_note: str | None = Field(None, description='納期補足')
-    requires_upload: bool = Field(default=False, description='入稿必須')
-    upload_type: str | None = Field(None, description='入稿タイプ (logo/qr/photo/text)')
-    upload_note: str | None = Field(None, description='入稿時の注意')
+    master_id: str | None = Field(None, description='商品マスタID')
+    production_type: str = Field(
+        default='standard',
+        description='製作タイプ (standard/template/custom)',
+    )
+    upload_requirements: dict | None = Field(None, description='入稿要件（JSONB）')
     is_active: bool = Field(default=True, description='公開状態')
     is_featured: bool = Field(default=False, description='おすすめ商品')
     sort_order: int = Field(default=0, description='並び順')

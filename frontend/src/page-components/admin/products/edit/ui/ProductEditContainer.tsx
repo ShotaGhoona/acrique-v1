@@ -54,9 +54,9 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
     lead_time_days: '',
     lead_time_note: '',
     is_featured: false,
-    requires_upload: false,
-    upload_type: '',
-    upload_note: '',
+    master_id: '',
+    production_type: 'standard',
+    upload_requirements: null,
   });
 
   // 商品データが取得できたらフォームに反映
@@ -74,9 +74,9 @@ export function ProductEditContainer({ productId }: ProductEditContainerProps) {
         lead_time_days: product.lead_time_days?.toString() ?? '',
         lead_time_note: product.lead_time_note ?? '',
         is_featured: product.is_featured,
-        requires_upload: product.requires_upload,
-        upload_type: product.upload_type ?? '',
-        upload_note: product.upload_note ?? '',
+        master_id: product.master_id ?? '',
+        production_type: product.production_type,
+        upload_requirements: product.upload_requirements,
       });
     }
   }, [product]);

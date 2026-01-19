@@ -17,9 +17,15 @@ from app.presentation.api.admin.admin_dashboard_api import (
 from app.presentation.api.admin.admin_log_api import router as admin_log_router
 from app.presentation.api.admin.admin_order_api import router as admin_order_router
 from app.presentation.api.admin.admin_product_api import router as admin_product_router
+from app.presentation.api.admin.admin_product_master_api import (
+    router as admin_product_master_router,
+)
 from app.presentation.api.admin.admin_upload_api import router as admin_upload_router
 from app.presentation.api.admin.admin_user_api import router as admin_user_router
 from app.presentation.api.catalog.product_api import router as product_router
+from app.presentation.api.catalog.product_master_api import (
+    router as product_master_router,
+)
 from app.presentation.api.checkout.cart_api import router as cart_router
 from app.presentation.api.checkout.order_api import router as order_router
 from app.presentation.api.checkout.payment_api import router as payment_router
@@ -77,6 +83,7 @@ app.include_router(auth_router, prefix='/api')
 app.include_router(user_router, prefix='/api')
 app.include_router(address_router, prefix='/api')
 app.include_router(product_router, prefix='/api')
+app.include_router(product_master_router, prefix='/api')
 app.include_router(cart_router, prefix='/api')
 app.include_router(order_router, prefix='/api')
 app.include_router(payment_router, prefix='/api')
@@ -89,6 +96,7 @@ app.include_router(admin_user_router, prefix='/api')
 app.include_router(admin_admin_router, prefix='/api')
 app.include_router(admin_order_router, prefix='/api')
 app.include_router(admin_product_router, prefix='/api')
+app.include_router(admin_product_master_router, prefix='/api')
 app.include_router(admin_upload_router, prefix='/api')
 app.include_router(admin_dashboard_router, prefix='/api')
 app.include_router(admin_log_router, prefix='/api')

@@ -51,6 +51,9 @@ class OrderItem(BaseModel):
     unit_price: int = Field(..., ge=0, description='単価')
     options: dict[str, Any] | None = Field(None, description='選択オプション')
     subtotal: int = Field(..., ge=0, description='小計')
+    upload_requirements: dict[str, Any] | None = Field(
+        None, description='入稿要件（商品からコピー）'
+    )
 
     class Config:
         """Pydantic設定"""

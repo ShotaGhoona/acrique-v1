@@ -5,7 +5,7 @@ CART_ITEMS = [
     # user@example.com のカート
     {
         'user_email': 'user@example.com',
-        'product_id': 'qr-cube',
+        'product_id': 'shop-cube-qr',
         'quantity': 2,
         'options': {
             'size': {
@@ -22,7 +22,7 @@ CART_ITEMS = [
     },
     {
         'user_email': 'user@example.com',
-        'product_id': 'logo-cutout',
+        'product_id': 'shop-logo-cutout',
         'quantity': 1,
         'options': {
             'size': {
@@ -40,7 +40,7 @@ CART_ITEMS = [
     # admin@example.com のカート
     {
         'user_email': 'admin@example.com',
-        'product_id': 'qr-cube',
+        'product_id': 'shop-cube-qr',
         'quantity': 5,
         'options': {
             'size': {

@@ -188,9 +188,9 @@ class ProductDetailResponse(BaseModel):
     price_note: str | None
     lead_time_days: int | None
     lead_time_note: str | None
-    requires_upload: bool
-    upload_type: str | None
-    upload_note: str | None
+    master_id: str | None
+    production_type: str
+    upload_requirements: dict | None
     is_featured: bool
     images: list[ProductImageResponse]
     options: list[ProductOptionResponse]
@@ -216,9 +216,9 @@ class ProductDetailResponse(BaseModel):
             price_note=dto.price_note,
             lead_time_days=dto.lead_time_days,
             lead_time_note=dto.lead_time_note,
-            requires_upload=dto.requires_upload,
-            upload_type=dto.upload_type,
-            upload_note=dto.upload_note,
+            master_id=dto.master_id,
+            production_type=dto.production_type,
+            upload_requirements=dto.upload_requirements,
             is_featured=dto.is_featured,
             images=[ProductImageResponse.from_dto(img) for img in dto.images],
             options=[ProductOptionResponse.from_dto(opt) for opt in dto.options],

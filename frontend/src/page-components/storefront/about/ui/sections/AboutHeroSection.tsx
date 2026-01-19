@@ -1,7 +1,6 @@
 import Image from 'next/image';
 
 export function AboutHeroSection() {
-
   return (
     <section className='relative min-h-screen'>
       {/* Background Image */}

@@ -97,9 +97,9 @@ class ProductDetailDTO(BaseModel):
     price_note: str | None
     lead_time_days: int | None
     lead_time_note: str | None
-    requires_upload: bool
-    upload_type: str | None
-    upload_note: str | None
+    master_id: str | None
+    production_type: str
+    upload_requirements: dict | None
     is_featured: bool
     images: list[ProductImageDTO]
     options: list[ProductOptionDTO]

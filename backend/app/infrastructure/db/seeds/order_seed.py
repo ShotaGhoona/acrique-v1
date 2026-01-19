@@ -22,9 +22,9 @@ ORDERS = [
         'notes': '配達時間は午後でお願いします',
         'items': [
             {
-                'product_id': 'qr-cube',
-                'product_name': 'QR Cube',
-                'product_name_ja': 'QRキューブ',
+                'product_id': 'shop-cube-qr',
+                'product_name': 'QR Code Cube',
+                'product_name_ja': 'QRコードキューブ',
                 'quantity': 2,
                 'unit_price': 5000,
                 'options': {
@@ -38,9 +38,9 @@ ORDERS = [
                 'subtotal': 10000,
             },
             {
-                'product_id': 'logo-cutout',
-                'product_name': 'Logo Cutout',
-                'product_name_ja': 'ロゴ切り抜き',
+                'product_id': 'shop-logo-cutout',
+                'product_name': 'Logo Cutout Object',
+                'product_name_ja': 'ロゴカットアウト',
                 'quantity': 1,
                 'unit_price': 5000,
                 'options': {
@@ -64,9 +64,9 @@ ORDERS = [
         'notes': None,
         'items': [
             {
-                'product_id': 'price-tag',
-                'product_name': 'Price Tag',
-                'product_name_ja': '価格表示プレート',
+                'product_id': 'shop-plate-price',
+                'product_name': 'Luxury Price Tag',
+                'product_name_ja': 'プライスタグ',
                 'quantity': 4,
                 'unit_price': 2000,
                 'options': None,
@@ -89,7 +89,7 @@ ORDERS = [
         'notes': '領収書を同封してください',
         'items': [
             {
-                'product_id': 'menu-stand',
+                'product_id': 'shop-plate-menu',
                 'product_name': 'Menu Stand',
                 'product_name_ja': 'メニュースタンド',
                 'quantity': 5,
@@ -100,9 +100,9 @@ ORDERS = [
                 'subtotal': 15000,
             },
             {
-                'product_id': 'sign-holder',
-                'product_name': 'Sign Holder',
-                'product_name_ja': 'サインホルダー',
+                'product_id': 'shop-stage-display',
+                'product_name': 'Display Riser',
+                'product_name_ja': 'ディスプレイライザー',
                 'quantity': 2,
                 'unit_price': 5000,
                 'options': None,
@@ -126,7 +126,7 @@ ORDERS = [
         'notes': None,
         'items': [
             {
-                'product_id': 'display-riser',
+                'product_id': 'shop-stage-display',
                 'product_name': 'Display Riser',
                 'product_name_ja': 'ディスプレイライザー',
                 'quantity': 3,

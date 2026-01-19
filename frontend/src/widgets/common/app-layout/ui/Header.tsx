@@ -3,7 +3,15 @@
 import { useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, Search, ChevronDown, User, LogOut, Package, MapPin } from 'lucide-react';
+import {
+  Menu,
+  Search,
+  ChevronDown,
+  User,
+  LogOut,
+  Package,
+  MapPin,
+} from 'lucide-react';
 import { Button } from '@/shared/ui/shadcn/ui/button';
 import {
   Sheet,
@@ -246,7 +254,10 @@ export function Header() {
                             マイページ
                           </Button>
                         </Link>
-                        <Link href='/mypage/orders' onClick={() => setIsOpen(false)}>
+                        <Link
+                          href='/mypage/orders'
+                          onClick={() => setIsOpen(false)}
+                        >
                           <Button
                             variant='outline'
                             className='w-full justify-start gap-3'
@@ -255,7 +266,10 @@ export function Header() {
                             注文履歴
                           </Button>
                         </Link>
-                        <Link href='/mypage/addresses' onClick={() => setIsOpen(false)}>
+                        <Link
+                          href='/mypage/addresses'
+                          onClick={() => setIsOpen(false)}
+                        >
                           <Button
                             variant='outline'
                             className='w-full justify-start gap-3'
@@ -327,7 +341,9 @@ export function Header() {
                   className='group mt-6 inline-flex w-full items-center justify-center gap-2 bg-foreground px-4 py-2.5 text-xs font-medium uppercase tracking-wider text-background transition-colors hover:bg-foreground/90'
                 >
                   すべて見る
-                  <span className='transition-transform group-hover:translate-x-1'>→</span>
+                  <span className='transition-transform group-hover:translate-x-1'>
+                    →
+                  </span>
                 </Link>
               </div>
 
@@ -353,7 +369,9 @@ export function Header() {
                           <div className='flex h-full w-full items-center justify-center text-muted-foreground/30'>
                             <div className='text-center'>
                               <div className='mx-auto h-12 w-12 rounded border-2 border-dashed border-current' />
-                              <span className='mt-2 block text-xs'>No Image</span>
+                              <span className='mt-2 block text-xs'>
+                                No Image
+                              </span>
                             </div>
                           </div>
                         )}

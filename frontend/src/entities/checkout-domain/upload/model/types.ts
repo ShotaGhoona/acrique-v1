@@ -1,7 +1,4 @@
-import type {
-  UploadStatus,
-  UploadType,
-} from '@/shared/domain/upload/model/types';
+import type { UploadStatus } from '@/shared/domain/upload/model/types';
 
 // === 入稿データ型 ===
 export interface Upload {
@@ -10,7 +7,6 @@ export interface Upload {
   file_url: string;
   file_type: string | null;
   file_size: number | null;
-  upload_type: string | null;
   status: UploadStatus;
   admin_notes: string | null;
   order_id: number | null;
@@ -23,7 +19,6 @@ export interface Upload {
 export interface GetPresignedUrlRequest {
   file_name: string;
   content_type: string;
-  upload_type: UploadType;
 }
 
 export interface GetPresignedUrlResponse {
@@ -40,14 +35,12 @@ export interface CreateUploadRequest {
   file_url: string;
   file_type: string | null;
   file_size: number | null;
-  upload_type: string | null;
 }
 
 export interface CreateUploadResponse {
   id: number;
   file_name: string;
   file_url: string;
-  upload_type: string | null;
   status: UploadStatus;
   created_at: string | null;
 }

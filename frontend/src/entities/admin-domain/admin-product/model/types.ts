@@ -1,3 +1,6 @@
+import type { ProductionType } from '@/shared/domain/product/model/types';
+import type { UploadRequirements } from '@/shared/domain/upload/model/types';
+
 // === 商品画像 ===
 export interface AdminProductImage {
   id: number;
@@ -73,9 +76,9 @@ export interface AdminProductDetail extends AdminProduct {
   price_note: string | null;
   lead_time_days: number | null;
   lead_time_note: string | null;
-  requires_upload: boolean;
-  upload_type: string | null;
-  upload_note: string | null;
+  master_id: string | null;
+  production_type: ProductionType;
+  upload_requirements: UploadRequirements;
   images: AdminProductImage[];
   options: AdminProductOption[];
   specs: AdminProductSpec[];
@@ -118,9 +121,9 @@ export interface CreateProductRequest {
   price_note?: string;
   lead_time_days?: number;
   lead_time_note?: string;
-  requires_upload?: boolean;
-  upload_type?: string;
-  upload_note?: string;
+  master_id?: string;
+  production_type?: ProductionType;
+  upload_requirements?: UploadRequirements;
   is_active?: boolean;
   is_featured?: boolean;
   sort_order?: number;
@@ -145,9 +148,9 @@ export interface UpdateProductRequest {
   price_note?: string;
   lead_time_days?: number;
   lead_time_note?: string;
-  requires_upload?: boolean;
-  upload_type?: string;
-  upload_note?: string;
+  master_id?: string;
+  production_type?: ProductionType;
+  upload_requirements?: UploadRequirements;
   is_active?: boolean;
   is_featured?: boolean;
   sort_order?: number;

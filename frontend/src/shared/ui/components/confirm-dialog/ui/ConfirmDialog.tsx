@@ -61,8 +61,7 @@ export function ConfirmDialog({
           <AlertDialogAction
             onClick={handleConfirm}
             className={cn(
-              destructive &&
-                buttonVariants({ variant: 'destructive' }),
+              destructive && buttonVariants({ variant: 'destructive' }),
             )}
           >
             {confirmLabel}

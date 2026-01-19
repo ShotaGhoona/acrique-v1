@@ -345,3 +345,92 @@ const requiresUpload = product.production_type !== 'standard'
 - `UploadType`（shared/domain/upload）は Upload エンティティ用であり、Product とは別物として残存
 - `ProductionType` は `catalog-domain/product` で定義し、他の場所からインポート
 - `order_item` に `upload_requirements` を保存することで、商品変更後も正しいフォームを表示可能
+
+---
+
+## 作業ログ（続き）
+
+### 2026-01-19: Phase 4 - Product Master API対応 & 管理画面
+
+#### 1. 共通型定義の追加
+
+**新規作成ファイル**:
+- `src/shared/domain/product/model/types.ts` - ModelCategory型
+- `src/shared/domain/product/data/model-categories.ts` - ラベル・カラー定義
+
+```typescript
+// types.ts
+export type ModelCategory = 'signature' | 'standard' | 'free-cut' | 'structure';
+
+// model-categories.ts
+export const modelCategoryLabels: Record<ModelCategory, string> = {
+  signature: 'シグネチャー',
+  standard: 'スタンダード',
+  'free-cut': 'フリーカット',
+  structure: 'ストラクチャー',
+};
+```
+
+---
+
+#### 2. Product Master Entity/Feature追加
+
+**新規作成ファイル（公開API用）**:
+- `src/entities/catalog-domain/product-master/model/types.ts`
+- `src/entities/catalog-domain/product-master/api/product-master-api.ts`
+- `src/features/catalog-domain/product-master/get-product-masters/lib/use-product-masters.ts`
+
+**新規作成ファイル（Admin API用）**:
+- `src/entities/admin-domain/admin-product-master/model/types.ts`
+- `src/entities/admin-domain/admin-product-master/api/admin-product-master-api.ts`
+- `src/features/admin-domain/admin-product-master/get-product-masters/lib/use-admin-product-masters.ts`
+- `src/features/admin-domain/admin-product-master/create-product-master/lib/use-create-product-master.ts`
+- `src/features/admin-domain/admin-product-master/update-product-master/lib/use-update-product-master.ts`
+
+---
+
+#### 3. Admin商品マスタ管理画面
+
+**新規作成ファイル**:
+- `src/app/(admin)/admin/masters/page.tsx`
+- `src/page-components/admin/masters/ui/MastersContainer.tsx`
+- `src/page-components/admin/masters/ui/MasterFormDialog.tsx`
+
+**変更ファイル**:
+- `src/widgets/admin/layout/config/menu-items.ts` - サイドバーにメニュー追加
+
+**機能**:
+| 機能 | 説明 |
+|------|------|
+| 一覧表示 | ID/名前/英語名/カテゴリ/キャッチコピー/納期/ステータス/並び順 |
+| 検索 | ID・名前・英語名でフィルタ |
+| 新規作成 | ダイアログでマスタ追加 |
+| 編集 | ダイアログでマスタ更新 |
+
+---
+
+## ファイル一覧（Phase 4）
+
+### 新規作成ファイル（14ファイル）
+
+| ファイル | 説明 |
+|----------|------|
+| `src/shared/domain/product/model/types.ts` | ModelCategory型 |
+| `src/shared/domain/product/data/model-categories.ts` | ラベル・カラー定義 |
+| `src/entities/catalog-domain/product-master/model/types.ts` | ProductMaster型 |
+| `src/entities/catalog-domain/product-master/api/product-master-api.ts` | 公開API |
+| `src/entities/admin-domain/admin-product-master/model/types.ts` | AdminProductMaster型 |
+| `src/entities/admin-domain/admin-product-master/api/admin-product-master-api.ts` | Admin API |
+| `src/features/catalog-domain/product-master/get-product-masters/lib/use-product-masters.ts` | useProductMasters |
+| `src/features/admin-domain/admin-product-master/get-product-masters/lib/use-admin-product-masters.ts` | useAdminProductMasters |
+| `src/features/admin-domain/admin-product-master/create-product-master/lib/use-create-product-master.ts` | useCreateProductMaster |
+| `src/features/admin-domain/admin-product-master/update-product-master/lib/use-update-product-master.ts` | useUpdateProductMaster |
+| `src/app/(admin)/admin/masters/page.tsx` | 管理画面ページ |
+| `src/page-components/admin/masters/ui/MastersContainer.tsx` | 一覧コンテナ |
+| `src/page-components/admin/masters/ui/MasterFormDialog.tsx` | 作成/編集ダイアログ |
+
+### 変更ファイル（1ファイル）
+
+| ファイル | 変更内容 |
+|----------|----------|
+| `src/widgets/admin/layout/config/menu-items.ts` | 「商品マスタ」メニュー追加 |

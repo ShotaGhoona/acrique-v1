@@ -1,5 +1,7 @@
-// === モデルカテゴリ ===
-export type ModelCategory = 'signature' | 'standard' | 'free-cut' | 'structure';
+import type { ModelCategory } from '@/shared/domain/product/model/types';
+
+// re-export for convenience
+export type { ModelCategory };
 
 // === 商品マスタ ===
 export interface ProductMaster {

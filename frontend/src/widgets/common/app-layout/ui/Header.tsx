@@ -155,64 +155,43 @@ export function Header() {
               </SheetTrigger>
               <SheetContent
                 side='right'
-                className='w-full overflow-y-auto sm:w-96'
+                className='w-full overflow-y-auto p-8 sm:w-80'
               >
                 <SheetTitle className='sr-only'>メニュー</SheetTitle>
-                <div className='flex flex-col gap-6 pt-8'>
+                <div className='flex h-full flex-col'>
                   {/* Mobile Logo */}
                   <Image
                     src='/SVG/logo.svg'
                     alt='ACRIQUE'
-                    width={120}
-                    height={32}
-                    className='h-7 w-auto'
+                    width={100}
+                    height={28}
+                    className='h-6 w-auto'
                   />
 
-                  {/* Mobile Main Nav with Categories */}
-                  <nav className='flex flex-col gap-8'>
+                  {/* Mobile Main Nav - Categories Only */}
+                  <nav className='mt-12 flex flex-col gap-6'>
                     {categoryIds.map((categoryId) => {
                       const category = categories[categoryId];
-                      const menuProducts = getMenuProducts(categoryId);
                       return (
-                        <div key={categoryId} className='space-y-3'>
-                          <Link
-                            href={category.href}
-                            onClick={() => setIsOpen(false)}
-                            className='block'
-                          >
-                            <span className='text-lg font-medium tracking-wide'>
-                              {category.name}
-                            </span>
-                            <span className='mt-0.5 block text-xs text-muted-foreground'>
-                              {category.tagline}
-                            </span>
-                          </Link>
-                          <div className='ml-3 space-y-2 border-l border-border pl-3'>
-                            {menuProducts.map((product) => (
-                              <Link
-                                key={product.id}
-                                href={`/${categoryId}/${product.id}`}
-                                onClick={() => setIsOpen(false)}
-                                className='block text-sm text-muted-foreground transition-colors hover:text-foreground'
-                              >
-                                {product.name_ja}
-                              </Link>
-                            ))}
-                            <Link
-                              href={category.href}
-                              onClick={() => setIsOpen(false)}
-                              className='block text-xs text-accent transition-colors hover:text-accent/80'
-                            >
-                              すべて見る →
-                            </Link>
-                          </div>
-                        </div>
+                        <Link
+                          key={categoryId}
+                          href={category.href}
+                          onClick={() => setIsOpen(false)}
+                          className='group block'
+                        >
+                          <span className='text-lg font-light tracking-wide transition-colors group-hover:text-accent'>
+                            {category.name}
+                          </span>
+                          <span className='mt-1 block text-xs text-muted-foreground'>
+                            {category.tagline}
+                          </span>
+                        </Link>
                       );
                     })}
                   </nav>
 
                   {/* Mobile Sub Nav */}
-                  <div className='border-t pt-6'>
+                  <div className='mt-10 border-t border-border pt-8'>
                     <nav className='flex flex-col gap-4'>
                       {subNavItems.map((item) => (
                         <Link
@@ -228,31 +207,21 @@ export function Header() {
                   </div>
 
                   {/* Mobile Actions */}
-                  <div className='mt-auto flex flex-col gap-3 border-t pt-6'>
-                    {/* TODO: 検索機能実装後に有効化
-                    <Button
-                      variant='outline'
-                      className='w-full justify-start gap-3'
-                    >
-                      <Search className='h-4 w-4' />
-                      検索
-                    </Button>
-                    */}
+                  <div className='mt-auto border-t border-border pt-8'>
                     {isAuthenticated ? (
-                      <>
+                      <div className='flex flex-col gap-3'>
                         {user?.name && (
-                          <div className='mb-2 text-sm font-medium text-foreground'>
+                          <p className='mb-1 text-xs text-muted-foreground'>
                             {user.name}
-                          </div>
+                          </p>
                         )}
-                        <Link href='/mypage' onClick={() => setIsOpen(false)}>
-                          <Button
-                            variant='outline'
-                            className='w-full justify-start gap-3'
-                          >
-                            <User className='h-4 w-4' />
-                            マイページ
-                          </Button>
+                        <Link
+                          href='/mypage'
+                          onClick={() => setIsOpen(false)}
+                          className='flex items-center gap-3 text-sm transition-colors hover:text-accent'
+                        >
+                          <User className='h-4 w-4' />
+                          マイページ
                         </Link>
                         <Link
                           href='/mypage/orders'
@@ -290,16 +259,15 @@ export function Header() {
                           <LogOut className='h-4 w-4' />
                           {isLoggingOut ? 'ログアウト中...' : 'ログアウト'}
                         </Button>
-                      </>
+                      </div>
                     ) : (
-                      <Link href='/login' onClick={() => setIsOpen(false)}>
-                        <Button
-                          variant='outline'
-                          className='w-full justify-start gap-3'
-                        >
-                          <User className='h-4 w-4' />
-                          ログイン
-                        </Button>
+                      <Link
+                        href='/login'
+                        onClick={() => setIsOpen(false)}
+                        className='flex items-center gap-3 text-sm transition-colors hover:text-accent'
+                      >
+                        <User className='h-4 w-4' />
+                        ログイン
                       </Link>
                     )}
                   </div>

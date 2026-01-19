@@ -19,9 +19,11 @@ export default function MypageLayout({
   return (
     <div className='flex min-h-screen flex-col'>
       <Header />
-      <MypageProvider>
-        <MypageInnerLayout>{children}</MypageInnerLayout>
-      </MypageProvider>
+      <div className='flex-1 pt-16'>
+        <MypageProvider>
+          <MypageInnerLayout>{children}</MypageInnerLayout>
+        </MypageProvider>
+      </div>
       <Footer />
     </div>
   );

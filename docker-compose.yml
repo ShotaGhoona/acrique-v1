@@ -68,3 +68,33 @@ services:
       - ./backend:/app
     working_dir: /app
     command: ["alembic", "upgrade", "head"]
+
+  # ==========================================================================
+  # 広告CLI（profilesで分離 - 必要な時だけ起動）
+  # 使用方法: docker compose run ads <command>
+  # 例: docker compose run ads plan --env sandbox
+  # ==========================================================================
+  ads:
+    profiles:
+      - ads
+    build:
+      context: ./ads
+      dockerfile: Dockerfile
+    volumes:
+      - ./ads/src:/app/src
+      - ./ads/campaigns:/app/campaigns
+      - ./ads/environments:/app/environments
+      - ./ads/assets:/app/assets
+    environment:
+      - META_APP_ID=${META_APP_ID:-}
+      - META_APP_SECRET=${META_APP_SECRET:-}
+      - META_ACCESS_TOKEN=${META_ACCESS_TOKEN:-}
+      - META_AD_ACCOUNT_ID=${META_AD_ACCOUNT_ID:-}
+      - GOOGLE_DEVELOPER_TOKEN=${GOOGLE_DEVELOPER_TOKEN:-}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GOOGLE_REFRESH_TOKEN=${GOOGLE_REFRESH_TOKEN:-}
+      - GOOGLE_CUSTOMER_ID=${GOOGLE_CUSTOMER_ID:-}
+      - ADS_ENV=${ADS_ENV:-sandbox}
+    stdin_open: true
+    tty: true

@@ -81,3 +81,7 @@ docs/tasks/privates/*
 # Slides
 slides/node_modules/
 slides/.slidev/
+
+# Ads CLI - 認証情報（絶対にコミットしない）
+ads/environments/*.yaml
+!ads/environments/*.example.yaml

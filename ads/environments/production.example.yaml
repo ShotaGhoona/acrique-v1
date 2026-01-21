@@ -1,0 +1,31 @@
+# =============================================================================
+# 本番環境の設定例
+# =============================================================================
+#
+# このファイルをコピーして production.yaml を作成してください:
+#   cp production.example.yaml production.yaml
+#
+# ⚠️ 注意: production.yaml は .gitignore に追加してコミットしないこと！
+# ⚠️ 本番環境の認証情報は特に厳重に管理すること！
+#
+
+# -----------------------------------------------------------------------------
+# Meta広告 (Instagram/Facebook)
+# -----------------------------------------------------------------------------
+meta:
+  app_id: "YOUR_PRODUCTION_APP_ID"
+  app_secret: "YOUR_PRODUCTION_APP_SECRET"
+  access_token: "YOUR_PRODUCTION_ACCESS_TOKEN"
+  ad_account_id: "act_YOUR_PRODUCTION_AD_ACCOUNT"
+
+
+# -----------------------------------------------------------------------------
+# Google広告
+# -----------------------------------------------------------------------------
+google:
+  developer_token: "YOUR_PRODUCTION_DEVELOPER_TOKEN"  # 本番用は審査が必要
+  client_id: "YOUR_PRODUCTION_CLIENT_ID"
+  client_secret: "YOUR_PRODUCTION_CLIENT_SECRET"
+  refresh_token: "YOUR_PRODUCTION_REFRESH_TOKEN"
+  customer_id: "YOUR_PRODUCTION_CUSTOMER_ID"
+  login_customer_id: null

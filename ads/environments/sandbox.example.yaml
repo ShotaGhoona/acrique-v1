@@ -1,0 +1,63 @@
+# =============================================================================
+# サンドボックス環境の設定例
+# =============================================================================
+#
+# このファイルをコピーして sandbox.yaml を作成してください:
+#   cp sandbox.example.yaml sandbox.yaml
+#
+# ⚠️ 注意: sandbox.yaml は .gitignore に追加してコミットしないこと！
+#
+
+# -----------------------------------------------------------------------------
+# Meta広告 (Instagram/Facebook)
+# -----------------------------------------------------------------------------
+meta:
+  # App ID
+  # 取得場所: https://developers.facebook.com/apps/YOUR_APP_ID/settings/basic/
+  app_id: "123456789012345"  # TODO: 実際のApp IDに置き換え
+
+  # App Secret
+  # 取得場所: 同上（「表示」をクリックして確認）
+  app_secret: "abcdef1234567890abcdef1234567890"  # TODO: 実際のApp Secretに置き換え
+
+  # アクセストークン
+  # 取得場所: ビジネスマネージャ → システムユーザー → トークン生成
+  # 権限: ads_management, ads_read, business_management
+  access_token: "EAAG..."  # TODO: 実際のアクセストークンに置き換え
+
+  # 広告アカウントID
+  # 取得場所: ビジネスマネージャ → 広告アカウント
+  # 形式: "act_" + 数字
+  ad_account_id: "act_123456789012345"  # TODO: 実際の広告アカウントIDに置き換え
+
+
+# -----------------------------------------------------------------------------
+# Google広告
+# -----------------------------------------------------------------------------
+google:
+  # Developer Token
+  # 取得場所: Google広告 → ツールと設定 → API センター
+  # ※テストアカウント用トークンは即時発行、本番用は審査が必要
+  developer_token: "ABCdEfGhIjKlMnOp-1234567"  # TODO: 実際のDeveloper Tokenに置き換え
+
+  # OAuth Client ID
+  # 取得場所: Google Cloud Console → 認証情報 → OAuth 2.0 クライアント
+  client_id: "123456789012-xxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"  # TODO: 置き換え
+
+  # OAuth Client Secret
+  # 取得場所: 同上
+  client_secret: "GOCSPX-xxxxxxxxxxxxxxxxxxxx"  # TODO: 置き換え
+
+  # Refresh Token
+  # 取得方法: `ads auth google` コマンドを実行してOAuth認証
+  refresh_token: "1//0xxxxxxxxxxxxxxxxxxxxxxxxxxxx"  # TODO: 置き換え
+
+  # Customer ID（広告アカウントID）
+  # 取得場所: Google広告管理画面の右上に表示
+  # 形式: ハイフンなしの10桁数字
+  customer_id: "1234567890"  # TODO: 置き換え
+
+  # Login Customer ID（MCC使用時のみ）
+  # MCC（マネージャーアカウント）経由で操作する場合に設定
+  # 使わない場合はコメントアウトまたは削除
+  login_customer_id: null  # TODO: MCC使用時は設定

@@ -1,0 +1,174 @@
+# =============================================================================
+# ACRIQUE Meta広告キャンペーン: ブランド認知
+# =============================================================================
+#
+# 目的: Instagram/Facebookで「1cmの厚み」の視覚的インパクトを訴求し、
+#       ACRIQUEの存在を知ってもらう
+#
+# 使用方法:
+#   ads apply --env sandbox campaigns/meta/brand_awareness.yaml
+#
+
+name: CV_ACRIQUE_ブランド認知_2025Q1
+
+# 既存キャンペーンを更新する場合はIDを指定
+# id: "123456789012345"
+
+status: PAUSED  # 最初は一時停止で作成、確認後に ACTIVE に変更
+
+# キャンペーン目的
+# - OUTCOME_SALES: 売上（コンバージョン）
+# - OUTCOME_LEADS: リード獲得
+# - OUTCOME_AWARENESS: 認知度
+# - OUTCOME_TRAFFIC: トラフィック
+objective: OUTCOME_SALES
+
+# キャンペーン単位の日予算（Advantage+予算使用時）
+# TODO: 仮置き - 広告セット単位で予算を設定する場合は null
+daily_budget: 5000  # 円
+
+
+# =============================================================================
+# 広告セット
+# =============================================================================
+adsets:
+  # ---------------------------------------------------------------------------
+  # 広告セット1: 店舗オーナー向け
+  # ---------------------------------------------------------------------------
+  - name: 30-54歳_店舗オーナー_什器訴求
+    status: PAUSED
+    daily_budget: null  # キャンペーン予算を使用
+
+    optimization_goal: OFFSITE_CONVERSIONS
+    billing_event: IMPRESSIONS
+
+    # ターゲティング
+    targeting:
+      geo_locations:
+        countries: ["JP"]
+      age_min: 30
+      age_max: 54
+      genders: null  # 全て
+      interests:
+        # TODO: 仮置き - 実際の興味関心IDは管理画面で確認
+        - id: "6003139266461"
+          name: "小売業"
+        - id: "6003384248805"
+          name: "ビジネス"
+        - id: "6003107902433"
+          name: "インテリアデザイン"
+
+    # 広告
+    ads:
+      - name: 動画_店舗什器_1cmの厚み
+        status: PAUSED
+        # TODO: 仮置き - クリエイティブ
+        video_path: assets/creatives/store_display_1cm.mp4
+        primary_text: |
+          プロが選ぶ、1cmの存在感。
+
+          店舗の顔となるディスプレイに、
+          妥協のない品質を。
+
+          ACRIQUEの高級アクリルは、
+          光の屈折が美しい厚みのある仕上がり。
+
+          ▼ 詳しくはこちら
+        headline: 高級アクリル専門店 ACRIQUE
+        description: 店舗什器からコレクションケースまで
+        call_to_action: LEARN_MORE
+        link_url: https://acrique.jp/products/store-display
+
+      - name: 画像_店舗事例
+        status: PAUSED
+        image_path: assets/creatives/store_case_study.jpg
+        primary_text: |
+          導入事例: 渋谷の人気アパレルショップ様
+
+          「お客様の目が、自然とディスプレイに向くようになりました」
+
+          1cmのアクリルが生み出す高級感。
+          ACRIQUEにお任せください。
+        headline: 導入事例を見る
+        call_to_action: LEARN_MORE
+        link_url: https://acrique.jp/case-studies
+
+
+  # ---------------------------------------------------------------------------
+  # 広告セット2: 推し活層向け
+  # ---------------------------------------------------------------------------
+  - name: 18-39歳_推し活層_コレクション訴求
+    status: PAUSED
+    daily_budget: null
+
+    optimization_goal: OFFSITE_CONVERSIONS
+    billing_event: IMPRESSIONS
+
+    targeting:
+      geo_locations:
+        countries: ["JP"]
+      age_min: 18
+      age_max: 39
+      genders: null
+      interests:
+        # TODO: 仮置き - 実際の興味関心IDは管理画面で確認
+        - id: "6003305057728"
+          name: "アニメ"
+        - id: "6003384248805"
+          name: "フィギュア"
+        - id: "6003107902433"
+          name: "コレクション"
+
+    ads:
+      - name: 動画_コレクションケース_推し活
+        status: PAUSED
+        video_path: assets/creatives/collection_case_oshi.mp4
+        primary_text: |
+          推しは、最高の環境で飾りたい。
+
+          ACRIQUEのコレクションケースは、
+          1cm厚のアクリルが生み出す
+          圧倒的な透明感と高級感。
+
+          大切なフィギュアやグッズを
+          ワンランク上の空間で。
+        headline: 推し活をワンランク上に
+        description: オーダーメイドコレクションケース
+        call_to_action: SHOP_NOW
+        link_url: https://acrique.jp/products/collection-case
+
+
+  # ---------------------------------------------------------------------------
+  # 広告セット3: リターゲティング
+  # ---------------------------------------------------------------------------
+  - name: リターゲティング_サイト訪問者
+    status: PAUSED
+    daily_budget: null
+
+    optimization_goal: OFFSITE_CONVERSIONS
+    billing_event: IMPRESSIONS
+
+    targeting:
+      geo_locations:
+        countries: ["JP"]
+      age_min: 18
+      age_max: 65
+      # TODO: 仮置き - カスタムオーディエンス（サイト訪問者）
+      # custom_audiences:
+      #   - id: "123456789"
+      #     name: "サイト訪問者_過去30日"
+
+    ads:
+      - name: リターゲ_限定オファー
+        status: PAUSED
+        image_path: assets/creatives/retargeting_offer.jpg
+        primary_text: |
+          お探しのアクリル製品、見つかりましたか？
+
+          今なら初回注文 10% OFF
+          クーポンコード: FIRST10
+
+          ▼ 続きを見る
+        headline: 初回限定 10% OFF
+        call_to_action: SHOP_NOW
+        link_url: https://acrique.jp/?coupon=FIRST10
